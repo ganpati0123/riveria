@@ -10,30 +10,30 @@ const WP_NAMES = [
   'Object_1099',      // view  3 — Sponsors
   'Object_1033',      // view  4 — Gallery
   'Object_1108',      // view  5 — Contact
-  'Bus_stop001_87',   // view  6 — About Us
+  'Bus_stop001_87',   // view  6
   'Object_628',       // view  7
   'Object_13',        // view  8
   'Object_619',       // view  9
   'Object_1063',      // view 10
   'Object_1015',      // view 11
-  'Object_1069',      // view 12
+  'Object_1069',      // view 12 — About Us
   'Object_1084',      // view 13
 ]
 
 const ROAD_YAWS = [
-  -Math.PI / 2,   // view  1 — Object_7         — NORTH
-  -Math.PI / 2,   // view  2 — Object_622        — NORTH
-   0,             // view  3 — Object_1099        — WEST
-  -Math.PI / 2,   // view  4 — Object_1033        — NORTH
-  -Math.PI / 2,   // view  5 — Object_1108        — NORTH
-  -Math.PI / 2,   // view  6 — Bus_stop001_87     — NORTH
-   Math.PI,       // view  7 — Object_628          — EAST
-   Math.PI,       // view  8 — Object_13           — EAST
-   Math.PI / 2,   // view  9 — Object_619          — SOUTH
-   Math.PI / 2,   // view 10 — Object_1063         — SOUTH
-   0,             // view 11 — Object_1015          — WEST
-   0,             // view 12 — Object_1069          — WEST
-   0,             // view 13 — Object_1084          — WEST
+  -Math.PI / 2,   // view  1
+  -Math.PI / 2,   // view  2
+   0,             // view  3
+  -Math.PI / 2,   // view  4
+  -Math.PI / 2,   // view  5
+  -Math.PI / 2,   // view  6
+   Math.PI,       // view  7
+   Math.PI,       // view  8
+   Math.PI / 2,   // view  9
+   Math.PI / 2,   // view 10
+   0,             // view 11
+   0,             // view 12
+   0,             // view 13
 ]
 
 // ─── Panel data ───────────────────────────────────────────────────────────────
@@ -81,7 +81,7 @@ const PANELS = {
       { label: 'Night of a Thousand Stars', year: '2022', desc: 'Celestial light installation by award-winning artists' },
     ],
   },
-  5: {
+  11: {
     key: 'about',
     label: 'Our Legacy',
     title: 'About Us',
@@ -205,7 +205,7 @@ function Scene({ sharedRefs, onReady }) {
     const maxT = wps.current.length - 1
     if (sharedRefs.targetT.current >= 0) {
       const diff = sharedRefs.targetT.current - sharedRefs.pathT.current
-      sharedRefs.pathT.current += diff * Math.min(1, 7*dt)
+      sharedRefs.pathT.current += diff * Math.min(1, 2.2*dt)
       sharedRefs.vel.current = 0
       if (Math.abs(diff) < 0.0005) {
         sharedRefs.pathT.current = sharedRefs.targetT.current
@@ -216,8 +216,8 @@ function Scene({ sharedRefs, onReady }) {
       sharedRefs.pathT.current += sharedRefs.vel.current
       if (sharedRefs.pathT.current <= 0) { sharedRefs.pathT.current=0; if(sharedRefs.vel.current<0) sharedRefs.vel.current=0 }
       if (sharedRefs.pathT.current >= maxT) { sharedRefs.pathT.current=maxT; if(sharedRefs.vel.current>0) sharedRefs.vel.current=0 }
-      sharedRefs.vel.current *= 0.90
-      if (Math.abs(sharedRefs.vel.current) < 0.000008) sharedRefs.vel.current = 0
+      sharedRefs.vel.current *= 0.93
+      if (Math.abs(sharedRefs.vel.current) < 0.000006) sharedRefs.vel.current = 0
     }
     camera.position.copy(catmullRomPoint(sharedRefs.pathT.current, wps.current))
     if (sharedRefs.autoYaw.current) {
@@ -282,25 +282,6 @@ function LuxuryPanel({ panelIdx, visible, scrollsLeft }) {
           }}>{c.quote}</div>
         </div>
       )
-    }
-    if (data.key === 'schedule') {
-      const tierStyle = { ceremony: '#d4af37', performance: '#c8a0e0', exclusive: '#88d4b0' }
-      return data.content.map((item, i) => (
-        <div key={i} style={{
-          display: 'flex', gap: '10px', alignItems: 'flex-start',
-          padding: '9px 12px', borderRadius: '10px', marginBottom: '5px',
-          background: 'linear-gradient(90deg,rgba(212,175,55,0.06),rgba(212,175,55,0.02))',
-          border: '1px solid rgba(212,175,55,0.1)',
-          borderLeft: `3px solid ${tierStyle[item.tier]}`,
-          animation: `revealUp 0.5s ${i*0.06}s both`,
-        }}>
-          <div style={{
-            color: tierStyle[item.tier], fontFamily: 'Georgia,serif', fontSize: '0.65rem',
-            minWidth: '62px', paddingTop: '1px', fontWeight: 'bold', letterSpacing: '0.02em',
-          }}>{item.time}</div>
-          <div style={{ color: 'rgba(245,224,150,0.92)', fontSize: '0.74rem', lineHeight: 1.4 }}>{item.label}</div>
-        </div>
-      ))
     }
     if (data.key === 'activities') {
       return data.content.map((item, i) => (
@@ -419,16 +400,12 @@ function LuxuryPanel({ panelIdx, visible, scrollsLeft }) {
         position: 'relative',
         animation: visible ? 'panelGlow 3s ease-in-out infinite' : 'none',
       }}>
-
-        {/* Animated gold top bar */}
         <div style={{
           height: '4px',
           background: 'linear-gradient(90deg,transparent 0%,#8b6914 10%,#d4af37 30%,#f5e096 50%,#d4af37 70%,#8b6914 90%,transparent 100%)',
           animation: 'shimmerBar 3s linear infinite',
           backgroundSize: '200% 100%',
         }} />
-
-        {/* Islamic geometric pattern overlay */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
           backgroundImage: `radial-gradient(circle at 20% 20%, rgba(212,175,55,0.04) 1px, transparent 1px),
@@ -436,8 +413,6 @@ function LuxuryPanel({ panelIdx, visible, scrollsLeft }) {
             radial-gradient(circle at 50% 50%, rgba(130,80,200,0.04) 2px, transparent 2px)`,
           backgroundSize: '40px 40px, 40px 40px, 80px 80px',
         }} />
-
-        {/* Twinkling stars */}
         {STARS.map((s,i) => (
           <div key={i} style={{
             position: 'absolute', left: s.left, top: s.top, pointerEvents: 'none',
@@ -447,30 +422,14 @@ function LuxuryPanel({ panelIdx, visible, scrollsLeft }) {
             boxShadow: `0 0 ${s.size*2}px #d4af37`,
           }} />
         ))}
-
-        {/* Scrollable content area */}
         <div style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 36px - 100px)', position: 'relative', zIndex: 1 }}>
           <div style={{ padding: '20px 20px 4px' }}>
-
-            {/* Festival badge */}
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '14px',
-            }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '14px' }}>
               <div style={{ flex:1, height:'1px', background:'linear-gradient(90deg,transparent,rgba(212,175,55,0.3))' }} />
-              <span style={{
-                color: 'rgba(212,175,55,0.6)', fontSize: '0.52rem', letterSpacing: '0.25em',
-                textTransform: 'uppercase', fontFamily: 'Georgia,serif',
-              }}>✦ Arabian Night Festival ✦</span>
+              <span style={{ color: 'rgba(212,175,55,0.6)', fontSize: '0.52rem', letterSpacing: '0.25em', textTransform: 'uppercase', fontFamily: 'Georgia,serif' }}>✦ Arabian Night Festival ✦</span>
               <div style={{ flex:1, height:'1px', background:'linear-gradient(90deg,rgba(212,175,55,0.3),transparent)' }} />
             </div>
-
-            {/* Section label */}
-            <div style={{
-              color: 'rgba(212,175,55,0.55)', fontSize: '0.58rem', letterSpacing: '0.2em',
-              textTransform: 'uppercase', fontFamily: 'Georgia,serif', marginBottom: '4px',
-            }}>{data.label}</div>
-
-            {/* Main title */}
+            <div style={{ color: 'rgba(212,175,55,0.55)', fontSize: '0.58rem', letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: 'Georgia,serif', marginBottom: '4px' }}>{data.label}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
               <div style={{
                 width: '42px', height: '42px', borderRadius: '50%', flexShrink: 0,
@@ -489,46 +448,29 @@ function LuxuryPanel({ panelIdx, visible, scrollsLeft }) {
               }}>{data.title}</h2>
               <div style={{ marginLeft: 'auto', fontSize: '1.4rem', opacity: 0.35, animation: 'floatCrescent 4s ease-in-out infinite' }}>☽</div>
             </div>
-
-            {/* Gold divider */}
             <div style={{
               height: '1px', margin: '12px 0',
               background: 'linear-gradient(90deg,transparent,rgba(212,175,55,0.6),rgba(245,224,150,0.8),rgba(212,175,55,0.6),transparent)',
               boxShadow: '0 0 8px rgba(212,175,55,0.4)',
             }} />
-
-            {/* Content */}
-            <div style={{ paddingBottom: '10px' }}>
-              {renderContent()}
-            </div>
+            <div style={{ paddingBottom: '10px' }}>{renderContent()}</div>
           </div>
         </div>
-
-        {/* Scroll progress footer */}
         <div style={{
           padding: '12px 20px 16px',
           background: 'linear-gradient(0deg,rgba(7,1,24,0.98) 0%,rgba(7,1,24,0.7) 100%)',
           borderTop: '1px solid rgba(212,175,55,0.12)',
           position: 'relative', zIndex: 2,
         }}>
-          <div style={{
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            marginBottom: '6px',
-          }}>
-            <span style={{
-              color: 'rgba(212,175,55,0.6)', fontSize: '0.58rem', letterSpacing: '0.16em',
-              fontFamily: 'Georgia,serif',
-            }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+            <span style={{ color: 'rgba(212,175,55,0.6)', fontSize: '0.58rem', letterSpacing: '0.16em', fontFamily: 'Georgia,serif' }}>
               {scrollsLeft > 0 ? `✦ ${scrollsLeft} SCROLL${scrollsLeft>1?'S':''} TO ADVANCE ✦` : '✦ SCROLL TO CONTINUE ✦'}
             </span>
             <div style={{ display:'flex', gap:'5px' }}>
               {[0,1,2].map(i => (
                 <div key={i} style={{
-                  width: i < absorbed ? '18px' : '8px', height:'8px',
-                  borderRadius:'99px',
-                  background: i < absorbed
-                    ? 'linear-gradient(90deg,#8b6914,#d4af37,#f5e096)'
-                    : 'rgba(212,175,55,0.15)',
+                  width: i < absorbed ? '18px' : '8px', height:'8px', borderRadius:'99px',
+                  background: i < absorbed ? 'linear-gradient(90deg,#8b6914,#d4af37,#f5e096)' : 'rgba(212,175,55,0.15)',
                   border: '1px solid rgba(212,175,55,0.3)',
                   transition: 'all 0.4s ease',
                   boxShadow: i < absorbed ? '0 0 8px rgba(212,175,55,0.5)' : 'none',
@@ -546,8 +488,6 @@ function LuxuryPanel({ panelIdx, visible, scrollsLeft }) {
             }} />
           </div>
         </div>
-
-        {/* Gold bottom bar */}
         <div style={{
           height: '4px',
           background: 'linear-gradient(90deg,transparent 0%,#8b6914 10%,#d4af37 30%,#f5e096 50%,#d4af37 70%,#8b6914 90%,transparent 100%)',
@@ -557,37 +497,18 @@ function LuxuryPanel({ panelIdx, visible, scrollsLeft }) {
   )
 }
 
-// ─── Permanent Scroll Indicator ───────────────────────────────────────────────
+// ─── Scroll Indicator ─────────────────────────────────────────────────────────
 function ScrollIndicator() {
   return (
     <div style={{
-      position: 'fixed', bottom: '28px', left: '50%', transform: 'translateX(-50%)',
+      position: 'fixed', bottom: '36px', left: '28px',
       zIndex: 60, pointerEvents: 'none',
-      animation: 'floatUpDown 3s ease-in-out infinite',
     }}>
-      <div style={{
-        background: 'linear-gradient(135deg,rgba(8,2,30,0.92),rgba(15,5,50,0.92))',
-        border: '1px solid rgba(212,175,55,0.35)',
-        borderRadius: '40px', padding: '8px 24px',
-        backdropFilter: 'blur(20px)',
-        boxShadow: '0 0 30px rgba(212,175,55,0.12), 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(212,175,55,0.15)',
-        display: 'flex', alignItems: 'center', gap: '10px',
-      }}>
-        <span style={{
-          color: 'rgba(212,175,55,0.5)', fontSize: '0.7rem', letterSpacing: '0.06em',
-        }}>❖</span>
-        <span style={{
-          fontFamily: 'Georgia,serif', fontSize: '0.68rem', letterSpacing: '0.28em',
-          textTransform: 'uppercase', fontWeight: 'bold',
-          background: 'linear-gradient(90deg,#8b6914,#d4af37,#f5e096,#d4af37,#8b6914)',
-          backgroundSize: '200% 100%',
-          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-          animation: 'shimmerText 3s linear infinite',
-        }}>Move Mouse to Look · Scroll to Journey</span>
-        <span style={{
-          color: 'rgba(212,175,55,0.5)', fontSize: '0.7rem', letterSpacing: '0.06em',
-        }}>❖</span>
-      </div>
+      <span style={{
+        color: 'rgba(255,255,255,0.28)', fontSize: '0.65rem',
+        fontFamily: 'Georgia,serif', letterSpacing: '0.08em',
+        fontStyle: 'italic',
+      }}>scroll to continue</span>
     </div>
   )
 }
@@ -620,7 +541,6 @@ export default function App() {
     return -1
   }, [])
 
-  // ─── Mouse movement → camera look ─────────────────────────────────────────
   useEffect(() => {
     let lastX = null, lastY = null
     const onMove = e => {
@@ -632,14 +552,12 @@ export default function App() {
         sharedRefs.pitch.current  = Math.max(-1.35, Math.min(1.35, sharedRefs.pitch.current))
         sharedRefs.autoYaw.current = false
       }
-      lastX = e.clientX
-      lastY = e.clientY
+      lastX = e.clientX; lastY = e.clientY
     }
     window.addEventListener('mousemove', onMove)
     return () => window.removeEventListener('mousemove', onMove)
   }, [])
 
-  // ─── Touch drag ───────────────────────────────────────────────────────────
   useEffect(() => {
     const dragState = { active: false, x: 0, y: 0 }
     const onTouchStart = e => {
@@ -667,7 +585,6 @@ export default function App() {
     }
   }, [])
 
-  // ─── Wheel with scroll lock ────────────────────────────────────────────────
   useEffect(() => {
     const onWheel = e => {
       e.preventDefault()
@@ -685,7 +602,7 @@ export default function App() {
       } else {
         scrollLock.current = { lockedWpIdx: -1, count: 0 }
       }
-      sharedRefs.vel.current    += dy * 0.00012
+      sharedRefs.vel.current    += dy * 0.000016
       sharedRefs.targetT.current = -1
       sharedRefs.yaw.current    -= dx * 0.0022
       sharedRefs.autoYaw.current = false
@@ -694,7 +611,6 @@ export default function App() {
     return () => window.removeEventListener('wheel', onWheel)
   }, [getDisplayWpIdx])
 
-  // ─── Arrow keys ───────────────────────────────────────────────────────────
   useEffect(() => {
     if (numWps < 2) return
     const maxT = numWps - 1
@@ -715,7 +631,6 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [numWps])
 
-  // ─── Poll state ───────────────────────────────────────────────────────────
   useEffect(() => {
     const id = setInterval(() => {
       const t = sharedRefs.pathT.current
@@ -738,7 +653,6 @@ export default function App() {
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { overflow: hidden; cursor: none; }
-
         @keyframes shimmerBar {
           0% { background-position: -100% 0 }
           100% { background-position: 200% 0 }
@@ -759,10 +673,6 @@ export default function App() {
           0%,100% { opacity: 0.15; transform: scale(1) }
           50% { opacity: 0.7; transform: scale(1.5) }
         }
-        @keyframes floatUpDown {
-          0%,100% { transform: translateX(-50%) translateY(0) }
-          50% { transform: translateX(-50%) translateY(-6px) }
-        }
         @keyframes floatCrescent {
           0%,100% { transform: translateY(0) rotate(-5deg); opacity: 0.35 }
           50% { transform: translateY(-4px) rotate(5deg); opacity: 0.55 }
@@ -779,48 +689,10 @@ export default function App() {
           from { opacity: 0; transform: translateY(12px) }
           to { opacity: 1; transform: translateY(0) }
         }
-        @keyframes spin {
-          to { transform: rotate(360deg) }
-        }
-        @keyframes loadingGlow {
-          0%,100% { text-shadow: 0 0 20px rgba(212,175,55,0.4) }
-          50% { text-shadow: 0 0 40px rgba(212,175,55,0.9), 0 0 80px rgba(212,175,55,0.4) }
-        }
         ::-webkit-scrollbar { width: 4px }
         ::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.25); border-radius: 4px }
         ::-webkit-scrollbar-track { background: transparent }
       `}</style>
-
-      {!ready && (
-        <div style={{
-          position:'fixed', inset:0, zIndex:200,
-          background:'linear-gradient(160deg,#060118 0%,#0d0330 50%,#040012 100%)',
-          display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'20px',
-        }}>
-          {/* Stars */}
-          {STARS.slice(0,12).map((s,i) => (
-            <div key={i} style={{
-              position:'absolute', left:s.left, top:s.top,
-              width:`${s.size}px`, height:`${s.size}px`, borderRadius:'50%',
-              background:'#d4af37', animation:`twinkle ${s.dur} ${s.delay} ease-in-out infinite`,
-              boxShadow:`0 0 ${s.size*3}px #d4af37`,
-            }} />
-          ))}
-          <div style={{ fontSize:'2.5rem', animation:'floatCrescent 3s ease-in-out infinite' }}>☽</div>
-          <div style={{
-            width:'50px', height:'50px',
-            border:'2px solid rgba(212,175,55,0.12)',
-            borderTopColor:'#d4af37', borderRadius:'50%',
-            animation:'spin 1s linear infinite',
-            boxShadow:'0 0 20px rgba(212,175,55,0.2)',
-          }} />
-          <div style={{
-            color:'#d4af37', fontFamily:'Georgia,serif', fontSize:'0.78rem',
-            letterSpacing:'0.3em', textTransform:'uppercase',
-            animation:'loadingGlow 2s ease-in-out infinite',
-          }}>The Night Awakens…</div>
-        </div>
-      )}
 
       <div style={{ width:'100vw', height:'100vh', overflow:'hidden', background:'#87CEEB' }}>
         <Canvas
