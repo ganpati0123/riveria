@@ -1,151 +1,159 @@
-import { Canvas, useThree } from '@react-three/fiber'
-import { useGLTF, PerspectiveCamera, Environment, Stars } from '@react-three/drei'
+import { Canvas, useThree, useFrame } from '@react-three/fiber'
+import { useGLTF, OrbitControls } from '@react-three/drei'
 import { useRef, useEffect, useState, Suspense } from 'react'
 import * as THREE from 'three'
 
-function Model({ glbPath, onLoad }) {
-  const { scene } = useGLTF(glbPath)
-  
-  useEffect(() => {
-    if (onLoad) onLoad(scene)
-  }, [scene, onLoad])
-  
-  return <primitive object={scene} />
-}
-
-function CameraController({ scrollY }) {
+function KeyboardController({ controlsRef, speed }) {
   const { camera } = useThree()
-  
+  const keys = useRef({})
+
   useEffect(() => {
-    // Camera ko road ke along move karne ke liye
-    // Scroll karne par camera aage badhega
-    const newZ = 10 - (scrollY * 0.01)
-    camera.position.z = Math.max(-50, newZ)
-  }, [scrollY, camera])
-  
+    const dn = (e) => { keys.current[e.code] = true }
+    const up = (e) => { keys.current[e.code] = false }
+    window.addEventListener('keydown', dn)
+    window.addEventListener('keyup',   up)
+    return () => {
+      window.removeEventListener('keydown', dn)
+      window.removeEventListener('keyup',   up)
+    }
+  }, [])
+
+  useFrame((_, delta) => {
+    if (!controlsRef.current) return
+    const s = speed * delta
+    const dx =
+      (keys.current['ArrowLeft']  || keys.current['KeyA']) ? -s :
+      (keys.current['ArrowRight'] || keys.current['KeyD']) ?  s : 0
+    const dz =
+      (keys.current['ArrowUp']   || keys.current['KeyW']) ? -s :
+      (keys.current['ArrowDown'] || keys.current['KeyS']) ?  s : 0
+    if (dx !== 0 || dz !== 0) {
+      camera.position.x            += dx
+      camera.position.z            += dz
+      controlsRef.current.target.x += dx
+      controlsRef.current.target.z += dz
+      controlsRef.current.update()
+    }
+  })
   return null
 }
 
-function Moon() {
+function Scene({ onReady }) {
+  const { camera }  = useThree()
+  const controlsRef = useRef()
+  const { scene }   = useGLTF('/futuristic_low-poly_city.glb')
+  const [ready, setReady] = useState(false)
+  const [speed, setSpeed] = useState(1000)
+
+  useEffect(() => {
+    scene.scale.set(5000, 5000, 5000)
+    scene.rotation.y = Math.PI / 2
+    scene.updateMatrixWorld(true)
+
+    const box    = new THREE.Box3().setFromObject(scene)
+    const center = box.getCenter(new THREE.Vector3())
+    scene.position.x = -center.x
+    scene.position.z = -center.z
+    scene.position.y = -box.min.y
+    scene.updateMatrixWorld(true)
+
+    const newBox = new THREE.Box3().setFromObject(scene)
+    const size   = newBox.getSize(new THREE.Vector3())
+    const md     = Math.max(size.x, size.y, size.z)
+    setSpeed(md * 1.2)
+
+    const bridgePos = new THREE.Vector3()
+    let   found     = false
+    scene.traverse((child) => {
+      if (!found && child.name === 'Bridge005_81') {
+        child.getWorldPosition(bridgePos)
+        found = true
+      }
+    })
+
+    const eyeH = md * 0.012
+    const dist  = md * 0.14
+
+    if (found) {
+      camera.position.set(bridgePos.x - dist, bridgePos.y + eyeH, bridgePos.z)
+      if (controlsRef.current) {
+        controlsRef.current.target.set(bridgePos.x + md * 0.04, bridgePos.y + eyeH * 0.5, bridgePos.z)
+        controlsRef.current.update()
+      }
+    } else {
+      camera.position.set(-(md * 0.15), md * 0.015, md * 0.01)
+      if (controlsRef.current) {
+        controlsRef.current.target.set(md * 0.05, md * 0.01, 0)
+        controlsRef.current.update()
+      }
+    }
+
+    camera.updateProjectionMatrix()
+    setReady(true)
+    onReady()
+  }, [scene])
+
   return (
-    <mesh position={[50, 30, -20]}>
-      <sphereGeometry args={[3, 32, 32]} />
-      <meshBasicMaterial color="#f5f5dc" />
-    </mesh>
+    <>
+      <primitive object={scene} />
+      <OrbitControls
+        ref={controlsRef}
+        enableDamping
+        dampingFactor={0.05}
+        screenSpacePanning={false}
+        mouseButtons={{
+          LEFT:   THREE.MOUSE.PAN,
+          MIDDLE: THREE.MOUSE.DOLLY,
+          RIGHT:  THREE.MOUSE.ROTATE,
+        }}
+      />
+      {ready && <KeyboardController controlsRef={controlsRef} speed={speed} />}
+    </>
   )
 }
 
 export default function App() {
-  const [scrollY, setScrollY] = useState(0)
-  const [modelLoaded, setModelLoaded] = useState(false)
-  const canvasRef = useRef()
-  
-  const handleScroll = (e) => {
-    setScrollY(window.scrollY)
-  }
-  
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-  
-  const handleModelLoad = (scene) => {
-    console.log('Model loaded:', scene)
-    setModelLoaded(true)
-  }
-  
+  const [loaded, setLoaded] = useState(false)
+
   return (
-    <div style={{ 
-      width: '100vw', 
-      height: '100vh',
-      background: 'linear-gradient(to bottom, #0a0a1a 0%, #1a1a3a 50%, #0d0d2b 100%)'
-    }}>
-      <Canvas gl={{ antialias: true }}>
-        {/* Arabian Night Sky */}
-        <fog attach="fog" args={['#0a0a1a', 10, 100]} />
-        
+    <div style={{ width: '100vw', height: '100vh', overflow: 'hidden', background: '#87CEEB' }}>
+      <Canvas
+        camera={{ fov: 50, near: 0.1, far: 5000000 }}
+        gl={{ antialias: true }}
+        style={{ width: '100%', height: '100%' }}
+        onCreated={({ gl }) => { gl.outputColorSpace = THREE.SRGBColorSpace }}
+      >
+        <color attach="background" args={['#87CEEB']} />
+        <ambientLight intensity={1.0} />
+        <directionalLight position={[100, 100, 100]} intensity={1.0} />
         <Suspense fallback={null}>
-          <PerspectiveCamera 
-            makeDefault 
-            position={[0, 2, 10]} 
-            fov={50}
-          />
-          
-          {/* Moon glow */}
-          <pointLight position={[50, 30, -20]} intensity={0.5} color="#f5f5dc" distance={100} />
-          
-          {/* City ambient glow - warm yellow/orange lights */}
-          <ambientLight intensity={0.15} color="#1a1a4a" />
-          
-          {/* Main moon light */}
-          <directionalLight position={[20, 30, 10]} intensity={0.3} color="#c4b5fd" />
-          
-          {/* Add some colored point lights for city night feel */}
-          <pointLight position={[0, 5, 0]} intensity={0.5} color="#ff6b35" distance={30} />
-          <pointLight position={[-10, 3, -5]} intensity={0.3} color="#ffd700" distance={20} />
-          <pointLight position={[10, 4, 5]} intensity={0.3} color="#ff4500" distance={20} />
-          
-          {/* Stars */}
-          <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-          
-          {/* Moon */}
-          <Moon />
-          
-          {/* GLB Model */}
-          <Model 
-            glbPath="/futuristic_low-poly_city.glb" 
-            onLoad={handleModelLoad}
-          />
-          
-          {/* Camera Controller for scroll movement */}
-          <CameraController scrollY={scrollY} />
-          
-          {/* Night environment */}
-          <Environment preset="night" />
+          <Scene onReady={() => setLoaded(true)} />
         </Suspense>
       </Canvas>
-      
-      {/* Loading indicator */}
-      {!modelLoaded && (
+
+      {loaded && (
         <div style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          color: '#c4b5fd',
-          fontSize: '1.5rem',
-          fontFamily: 'serif',
-          letterSpacing: '0.2em'
+          position: 'fixed', bottom: '14px', left: '50%',
+          transform: 'translateX(-50%)',
+          background: 'rgba(0,0,0,0.4)', color: '#fff',
+          padding: '5px 14px', borderRadius: '20px',
+          fontSize: '0.72rem', fontFamily: 'sans-serif',
+          pointerEvents: 'none', whiteSpace: 'nowrap',
         }}>
-          ✨ Loading Arabian Night... ✨
+          Left drag = Pan · Right drag = Rotate · Scroll = Zoom · WASD / Arrows = Move
         </div>
       )}
-      
-      {/* Scroll container to enable scrolling */}
-      <div style={{ 
-        position: 'fixed', 
-        top: 0, 
-        left: 0, 
-        width: '100%', 
-        height: '200vh',
-        pointerEvents: 'none'
-      }} />
-      
-      {/* Title overlay */}
-      <div style={{
-        position: 'fixed',
-        bottom: '30px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        color: '#c4b5fd',
-        fontSize: '1rem',
-        fontFamily: 'Georgia, serif',
-        letterSpacing: '0.3em',
-        textShadow: '0 0 10px #c4b5fd, 0 0 20px #7c3aed',
-        opacity: 0.8
-      }}>
-        ⬇ SCROLL TO EXPLORE ⬇
-      </div>
+
+      {!loaded && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 10, background: '#87CEEB',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <div style={{ fontSize: '1.2rem', fontFamily: 'sans-serif', color: '#334' }}>
+            Loading city…
+          </div>
+        </div>
+      )}
     </div>
   )
 }
