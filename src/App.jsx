@@ -152,6 +152,39 @@ function Scene({ sharedRefs, onReady }) {
   return <primitive object={scene} />
 }
 
+function LoadingScreen() {
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 100,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: '#87CEEB',
+    }}>
+      <style>{`
+        @keyframes dotBounce {
+          0%, 80%, 100% { transform: translateY(0); opacity: 0.3; }
+          40% { transform: translateY(-10px); opacity: 1; }
+        }
+      `}</style>
+      <div style={{
+        width: '80px', height: '80px',
+        border: '2px solid rgba(0,0,0,0.15)',
+        borderRadius: '8px',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        gap: '8px',
+        background: 'rgba(255,255,255,0.25)',
+      }}>
+        {[0, 1, 2].map(i => (
+          <div key={i} style={{
+            width: '10px', height: '10px', borderRadius: '50%',
+            background: 'rgba(0,0,0,0.45)',
+            animation: `dotBounce 1.2s ease-in-out ${i * 0.2}s infinite`,
+          }} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
   const sharedRefs = useRef({
     pathT:   { current: 0 },
@@ -165,6 +198,7 @@ export default function App() {
   }).current
 
   const [numWps, setNumWps] = useState(0)
+  const [ready, setReady] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
 
   useEffect(() => {
@@ -306,9 +340,10 @@ export default function App() {
           <directionalLight position={[2000,5000,3000]} intensity={1.8} />
           <hemisphereLight args={['#c8e8ff','#4a6030',0.55]} />
           <Suspense fallback={null}>
-            <Scene sharedRefs={sharedRefs} onReady={n => setNumWps(n)} />
+            <Scene sharedRefs={sharedRefs} onReady={n => { setNumWps(n); setReady(true) }} />
           </Suspense>
         </Canvas>
+        {!ready && <LoadingScreen />}
       </div>
     </>
   )
