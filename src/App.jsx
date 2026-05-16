@@ -152,12 +152,15 @@ function Scene({ sharedRefs, onReady }) {
   return <primitive object={scene} />
 }
 
-function LoadingScreen() {
+function LoadingScreen({ fading }) {
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 100,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       background: '#87CEEB',
+      transition: 'opacity 0.6s ease',
+      opacity: fading ? 0 : 1,
+      pointerEvents: fading ? 'none' : 'all',
     }}>
       <style>{`
         @keyframes dotBounce {
@@ -198,8 +201,15 @@ export default function App() {
   }).current
 
   const [numWps, setNumWps] = useState(0)
-  const [ready, setReady] = useState(false)
+  const [showLoader, setShowLoader] = useState(true)
+  const [fading, setFading] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
+
+  const handleReady = useCallback((n) => {
+    setNumWps(n)
+    setFading(true)
+    setTimeout(() => setShowLoader(false), 650)
+  }, [])
 
   useEffect(() => {
     let dragging = false
@@ -340,10 +350,10 @@ export default function App() {
           <directionalLight position={[2000,5000,3000]} intensity={1.8} />
           <hemisphereLight args={['#c8e8ff','#4a6030',0.55]} />
           <Suspense fallback={null}>
-            <Scene sharedRefs={sharedRefs} onReady={n => { setNumWps(n); setReady(true) }} />
+            <Scene sharedRefs={sharedRefs} onReady={handleReady} />
           </Suspense>
         </Canvas>
-        {!ready && <LoadingScreen />}
+        {showLoader && <LoadingScreen fading={fading} />}
       </div>
     </>
   )
