@@ -104,7 +104,7 @@ function Scene({ sharedRefs, onReady }) {
     wps.current = built
     sharedRefs.wpsRef.current = built
     sharedRefs.yaw.current = ROAD_YAWS[0]
-    sharedRefs.pitch.current = -0.04
+    sharedRefs.pitch.current = 0
     camera.position.copy(built[0].pos)
     camera.rotation.order = 'YXZ'
     camera.rotation.y = sharedRefs.yaw.current
@@ -129,6 +129,9 @@ function Scene({ sharedRefs, onReady }) {
         sharedRefs.pathT.current = sharedRefs.targetT.current
         sharedRefs.targetT.current = -1
         sharedRefs.autoYaw.current = false
+        const idx = Math.round(sharedRefs.pathT.current)
+        if (idx >= 0 && idx < ROAD_YAWS.length) sharedRefs.yaw.current = ROAD_YAWS[idx]
+        sharedRefs.pitch.current = 0
       }
     } else {
       sharedRefs.pathT.current += sharedRefs.vel.current
@@ -136,12 +139,16 @@ function Scene({ sharedRefs, onReady }) {
       if (sharedRefs.pathT.current >= maxT) { sharedRefs.pathT.current=maxT; if(sharedRefs.vel.current>0) sharedRefs.vel.current=0 }
       sharedRefs.vel.current *= 0.93
       if (Math.abs(sharedRefs.vel.current) < 0.000006) sharedRefs.vel.current = 0
+      if (!sharedRefs.dragging.current) {
+        const roundedT = Math.round(sharedRefs.pathT.current)
+        const dist = Math.abs(sharedRefs.pathT.current - roundedT)
+        if (dist < 0.05 && Math.abs(sharedRefs.vel.current) < 0.0002 && roundedT >= 0 && roundedT < ROAD_YAWS.length) {
+          sharedRefs.yaw.current = lerpAngle(sharedRefs.yaw.current, ROAD_YAWS[roundedT], Math.min(1, 4*dt))
+          sharedRefs.pitch.current += (0 - sharedRefs.pitch.current) * Math.min(1, 4*dt)
+        }
+      }
     }
     camera.position.copy(catmullRomPoint(sharedRefs.pathT.current, wps.current))
-    if (sharedRefs.autoYaw.current) {
-      const py = catmullRomYaw(sharedRefs.pathT.current, wps.current)
-      sharedRefs.yaw.current = lerpAngle(sharedRefs.yaw.current, py, Math.min(1,3*dt))
-    }
     const cp = Math.max(-Math.PI * 0.44, Math.min(Math.PI * 0.44, sharedRefs.pitch.current))
     camera.rotation.order = 'YXZ'
     camera.rotation.y = sharedRefs.yaw.current
@@ -190,14 +197,15 @@ function LoadingScreen({ fading }) {
 
 export default function App() {
   const sharedRefs = useRef({
-    pathT:   { current: 0 },
-    targetT: { current: -1 },
-    vel:     { current: 0 },
-    yaw:     { current: 0 },
-    pitch:   { current: -0.04 },
-    eyeH:    { current: 100 },
-    autoYaw: { current: false },
-    wpsRef:  { current: [] },
+    pathT:    { current: 0 },
+    targetT:  { current: -1 },
+    vel:      { current: 0 },
+    yaw:      { current: 0 },
+    pitch:    { current: 0 },
+    eyeH:     { current: 100 },
+    autoYaw:  { current: false },
+    wpsRef:   { current: [] },
+    dragging: { current: false },
   }).current
 
   const [numWps, setNumWps] = useState(0)
@@ -216,6 +224,7 @@ export default function App() {
     let lastX = 0, lastY = 0
     const onMouseDown = e => {
       dragging = true; lastX = e.clientX; lastY = e.clientY
+      sharedRefs.dragging.current = true
       setIsDragging(true)
     }
     const onMouseMove = e => {
@@ -227,7 +236,7 @@ export default function App() {
       sharedRefs.pitch.current  = Math.max(-Math.PI * 0.44, Math.min(Math.PI * 0.44, sharedRefs.pitch.current))
       sharedRefs.autoYaw.current = false
     }
-    const onMouseUp = () => { dragging = false; setIsDragging(false) }
+    const onMouseUp = () => { dragging = false; sharedRefs.dragging.current = false; setIsDragging(false) }
     window.addEventListener('mousedown', onMouseDown)
     window.addEventListener('mousemove', onMouseMove)
     window.addEventListener('mouseup',   onMouseUp)
@@ -249,6 +258,7 @@ export default function App() {
       if (e.touches.length > 1) { state.active = false; return }
       const t = e.touches[0]
       Object.assign(state, { active:true, startX:t.clientX, startY:t.clientY, lastX:t.clientX, lastY:t.clientY, startTime:Date.now(), totalDX:0, totalDY:0, direction:null, vx:0, vy:0 })
+      sharedRefs.dragging.current = true
       sharedRefs.autoYaw.current = false
       sharedRefs.targetT.current = -1
     }
@@ -284,6 +294,7 @@ export default function App() {
     const onTouchEnd = e => {
       if (!state.active) return
       state.active = false
+      sharedRefs.dragging.current = false
       const elapsed = Date.now() - state.startTime
       if (elapsed < 220 && (state.direction === 'vertical' || state.direction === 'free')) {
         sharedRefs.vel.current += -state.vy * TOUCH_MOVE_SENSITIVITY * FLICK_VELOCITY_SCALE * 18
