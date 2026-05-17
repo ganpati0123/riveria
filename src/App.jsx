@@ -159,7 +159,7 @@ function Scene({ sharedRefs, onReady }) {
     camera.position.copy(catmullRomPoint(sharedRefs.pathT.current, wps.current))
     camera.rotation.order = 'YXZ'
     camera.rotation.y = sharedRefs.yaw.current
-    camera.rotation.x = 0
+    camera.rotation.x = window.innerWidth > 600 ? sharedRefs.pitch.current : 0
     camera.rotation.z = 0
   })
 
@@ -239,6 +239,9 @@ export default function App() {
       const dx = e.clientX - lastX, dy = e.clientY - lastY
       lastX = e.clientX; lastY = e.clientY
       sharedRefs.yaw.current -= dx * 0.0022
+      if (window.innerWidth > 600) {
+        sharedRefs.pitch.current = Math.max(-0.35, Math.min(0.35, sharedRefs.pitch.current + dy * 0.0022))
+      }
       sharedRefs.autoYaw.current = false
     }
     const onMouseUp = () => { dragging = false; sharedRefs.dragging.current = false; setIsDragging(false) }

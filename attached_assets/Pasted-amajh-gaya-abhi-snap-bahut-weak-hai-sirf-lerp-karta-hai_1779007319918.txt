@@ -1,0 +1,97 @@
+amajh gaya — abhi snap bahut weak hai (sirf lerp karta hai). Isko fully instant snap karta hoon: jaise hi camera kisi waypoint pe pahunche, yaw directly ROAD_YAWS pe set ho jaye — koi lerp nahi, poora direction.
+
+
+6 actions
+Clean hai — koi errors nahi.
+
+Ab kya hoga:
+
+Jaise hi camera kisi waypoint ke 0.18 range mein aaye, yaw smoothly aur strongly us waypoint ki exact ROAD_YAWS direction ki taraf pull hoga
+Waypoint ke center pe pahunchte hi fully snap ho jayega
+Agar aap drag kar rahe ho toh snap nahi karega, sirf chod do toh direction set ho jayega
+Browser mein test karo — scroll karke ek scene se doosre pe jao, camera khud us scene ki sahi direction mein aa jayega.
+
+Next, I can add on-screen prev/next arrow buttons so you can navigate between waypoints with a single tap. Would you like me to do that?
+
+
+Checkpoint made
+1 hour ago
+
+Worked for 49 seconds
+same issue jb tk mouse se dragnhi krta camera view chnage hi nhi hota starting se end tk whi camera view rah jata hai wo nhi ho
+
+1 hour ago
+
+Show less
+
+Planning camera yaw rotation logic (55 seconds)
+Issue clear hai — snap sirf targetT (keyboard navigation) pe kaam karta tha, scroll-based movement pe properly fire nahi kar raha tha. Let me fix it with a clean approach: ek "last waypoint" tracker jo detect kare kab new waypoint pe pahunche aur wahan instantly snap kare.
+
+
+2 actions
+Now replace the snap logic in useFrame with the new clean approach:
+
+
+6 actions
+Clean — koi errors nahi. App running hai.
+
+Ab logic bilkul seedha hai:
+
+Jab bhi camera scroll karke kisi naye waypoint ke 0.08 range mein aaye → instantly yaw = ROAD_YAWS[idx] aur pitch = 0 set ho jata hai
+Har waypoint sirf ek baar snap karta hai (lastWpIdx tracker ki wajah se)
+Mouse drag karte waqt snap nahi hoga, chod do toh agla waypoint pe snap hoga
+Browser mein test karo — scroll karo aur camera view apne aap sahi direction mein jump karega.
+
+Next, I can add on-screen prev/next arrow buttons so you can tap to jump between waypoints without needing to scroll. Would you like me to do that?
+
+
+Checkpoint made
+59 minutes ago
+
+Worked for 1 minute
+ek aur cheej abhi starting se end tk jis direction me hai uske opposite direction me hona chhaiye statrting se end tk sahi direction me hai but end se startign tk oppsote direction me mtlb aisa lg rha ki piche trf aa rha hoon usko htkr aage ki trf kro end se starting tk aane me startign se end tk shi hai bs end se starig tk aane walal me ya back aane wale me sahi kro
+
+53 minutes ago
+
+3 messages & 9 actions
+
+Checkpoint made
+52 minutes ago
+
+Worked for 52 seconds
+ek cheej kro hmesha ground se fixed rkho jaise abhi phone me open krne pe pura jo hai scroll krne pe sky dikhen lhgta hai toh ground ko fixed kr do upar jyada na dikhe bs samen walal ache se and side and back view
+
+16 minutes ago
+
+4 messages & 17 actions
+
+Checkpoint made
+15 minutes ago
+
+Worked for 1 minute
+nhi abhi bhi jo curetn jha pe website open krne pe hota hai bs usi ko fixed kr do . abhi upar me and ground me bhi chla jaa rha hai
+
+13 minutes ago
+
+Fixing camera pitch to zero
+Samajh gaya — pitch bilkul lock kar deta hoon jis position pe website open hoti hai (exactly 0). Koi bhi mouse drag ya touch se upar/neeche nahi jayega.
+
+
+2 actions
+Pitch bilkul lock kar deta hoon — remove all pitch changes from mouse and touch:
+
+
+2 actions
+Now remove pitch changes from touch handlers too:
+
+
+2 actions
+Now fix the useFrame to always keep pitch locked at 0:
+
+
+6 actions
+Clean — koi errors nahi.
+
+Ab pitch permanently 0 pe locked hai — exactly wahi position jo website open hone pe hoti hai. Mouse se drag karo ya phone pe swipe karo, camera sirf left/right ghoomega, upar/neeche bilkul nahi jayega.
+
+Next, I can add on-screen prev/next a
