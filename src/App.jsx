@@ -142,9 +142,11 @@ function Scene({ sharedRefs, onReady }) {
       if (!sharedRefs.dragging.current) {
         const roundedT = Math.round(sharedRefs.pathT.current)
         const dist = Math.abs(sharedRefs.pathT.current - roundedT)
-        if (dist < 0.05 && Math.abs(sharedRefs.vel.current) < 0.0002 && roundedT >= 0 && roundedT < ROAD_YAWS.length) {
-          sharedRefs.yaw.current = lerpAngle(sharedRefs.yaw.current, ROAD_YAWS[roundedT], Math.min(1, 4*dt))
-          sharedRefs.pitch.current += (0 - sharedRefs.pitch.current) * Math.min(1, 4*dt)
+        if (dist < 0.18 && roundedT >= 0 && roundedT < ROAD_YAWS.length) {
+          const weight = Math.max(0, 1 - dist / 0.18)
+          const snapSpeed = Math.min(1, 6 * dt * weight)
+          sharedRefs.yaw.current = lerpAngle(sharedRefs.yaw.current, ROAD_YAWS[roundedT], snapSpeed)
+          sharedRefs.pitch.current += (0 - sharedRefs.pitch.current) * snapSpeed
         }
       }
     }
