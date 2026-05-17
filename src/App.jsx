@@ -170,37 +170,93 @@ function LoadingScreen({ fading }) {
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 100,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: '#87CEEB',
-      transition: 'opacity 0.6s ease',
+      background: '#000',
+      transition: 'opacity 0.5s ease',
       opacity: fading ? 0 : 1,
       pointerEvents: fading ? 'none' : 'all',
+      overflow: 'hidden',
     }}>
       <style>{`
-        @keyframes dotBounce {
-          0%, 80%, 100% { transform: translateY(0); opacity: 0.3; }
-          40% { transform: translateY(-10px); opacity: 1; }
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        @keyframes sqPulse {
+          0%,100%{box-shadow:0 0 6px #00e5ff,0 0 14px #00e5ff44;opacity:.8}
+          50%{box-shadow:0 0 12px #00e5ff,0 0 28px #00e5ff99;opacity:1}
+        }
+        @keyframes titleGlow {
+          0%,100%{text-shadow:0 0 6px #00e5ff,0 0 14px #00e5ff66}
+          50%{text-shadow:0 0 10px #00e5ff,0 0 24px #00e5ffbb}
+        }
+        @keyframes fadeUp {
+          from{opacity:0;transform:translateY(5px)}
+          to{opacity:.7;transform:translateY(0)}
+        }
+        @keyframes twinkle {
+          0%,100%{opacity:.08} 50%{opacity:.45}
+        }
+        @keyframes btnGlow {
+          0%,100%{box-shadow:0 0 0 #00e5ff00}
+          50%{box-shadow:0 0 8px #00e5ff55}
+        }
+        .riv-sq{
+          width:20px;height:20px;border-radius:3px;background:#00e5ff;
+          animation:sqPulse 1.8s ease-in-out infinite;
+        }
+        .riv-sq:nth-child(2){animation-delay:.25s}
+        .riv-sq:nth-child(3){animation-delay:.12s}
+        .riv-sq:nth-child(4){animation-delay:.37s}
+        .riv-title{
+          font-family:'Share Tech Mono','Courier New',monospace;
+          font-size:16px;letter-spacing:.2em;color:#00e5ff;
+          text-transform:uppercase;margin-top:16px;
+          animation:titleGlow 2s ease-in-out infinite;
+        }
+        .riv-tag{
+          font-family:'Share Tech Mono','Courier New',monospace;
+          font-size:11px;color:#00e5ff;letter-spacing:.05em;
+          text-align:center;line-height:1.6;margin-top:10px;
+          max-width:280px;opacity:0;
+          animation:fadeUp .9s ease-out .5s forwards;
+        }
+        .riv-sw{
+          font-family:'Share Tech Mono','Courier New',monospace;
+          font-size:12px;letter-spacing:.07em;color:#00e5ff;
+          border:1px solid #00e5ff;border-radius:999px;
+          padding:5px 15px;background:transparent;cursor:default;
+          animation:btnGlow 2.2s ease-in-out infinite;user-select:none;
         }
       `}</style>
+
+      {[...Array(28)].map((_,i)=>(
+        <div key={i} style={{
+          position:'absolute',
+          left:`${(i*41+11)%100}%`,top:`${(i*59+7)%100}%`,
+          width:'1px',height:'1px',borderRadius:'50%',background:'#00e5ff',
+          animation:`twinkle ${1.2+(i%6)*.35}s ease-in-out ${(i*.19)%2}s infinite`,
+        }}/>
+      ))}
+
+      <div style={{position:'absolute',top:'14px',right:'18px',zIndex:10}}>
+        <div className="riv-sw">Switch to 2D</div>
+      </div>
+
       <div style={{
-        width: '80px', height: '80px',
-        border: '2px solid rgba(0,0,0,0.15)',
-        borderRadius: '8px',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        gap: '8px',
-        background: 'rgba(255,255,255,0.25)',
+        position:'absolute',inset:0,display:'flex',
+        flexDirection:'column',alignItems:'center',justifyContent:'center',
       }}>
-        {[0, 1, 2].map(i => (
-          <div key={i} style={{
-            width: '10px', height: '10px', borderRadius: '50%',
-            background: 'rgba(0,0,0,0.45)',
-            animation: `dotBounce 1.2s ease-in-out ${i * 0.2}s infinite`,
-          }} />
-        ))}
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'6px'}}>
+          <div className="riv-sq"/><div className="riv-sq"/>
+          <div className="riv-sq"/><div className="riv-sq"/>
+        </div>
+        <div className="riv-title">Loading Riviera</div>
+        <div className="riv-tag">
+          when the world settles...<br/>try nudging it
+        </div>
       </div>
     </div>
   )
 }
+
+useGLTF.preload('/futuristic_low-poly_city.glb')
 
 export default function App() {
   const sharedRefs = useRef({
