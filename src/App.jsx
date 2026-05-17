@@ -157,10 +157,9 @@ function Scene({ sharedRefs, onReady }) {
       }
     }
     camera.position.copy(catmullRomPoint(sharedRefs.pathT.current, wps.current))
-    const cp = Math.max(-0.14, Math.min(0.32, sharedRefs.pitch.current))
     camera.rotation.order = 'YXZ'
     camera.rotation.y = sharedRefs.yaw.current
-    camera.rotation.x = cp
+    camera.rotation.x = 0
     camera.rotation.z = 0
   })
 
@@ -239,9 +238,7 @@ export default function App() {
       if (!dragging) return
       const dx = e.clientX - lastX, dy = e.clientY - lastY
       lastX = e.clientX; lastY = e.clientY
-      sharedRefs.yaw.current   -= dx * 0.0022
-      sharedRefs.pitch.current -= dy * 0.0022
-      sharedRefs.pitch.current  = Math.max(-0.14, Math.min(0.32, sharedRefs.pitch.current))
+      sharedRefs.yaw.current -= dx * 0.0022
       sharedRefs.autoYaw.current = false
     }
     const onMouseUp = () => { dragging = false; sharedRefs.dragging.current = false; setIsDragging(false) }
@@ -295,8 +292,6 @@ export default function App() {
         sharedRefs.targetT.current = -1
       }
       if (state.direction === 'horizontal' || state.direction === 'free') { sharedRefs.yaw.current -= dx*TOUCH_LOOK_SENSITIVITY; sharedRefs.autoYaw.current = false }
-      if (state.direction === 'free') { sharedRefs.pitch.current -= dy*TOUCH_LOOK_SENSITIVITY*0.4; sharedRefs.pitch.current = Math.max(-0.14, Math.min(0.32, sharedRefs.pitch.current)) }
-      if (state.direction === 'vertical') { sharedRefs.pitch.current -= dy*TOUCH_LOOK_SENSITIVITY*0.15; sharedRefs.pitch.current = Math.max(-0.14, Math.min(0.32, sharedRefs.pitch.current)) }
     }
 
     const onTouchEnd = e => {
