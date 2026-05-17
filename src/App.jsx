@@ -192,16 +192,19 @@ function Switch2DBtn({ onClick }) {
   )
 }
 
-function View2DOverlay({ onClose }) {
+function View2DOverlay({ fading, onClose }) {
   return (
     <div style={{
       position:'fixed',inset:0,zIndex:998,
       display:'flex',flexDirection:'column',
       background:'#000',
+      opacity: fading ? 0 : 1,
+      transition:'opacity 0.45s ease',
+      pointerEvents: fading ? 'none' : 'auto',
     }}>
       <style>{`
-        @keyframes ov-fadein{from{opacity:0}to{opacity:1}}
         @keyframes back3d-pulse{0%,100%{box-shadow:0 0 0 #00e5ff00}50%{box-shadow:0 0 10px #00e5ff66}}
+        @keyframes ov-slidein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
         .back3d{
           font-family:'Share Tech Mono','Courier New',monospace;
           font-size:12px;letter-spacing:.1em;color:#00e5ff;
@@ -217,17 +220,14 @@ function View2DOverlay({ onClose }) {
 
       <div style={{
         position:'absolute',top:'16px',left:'20px',zIndex:10,
-        animation:'ov-fadein .3s ease',
+        animation:'ov-slidein .4s ease',
       }}>
         <div className="back3d" onClick={onClose}>← Back to 3D</div>
       </div>
 
       <iframe
         src={TWO_D_URL}
-        style={{
-          width:'100%',height:'100%',border:'none',
-          animation:'ov-fadein .4s ease',
-        }}
+        style={{ width:'100%', height:'100%', border:'none' }}
         allowFullScreen
         title="2D View"
       />
@@ -417,6 +417,17 @@ export default function App() {
   const [fading, setFading] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [show2D, setShow2D] = useState(false)
+  const [fading2D, setFading2D] = useState(false)
+
+  const open2D = useCallback(() => {
+    setFading2D(false)
+    setShow2D(true)
+  }, [])
+
+  const close2D = useCallback(() => {
+    setFading2D(true)
+    setTimeout(() => { setShow2D(false); setFading2D(false) }, 480)
+  }, [])
 
   const handleReady = useCallback((n) => {
     setNumWps(n)
@@ -569,8 +580,8 @@ export default function App() {
           </Suspense>
         </Canvas>
         {showLoader && <LoadingScreen fading={fading} />}
-        {show2D && <View2DOverlay onClose={() => setShow2D(false)} />}
-        <Switch2DBtn onClick={() => setShow2D(true)} />
+        {show2D && <View2DOverlay fading={fading2D} onClose={close2D} />}
+        <Switch2DBtn onClick={open2D} />
       </div>
     </>
   )
