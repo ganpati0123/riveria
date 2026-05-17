@@ -169,89 +169,218 @@ function Scene({ sharedRefs, onReady }) {
 function LoadingScreen({ fading }) {
   return (
     <div style={{
-      position: 'fixed', inset: 0, zIndex: 100,
-      background: '#000',
-      transition: 'opacity 0.5s ease',
+      position:'fixed',inset:0,zIndex:100,overflow:'hidden',
+      background:'radial-gradient(ellipse at 50% 60%, #0a0618 0%, #060310 55%, #000 100%)',
+      transition:'opacity 0.6s ease',
       opacity: fading ? 0 : 1,
       pointerEvents: fading ? 'none' : 'all',
-      overflow: 'hidden',
     }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-        @keyframes sqPulse {
-          0%,100%{box-shadow:0 0 6px #00e5ff,0 0 14px #00e5ff44;opacity:.8}
-          50%{box-shadow:0 0 12px #00e5ff,0 0 28px #00e5ff99;opacity:1}
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+
+        @keyframes an-sqpulse {
+          0%,100%{opacity:.75;box-shadow:0 0 14px #00e5ff,0 0 30px #00e5ff55}
+          50%{opacity:1;box-shadow:0 0 24px #00e5ff,0 0 55px #00e5ffaa,0 0 80px #00e5ff22}
         }
-        @keyframes titleGlow {
-          0%,100%{text-shadow:0 0 6px #00e5ff,0 0 14px #00e5ff66}
-          50%{text-shadow:0 0 10px #00e5ff,0 0 24px #00e5ffbb}
+        @keyframes an-titleglow {
+          0%,100%{text-shadow:0 0 12px #00e5ff,0 0 28px #00e5ff88,0 0 50px #00e5ff33}
+          50%{text-shadow:0 0 20px #00e5ff,0 0 45px #00e5ffcc,0 0 80px #00e5ff55}
         }
-        @keyframes fadeUp {
-          from{opacity:0;transform:translateY(5px)}
-          to{opacity:.7;transform:translateY(0)}
+        @keyframes an-goldglow {
+          0%,100%{text-shadow:0 0 8px #ffd700,0 0 20px #ffd70066}
+          50%{text-shadow:0 0 14px #ffd700,0 0 35px #ffd700aa,0 0 60px #ffd70033}
         }
-        @keyframes twinkle {
-          0%,100%{opacity:.08} 50%{opacity:.45}
+        @keyframes an-fadeup {
+          from{opacity:0;transform:translateY(10px)}
+          to{opacity:.8;transform:translateY(0)}
         }
-        @keyframes btnGlow {
-          0%,100%{box-shadow:0 0 0 #00e5ff00}
-          50%{box-shadow:0 0 8px #00e5ff55}
+        @keyframes an-twinkle {
+          0%,100%{opacity:.06;transform:scale(1)}
+          50%{opacity:.7;transform:scale(1.4)}
         }
-        .riv-sq{
-          width:20px;height:20px;border-radius:3px;background:#00e5ff;
-          animation:sqPulse 1.8s ease-in-out infinite;
+        @keyframes an-moon {
+          0%,100%{filter:drop-shadow(0 0 8px #ffd70088) drop-shadow(0 0 20px #ffd70044)}
+          50%{filter:drop-shadow(0 0 16px #ffd700cc) drop-shadow(0 0 40px #ffd70077)}
         }
-        .riv-sq:nth-child(2){animation-delay:.25s}
-        .riv-sq:nth-child(3){animation-delay:.12s}
-        .riv-sq:nth-child(4){animation-delay:.37s}
-        .riv-title{
+        @keyframes an-lantern {
+          0%,100%{transform:rotate(-4deg);filter:drop-shadow(0 0 8px #ff8c0099)}
+          50%{transform:rotate(4deg);filter:drop-shadow(0 0 14px #ff8c00cc)}
+        }
+        @keyframes an-lantern2 {
+          0%,100%{transform:rotate(5deg);filter:drop-shadow(0 0 8px #ff6b0088)}
+          50%{transform:rotate(-5deg);filter:drop-shadow(0 0 14px #ff6b00bb)}
+        }
+        @keyframes an-btnpulse {
+          0%,100%{box-shadow:0 0 0 #00e5ff00,inset 0 0 0 #00e5ff00}
+          50%{box-shadow:0 0 12px #00e5ff55,inset 0 0 6px #00e5ff11}
+        }
+        @keyframes an-divider {
+          0%,100%{opacity:.3;box-shadow:0 0 4px #ffd70044}
+          50%{opacity:.7;box-shadow:0 0 10px #ffd70099}
+        }
+        @keyframes an-orbpulse {
+          0%,100%{opacity:.07;transform:scale(1)}
+          50%{opacity:.14;transform:scale(1.05)}
+        }
+        @keyframes an-progress {
+          0%{width:0%} 100%{width:85%}
+        }
+
+        .an-sq{
+          width:34px;height:34px;border-radius:5px;background:#00e5ff;
+          animation:an-sqpulse 2s ease-in-out infinite;
+        }
+        .an-sq:nth-child(2){animation-delay:.3s}
+        .an-sq:nth-child(3){animation-delay:.15s}
+        .an-sq:nth-child(4){animation-delay:.45s}
+
+        .an-title{
+          font-family:'Cinzel','Georgia',serif;
+          font-size:clamp(28px,4.5vw,52px);
+          font-weight:900;letter-spacing:.18em;
+          color:#00e5ff;text-transform:uppercase;
+          margin-top:28px;
+          animation:an-titleglow 2.2s ease-in-out infinite;
+        }
+        .an-subtitle{
+          font-family:'Cinzel','Georgia',serif;
+          font-size:clamp(11px,1.6vw,15px);
+          font-weight:400;letter-spacing:.35em;
+          color:#ffd700;text-transform:uppercase;
+          margin-top:6px;
+          animation:an-goldglow 2.5s ease-in-out infinite;
+          opacity:0;
+          animation:an-goldglow 2.5s ease-in-out infinite, an-fadeup .8s ease-out .3s forwards;
+        }
+        .an-divider{
+          width:180px;height:1px;
+          background:linear-gradient(90deg,transparent,#ffd700,transparent);
+          margin-top:18px;
+          animation:an-divider 2.5s ease-in-out infinite;
+        }
+        .an-tag{
           font-family:'Share Tech Mono','Courier New',monospace;
-          font-size:16px;letter-spacing:.2em;color:#00e5ff;
-          text-transform:uppercase;margin-top:16px;
-          animation:titleGlow 2s ease-in-out infinite;
+          font-size:clamp(11px,1.4vw,13px);
+          color:#00e5ff;letter-spacing:.07em;
+          text-align:center;line-height:1.75;
+          margin-top:18px;max-width:380px;opacity:0;
+          animation:an-fadeup 1s ease-out .7s forwards;
         }
-        .riv-tag{
+        .an-sw{
           font-family:'Share Tech Mono','Courier New',monospace;
-          font-size:11px;color:#00e5ff;letter-spacing:.05em;
-          text-align:center;line-height:1.6;margin-top:10px;
-          max-width:280px;opacity:0;
-          animation:fadeUp .9s ease-out .5s forwards;
+          font-size:13px;letter-spacing:.1em;color:#00e5ff;
+          border:1px solid rgba(0,229,255,.6);border-radius:999px;
+          padding:7px 20px;background:rgba(0,229,255,.04);
+          cursor:default;user-select:none;
+          animation:an-btnpulse 2.5s ease-in-out infinite;
         }
-        .riv-sw{
-          font-family:'Share Tech Mono','Courier New',monospace;
-          font-size:12px;letter-spacing:.07em;color:#00e5ff;
-          border:1px solid #00e5ff;border-radius:999px;
-          padding:5px 15px;background:transparent;cursor:default;
-          animation:btnGlow 2.2s ease-in-out infinite;user-select:none;
+        .an-moon{animation:an-moon 3s ease-in-out infinite}
+        .an-lantern-l{animation:an-lantern 3.5s ease-in-out infinite;transform-origin:top center}
+        .an-lantern-r{animation:an-lantern2 4s ease-in-out 0.5s infinite;transform-origin:top center}
+        .an-progress-bar{
+          width:200px;height:2px;background:rgba(0,229,255,.12);
+          border-radius:2px;margin-top:22px;overflow:hidden;
+        }
+        .an-progress-fill{
+          height:100%;background:linear-gradient(90deg,#00e5ff,#7fffff);
+          border-radius:2px;
+          animation:an-progress 4s ease-out forwards;
+          box-shadow:0 0 8px #00e5ff;
         }
       `}</style>
 
-      {[...Array(28)].map((_,i)=>(
-        <div key={i} style={{
-          position:'absolute',
-          left:`${(i*41+11)%100}%`,top:`${(i*59+7)%100}%`,
-          width:'1px',height:'1px',borderRadius:'50%',background:'#00e5ff',
-          animation:`twinkle ${1.2+(i%6)*.35}s ease-in-out ${(i*.19)%2}s infinite`,
-        }}/>
-      ))}
-
-      <div style={{position:'absolute',top:'14px',right:'18px',zIndex:10}}>
-        <div className="riv-sw">Switch to 2D</div>
-      </div>
-
+      {/* Deep space nebula orb */}
       <div style={{
-        position:'absolute',inset:0,display:'flex',
-        flexDirection:'column',alignItems:'center',justifyContent:'center',
+        position:'absolute',top:'50%',left:'50%',
+        transform:'translate(-50%,-50%)',
+        width:'600px',height:'600px',borderRadius:'50%',
+        background:'radial-gradient(circle,#1a0a3a22 0%,#0d0520 40%,transparent 70%)',
+        animation:'an-orbpulse 4s ease-in-out infinite',
+        pointerEvents:'none',
+      }}/>
+
+      {/* Stars */}
+      {[...Array(55)].map((_,i)=>{
+        const sz = i%9===0?2.5:i%4===0?1.5:1
+        return (
+          <div key={i} style={{
+            position:'absolute',
+            left:`${(i*43+7)%100}%`,top:`${(i*61+3)%100}%`,
+            width:`${sz}px`,height:`${sz}px`,borderRadius:'50%',
+            background: i%7===0 ? '#ffd700' : '#00e5ff',
+            animation:`an-twinkle ${1.1+(i%7)*.4}s ease-in-out ${(i*.23)%2.5}s infinite`,
+          }}/>
+        )
+      })}
+
+      {/* Crescent moon top-center */}
+      <div style={{
+        position:'absolute',top:'32px',left:'50%',transform:'translateX(-50%)',
+        fontSize:'28px',lineHeight:1,
       }}>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'6px'}}>
-          <div className="riv-sq"/><div className="riv-sq"/>
-          <div className="riv-sq"/><div className="riv-sq"/>
+        <span className="an-moon" style={{display:'block',color:'#ffd700',fontSize:'28px'}}>☽</span>
+      </div>
+
+      {/* Left lantern */}
+      <div style={{
+        position:'absolute',top:'0',left:'clamp(30px,6vw,80px)',
+        display:'flex',flexDirection:'column',alignItems:'center',
+        pointerEvents:'none',
+      }}>
+        <div style={{width:'1px',height:'60px',background:'linear-gradient(#ffd70088,transparent)'}}/>
+        <div className="an-lantern-l" style={{fontSize:'clamp(28px,4vw,44px)'}}>🪔</div>
+      </div>
+
+      {/* Right lantern */}
+      <div style={{
+        position:'absolute',top:'0',right:'clamp(30px,6vw,80px)',
+        display:'flex',flexDirection:'column',alignItems:'center',
+        pointerEvents:'none',
+      }}>
+        <div style={{width:'1px',height:'60px',background:'linear-gradient(#ffd70088,transparent)'}}/>
+        <div className="an-lantern-r" style={{fontSize:'clamp(28px,4vw,44px)'}}>🪔</div>
+      </div>
+
+      {/* Top-right switch button */}
+      <div style={{position:'absolute',top:'18px',right:'22px',zIndex:10}}>
+        <div className="an-sw">Switch to 2D</div>
+      </div>
+
+      {/* Main center content */}
+      <div style={{
+        position:'absolute',inset:0,
+        display:'flex',flexDirection:'column',
+        alignItems:'center',justifyContent:'center',
+        paddingBottom:'20px',
+      }}>
+        {/* 2×2 grid */}
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'10px'}}>
+          <div className="an-sq"/><div className="an-sq"/>
+          <div className="an-sq"/><div className="an-sq"/>
         </div>
-        <div className="riv-title">Loading Riviera</div>
-        <div className="riv-tag">
-          when the world settles...<br/>try nudging it
+
+        <div className="an-title">Loading Riviera</div>
+
+        <div className="an-subtitle">Arabian Nights · Cultural Fest</div>
+
+        <div className="an-divider"/>
+
+        <div className="an-tag">
+          When the world settles... try nudging it
+        </div>
+
+        {/* Progress bar */}
+        <div className="an-progress-bar">
+          <div className="an-progress-fill"/>
         </div>
       </div>
+
+      {/* Bottom ornamental border */}
+      <div style={{
+        position:'absolute',bottom:0,left:0,right:0,height:'3px',
+        background:'linear-gradient(90deg,transparent 0%,#ffd70055 20%,#ffd700 50%,#ffd70055 80%,transparent 100%)',
+        boxShadow:'0 0 12px #ffd70066',
+      }}/>
     </div>
   )
 }
