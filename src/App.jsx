@@ -168,7 +168,9 @@ function Scene({ sharedRefs, onReady }) {
 
 const PARTICLE_DELAYS = [0,.18,.36,.54,.09,.27,.45,.63,.12,.30,.48,.66,.06,.24,.42,.60,.15,.33,.51,.69,.03,.21,.39,.57]
 
-function Switch2DBtn() {
+const TWO_D_URL = 'https://www.openstreetmap.org/export/embed.html?bbox=72.8,18.9,73.0,19.1&layer=mapnik'
+
+function Switch2DBtn({ onClick }) {
   return (
     <div style={{position:'fixed',top:'16px',right:'20px',zIndex:999,pointerEvents:'auto'}}>
       <style>{`
@@ -179,12 +181,56 @@ function Switch2DBtn() {
           border:1px solid rgba(0,229,255,.65);border-radius:999px;
           padding:6px 18px;background:rgba(0,0,0,.55);
           backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-          cursor:default;user-select:none;
+          cursor:pointer;user-select:none;
           animation:sw2d-pulse 2.5s ease-in-out infinite;
-          white-space:nowrap;
+          white-space:nowrap;transition:background .2s;
         }
+        .sw2d:hover{background:rgba(0,229,255,.12);}
       `}</style>
-      <div className="sw2d">Switch to 2D</div>
+      <div className="sw2d" onClick={onClick}>Switch to 2D</div>
+    </div>
+  )
+}
+
+function View2DOverlay({ onClose }) {
+  return (
+    <div style={{
+      position:'fixed',inset:0,zIndex:998,
+      display:'flex',flexDirection:'column',
+      background:'#000',
+    }}>
+      <style>{`
+        @keyframes ov-fadein{from{opacity:0}to{opacity:1}}
+        @keyframes back3d-pulse{0%,100%{box-shadow:0 0 0 #00e5ff00}50%{box-shadow:0 0 10px #00e5ff66}}
+        .back3d{
+          font-family:'Share Tech Mono','Courier New',monospace;
+          font-size:12px;letter-spacing:.1em;color:#00e5ff;
+          border:1px solid rgba(0,229,255,.65);border-radius:999px;
+          padding:6px 18px;background:rgba(0,0,0,.7);
+          backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+          cursor:pointer;user-select:none;
+          animation:back3d-pulse 2.5s ease-in-out infinite;
+          white-space:nowrap;transition:background .2s;
+        }
+        .back3d:hover{background:rgba(0,229,255,.12);}
+      `}</style>
+
+      <div style={{
+        position:'absolute',top:'16px',left:'20px',zIndex:10,
+        animation:'ov-fadein .3s ease',
+      }}>
+        <div className="back3d" onClick={onClose}>← Back to 3D</div>
+      </div>
+
+      <iframe
+        src={TWO_D_URL}
+        style={{
+          width:'100%',height:'100%',border:'none',
+          animation:'ov-fadein .4s ease',
+        }}
+        allowFullScreen
+        title="2D View"
+      />
     </div>
   )
 }
@@ -370,6 +416,7 @@ export default function App() {
   const [showLoader, setShowLoader] = useState(true)
   const [fading, setFading] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
+  const [show2D, setShow2D] = useState(false)
 
   const handleReady = useCallback((n) => {
     setNumWps(n)
@@ -522,7 +569,8 @@ export default function App() {
           </Suspense>
         </Canvas>
         {showLoader && <LoadingScreen fading={fading} />}
-        <Switch2DBtn />
+        {show2D && <View2DOverlay onClose={() => setShow2D(false)} />}
+        <Switch2DBtn onClick={() => setShow2D(true)} />
       </div>
     </>
   )
