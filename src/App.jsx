@@ -63,8 +63,9 @@ function catmullRomYaw(t, wps) {
 function Scene({ sharedRefs, onReady }) {
   const { camera } = useThree()
   const { scene }  = useGLTF('/futuristic_low-poly_city.glb')
-  const wps        = useRef([])
-  const initialized = useRef(false)
+  const wps          = useRef([])
+  const initialized  = useRef(false)
+  const lastWpIdx    = useRef(-1)
 
   useEffect(() => {
     scene.scale.set(5000,5000,5000)
@@ -130,7 +131,10 @@ function Scene({ sharedRefs, onReady }) {
         sharedRefs.targetT.current = -1
         sharedRefs.autoYaw.current = false
         const idx = Math.round(sharedRefs.pathT.current)
-        if (idx >= 0 && idx < ROAD_YAWS.length) sharedRefs.yaw.current = ROAD_YAWS[idx]
+        if (idx >= 0 && idx < ROAD_YAWS.length) {
+          sharedRefs.yaw.current = ROAD_YAWS[idx]
+          lastWpIdx.current = idx
+        }
         sharedRefs.pitch.current = 0
       }
     } else {
@@ -139,14 +143,14 @@ function Scene({ sharedRefs, onReady }) {
       if (sharedRefs.pathT.current >= maxT) { sharedRefs.pathT.current=maxT; if(sharedRefs.vel.current>0) sharedRefs.vel.current=0 }
       sharedRefs.vel.current *= 0.93
       if (Math.abs(sharedRefs.vel.current) < 0.000006) sharedRefs.vel.current = 0
+
       if (!sharedRefs.dragging.current) {
         const roundedT = Math.round(sharedRefs.pathT.current)
         const dist = Math.abs(sharedRefs.pathT.current - roundedT)
-        if (dist < 0.18 && roundedT >= 0 && roundedT < ROAD_YAWS.length) {
-          const weight = Math.max(0, 1 - dist / 0.18)
-          const snapSpeed = Math.min(1, 6 * dt * weight)
-          sharedRefs.yaw.current = lerpAngle(sharedRefs.yaw.current, ROAD_YAWS[roundedT], snapSpeed)
-          sharedRefs.pitch.current += (0 - sharedRefs.pitch.current) * snapSpeed
+        if (dist < 0.08 && roundedT >= 0 && roundedT < ROAD_YAWS.length && roundedT !== lastWpIdx.current) {
+          sharedRefs.yaw.current = ROAD_YAWS[roundedT]
+          sharedRefs.pitch.current = 0
+          lastWpIdx.current = roundedT
         }
       }
     }
