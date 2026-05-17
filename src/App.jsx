@@ -132,7 +132,8 @@ function Scene({ sharedRefs, onReady }) {
         sharedRefs.autoYaw.current = false
         const idx = Math.round(sharedRefs.pathT.current)
         if (idx >= 0 && idx < ROAD_YAWS.length) {
-          sharedRefs.yaw.current = ROAD_YAWS[idx]
+          const goingBack = diff < 0
+          sharedRefs.yaw.current = ROAD_YAWS[idx] + (goingBack ? Math.PI : 0)
           lastWpIdx.current = idx
         }
         sharedRefs.pitch.current = 0
@@ -148,7 +149,8 @@ function Scene({ sharedRefs, onReady }) {
         const roundedT = Math.round(sharedRefs.pathT.current)
         const dist = Math.abs(sharedRefs.pathT.current - roundedT)
         if (dist < 0.08 && roundedT >= 0 && roundedT < ROAD_YAWS.length && roundedT !== lastWpIdx.current) {
-          sharedRefs.yaw.current = ROAD_YAWS[roundedT]
+          const goingBack = sharedRefs.vel.current < 0
+          sharedRefs.yaw.current = ROAD_YAWS[roundedT] + (goingBack ? Math.PI : 0)
           sharedRefs.pitch.current = 0
           lastWpIdx.current = roundedT
         }
