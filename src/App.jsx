@@ -689,13 +689,6 @@ function SectionPanel({ section, visible, scrollsLeft }) {
           background:'linear-gradient(90deg,transparent,#00f5ff,#ff0080,#00f5ff,transparent)',
         }}/>
       </div>
-
-      <iframe
-        src={TWO_D_URL}
-        style={{ width:'100%', height:'100%', border:'none' }}
-        allowFullScreen
-        title="2D View"
-      />
     </div>
   )
 }
