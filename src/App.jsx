@@ -99,6 +99,98 @@ function catmullRomYaw(t,wps){
   return y1+m1*f+(-3*d12+2*m1+m2)*t2+(2*d12-m1-m2)*t3
 }
 
+// ─── Loading Screen ─────────────────────────────────────────────────────────
+function LoadingScreen() {
+  const [dots, setDots] = useState('')
+  const [progress, setProgress] = useState(0)
+  useEffect(() => {
+    const dotInterval = setInterval(() => {
+      setDots(d => d.length >= 3 ? '' : d + '.')
+    }, 400)
+    const progInterval = setInterval(() => {
+      setProgress(p => p >= 95 ? 95 : p + Math.random() * 8)
+    }, 300)
+    return () => { clearInterval(dotInterval); clearInterval(progInterval) }
+  }, [])
+  return (
+    <div style={{
+      position:'fixed', inset:0, zIndex:999,
+      background:'#030a12',
+      display:'flex', flexDirection:'column',
+      alignItems:'center', justifyContent:'center',
+      fontFamily:"'Orbitron',sans-serif",
+    }}>
+      {/* Scan line effect */}
+      <div style={{
+        position:'absolute', inset:0, pointerEvents:'none',
+        background:'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,245,255,0.015) 2px,rgba(0,245,255,0.015) 4px)',
+      }}/>
+      {/* Corner decorations */}
+      <div style={{position:'absolute',top:'24px',left:'24px',width:'40px',height:'40px',
+        borderTop:'2px solid rgba(0,245,255,0.6)',borderLeft:'2px solid rgba(0,245,255,0.6)',
+        filter:'drop-shadow(0 0 8px #00f5ff)'}}/>
+      <div style={{position:'absolute',top:'24px',right:'24px',width:'40px',height:'40px',
+        borderTop:'2px solid rgba(0,245,255,0.6)',borderRight:'2px solid rgba(0,245,255,0.6)',
+        filter:'drop-shadow(0 0 8px #00f5ff)'}}/>
+      <div style={{position:'absolute',bottom:'24px',left:'24px',width:'40px',height:'40px',
+        borderBottom:'2px solid rgba(0,245,255,0.6)',borderLeft:'2px solid rgba(0,245,255,0.6)',
+        filter:'drop-shadow(0 0 8px #00f5ff)'}}/>
+      <div style={{position:'absolute',bottom:'24px',right:'24px',width:'40px',height:'40px',
+        borderBottom:'2px solid rgba(0,245,255,0.6)',borderRight:'2px solid rgba(0,245,255,0.6)',
+        filter:'drop-shadow(0 0 8px #00f5ff)'}}/>
+
+      {/* Logo / title */}
+      <div style={{
+        color:'rgba(0,245,255,0.5)', fontSize:'0.6rem',
+        letterSpacing:'0.4em', marginBottom:'16px',
+        animation:'blinkDot 1.5s ease-in-out infinite',
+      }}>◉ SYSTEM BOOT</div>
+
+      <div style={{
+        fontSize:'clamp(2.2rem,6vw,4rem)', fontWeight:900,
+        color:'#ffffff', letterSpacing:'0.08em',
+        textShadow:'0 0 40px rgba(255,255,255,0.15)',
+        lineHeight:1,
+      }}>RIVIERA</div>
+      <div style={{
+        fontSize:'clamp(2.2rem,6vw,4rem)', fontWeight:900,
+        letterSpacing:'0.08em', lineHeight:1,
+        background:'linear-gradient(90deg,#ff0080,#ff6600)',
+        WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
+        filter:'drop-shadow(0 0 18px #ff008077)',
+        marginBottom:'8px',
+      }}>FEST 2026</div>
+
+      <div style={{
+        color:'rgba(0,245,255,0.7)', fontSize:'0.58rem',
+        letterSpacing:'0.3em', marginBottom:'48px',
+      }}>ENTERING THE DIGITAL ARENA</div>
+
+      {/* Progress bar */}
+      <div style={{width:'clamp(220px,40vw,380px)', marginBottom:'12px'}}>
+        <div style={{
+          height:'2px', background:'rgba(0,245,255,0.1)',
+          borderRadius:'2px', overflow:'hidden',
+          position:'relative',
+        }}>
+          <div style={{
+            position:'absolute', top:0, left:0, height:'100%',
+            width:`${progress}%`,
+            background:'linear-gradient(90deg,#00f5ff,#ff0080)',
+            boxShadow:'0 0 12px rgba(0,245,255,0.8)',
+            transition:'width 0.3s ease',
+          }}/>
+        </div>
+      </div>
+
+      <div style={{
+        color:'rgba(0,245,255,0.5)', fontSize:'0.5rem',
+        letterSpacing:'0.2em',
+      }}>LOADING ENVIRONMENT{dots}</div>
+    </div>
+  )
+}
+
 // ─── Scene ──────────────────────────────────────────────────────────────────
 function Scene({ sharedRefs, onReady }) {
   const { camera } = useThree()
@@ -1308,6 +1400,7 @@ export default function App() {
           </Canvas>
         </CanvasErrorBoundary>
 
+        {!ready && <LoadingScreen />}
         <Navbar activeSection={activeNav} onNav={navigateTo} />
         <FillerBar progress={fillerProgress} label={activeSection} />
         <HomePanel
