@@ -100,7 +100,7 @@ function catmullRomYaw(t,wps){
 }
 
 // ─── Loading Screen ─────────────────────────────────────────────────────────
-function LoadingScreen() {
+function LoadingScreen({ fading }) {
   const [dots, setDots] = useState('')
   const [progress, setProgress] = useState(0)
   useEffect(() => {
@@ -119,6 +119,9 @@ function LoadingScreen() {
       display:'flex', flexDirection:'column',
       alignItems:'center', justifyContent:'center',
       fontFamily:"'Orbitron',sans-serif",
+      opacity: fading ? 0 : 1,
+      transition: fading ? 'opacity 0.9s ease' : 'none',
+      pointerEvents: fading ? 'none' : 'auto',
     }}>
       {/* Scan line effect */}
       <div style={{
@@ -1152,6 +1155,8 @@ export default function App() {
 
   const [numWps,      setNumWps]      = useState(0)
   const [ready,       setReady]       = useState(false)
+  const [loaderVisible, setLoaderVisible] = useState(true)
+  const [loaderFading,  setLoaderFading]  = useState(false)
   const [currentWp,   setCurrentWp]   = useState(0)
   const [atHome,      setAtHome]      = useState(true)
   const [activeSection,setActiveSection] = useState(null)
@@ -1160,6 +1165,13 @@ export default function App() {
 
   const scrollLock = useRef({ lockedWpIdx: -1, count: 0 })
   const time = useCountdown()
+
+  useEffect(() => {
+    if (!ready) return
+    setLoaderFading(true)
+    const t = setTimeout(() => setLoaderVisible(false), 950)
+    return () => clearTimeout(t)
+  }, [ready])
 
   const getDisplayWpIdx = useCallback((t) => {
     const rounded = Math.round(t)
@@ -1400,7 +1412,7 @@ export default function App() {
           </Canvas>
         </CanvasErrorBoundary>
 
-        {!ready && <LoadingScreen />}
+        {loaderVisible && <LoadingScreen fading={loaderFading} />}
         <Navbar activeSection={activeNav} onNav={navigateTo} />
         <FillerBar progress={fillerProgress} label={activeSection} />
         <HomePanel
