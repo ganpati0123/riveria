@@ -208,6 +208,90 @@ function NeonCorners({ color='#00f5ff', size=28, thick=3 }) {
   )
 }
 
+// ─── Riviera Navbar ─────────────────────────────────────────────────────────
+function Navbar({ activeSection, onNav }) {
+  const links = ['Home','Schedule','Activities','Sponsors','Gallery','Contact']
+  return (
+    <nav style={{
+      position:'fixed', top:0, left:0, right:0, zIndex:200,
+      display:'flex', alignItems:'center', justifyContent:'space-between',
+      padding:'0 24px',
+      height:'52px',
+      background:'rgba(8,4,4,0.92)',
+      borderBottom:'1px solid rgba(180,20,20,0.18)',
+      backdropFilter:'blur(10px)',
+    }}>
+      <div style={{
+        display:'flex', alignItems:'center', gap:'8px',
+        cursor:'pointer',
+      }} onClick={() => onNav('home')}>
+        <div style={{
+          width:'28px', height:'28px',
+          display:'flex', alignItems:'center', justifyContent:'center',
+        }}>
+          <svg width='28' height='28' viewBox='0 0 28 28' fill='none'>
+            <polygon points='14,2 26,24 2,24' fill='none' stroke='#cc1a1a' strokeWidth='2.2'/>
+            <polygon points='14,7 22,21 6,21' fill='#cc1a1a' opacity='0.3'/>
+          </svg>
+        </div>
+        <span style={{
+          color:'#ffffff', fontSize:'1.05rem', fontWeight:800,
+          fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.22em',
+          textTransform:'uppercase',
+          textShadow:'0 0 12px rgba(200,30,30,0.4)',
+        }}>RIVIERA</span>
+      </div>
+
+      <div style={{display:'flex', alignItems:'center', gap:'2px'}}>
+        {links.map(link => {
+          const key = link.toLowerCase()
+          const isActive = activeSection === key
+          return (
+            <button key={link} onClick={() => onNav(key)} style={{
+              background:'none',
+              border: isActive ? '1px solid rgba(220,50,50,0.55)' : '1px solid transparent',
+              borderRadius:'3px',
+              cursor:'pointer',
+              padding:'5px 16px',
+              color: isActive ? '#ffffff' : 'rgba(255,255,255,0.55)',
+              fontSize:'0.8rem',
+              fontFamily:"'Rajdhani',sans-serif",
+              letterSpacing:'0.06em',
+              fontWeight: isActive ? 600 : 400,
+              transition:'all 0.2s ease',
+              whiteSpace:'nowrap',
+            }}
+              onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = 'rgba(255,255,255,0.85)' }}
+              onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = 'rgba(255,255,255,0.55)' }}
+            >
+              {link}
+            </button>
+          )
+        })}
+      </div>
+
+      <button style={{
+        background:'transparent',
+        border:'1px solid rgba(200,40,40,0.6)',
+        borderRadius:'3px', padding:'7px 18px',
+        color:'rgba(255,255,255,0.85)', fontSize:'0.72rem',
+        fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.1em', fontWeight:600,
+        cursor:'pointer',
+        display:'flex', alignItems:'center', gap:'6px',
+        transition:'all 0.2s ease',
+      }}
+        onMouseEnter={e=>{e.currentTarget.style.background='rgba(200,40,40,0.15)';e.currentTarget.style.borderColor='rgba(200,40,40,0.9)'}}
+        onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(200,40,40,0.6)'}}
+        onClick={() => onNav('schedule')}
+      >
+        ENTER GAMES
+        <svg width='10' height='10' viewBox='0 0 10 10' fill='none'>
+          <path d='M2 8L8 2M8 2H3M8 2V7' stroke='rgba(255,255,255,0.7)' strokeWidth='1.4' strokeLinecap='round'/>
+        </svg>
+      </button>
+    </nav>
+  )
+}
 
 // ─── Countdown Box ──────────────────────────────────────────────────────────
 function CountdownBox({ time }) {
@@ -1149,6 +1233,7 @@ export default function App() {
           </Canvas>
         </CanvasErrorBoundary>
 
+        <Navbar activeSection={activeNav} onNav={navigateTo} />
         <FillerBar progress={fillerProgress} label={activeSection} />
         <HomePanel
           visible={atHome && !activeSection}
