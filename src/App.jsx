@@ -48,7 +48,7 @@ const SECTION_AT = {
 const SCROLL_THRESHOLD = 3
 
 // ─── Target date for countdown (change as needed) ─────────────────────────
-const EVENT_DATE = new Date('2026-09-15T18:00:00')
+const EVENT_DATE = new Date('2026-05-18T00:00:00')
 
 function useCountdown() {
   const [time, setTime] = useState({ d:0, h:0, m:0, s:0 })
@@ -334,11 +334,11 @@ function CountdownBox({ time }) {
       <div style={{display:'flex',justifyContent:'space-between',marginTop:'4px'}}>
         <div>
           <div style={{color:'rgba(0,245,255,0.45)',fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.14em',marginBottom:'2px'}}>EVENT DATE</div>
-          <div style={{color:'rgba(255,255,255,0.8)',fontSize:'0.6rem',fontFamily:"'Orbitron',sans-serif",fontWeight:600}}>15 - 17 SEP</div>
+          <div style={{color:'rgba(255,255,255,0.8)',fontSize:'0.6rem',fontFamily:"'Orbitron',sans-serif",fontWeight:600}}>18 - 20 MAY</div>
         </div>
         <div style={{textAlign:'right'}}>
           <div style={{color:'rgba(0,245,255,0.45)',fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.14em',marginBottom:'2px'}}>LOCATION</div>
-          <div style={{color:'rgba(255,255,255,0.8)',fontSize:'0.6rem',fontFamily:"'Orbitron',sans-serif",fontWeight:600}}>CYBER CAMPUS</div>
+          <div style={{color:'rgba(255,255,255,0.8)',fontSize:'0.6rem',fontFamily:"'Orbitron',sans-serif",fontWeight:600}}>NIT HALDIA</div>
         </div>
       </div>
       <div style={{display:'flex',gap:'8px',marginTop:'12px'}}>
@@ -475,31 +475,48 @@ function HomePanel({ visible, onEnter, time }) {
 
 // ─── Scroll-to-move indicator ────────────────────────────────────────────────
 function ScrollIndicator({ visible }) {
+  const chevron = (opacity, flip) => (
+    <div style={{
+      width:'12px', height:'12px',
+      borderRight:`2px solid rgba(0,245,255,${opacity})`,
+      borderBottom:`2px solid rgba(0,245,255,${opacity})`,
+      transform: flip ? 'rotate(225deg)' : 'rotate(45deg)',
+    }}/>
+  )
   return (
     <div style={{
       position:'fixed', bottom:'28px', left:'50%',
       transform:'translateX(-50%)',
       zIndex:150, pointerEvents:'none',
-      display:'flex', flexDirection:'column', alignItems:'center', gap:'6px',
+      display:'flex', flexDirection:'column', alignItems:'center', gap:'5px',
       opacity: visible ? 1 : 0,
-      transition:'opacity 0.4s ease',
+      transition:'opacity 0.5s ease',
     }}>
+      {/* up arrows */}
+      <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'-2px',animation:'arrowUp 1.5s ease-in-out infinite'}}>
+        {chevron(0.3, true)}
+        {chevron(0.6, true)}
+      </div>
+
+      {/* mouse icon */}
+      <svg width='20' height='32' viewBox='0 0 20 32' fill='none' style={{margin:'2px 0'}}>
+        <rect x='1' y='1' width='18' height='26' rx='9' stroke='rgba(0,245,255,0.55)' strokeWidth='1.5'/>
+        <rect x='8' y='5' width='4' height='7' rx='2' fill='rgba(0,245,255,0.8)'
+          style={{animation:'scrollWheel 1.5s ease-in-out infinite'}}/>
+      </svg>
+
+      {/* label */}
       <span style={{
-        color:'rgba(255,255,255,0.75)', fontSize:'0.7rem',
-        fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.22em',
-        textShadow:'0 0 12px rgba(0,245,255,0.5)',
-        fontWeight:600,
+        color:'rgba(0,245,255,0.7)', fontSize:'0.58rem',
+        fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.2em', fontWeight:600,
+        textShadow:'0 0 10px rgba(0,245,255,0.4)',
+        whiteSpace:'nowrap',
       }}>SCROLL TO MOVE</span>
-      <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'2px',animation:'scrollBounce 1.4s ease-in-out infinite'}}>
-        <svg width='22' height='36' viewBox='0 0 22 36' fill='none'>
-          <rect x='1' y='1' width='20' height='28' rx='10' stroke='rgba(255,255,255,0.6)' strokeWidth='1.5'/>
-          <rect x='9' y='6' width='4' height='8' rx='2' fill='rgba(255,255,255,0.8)'
-            style={{animation:'scrollWheel 1.4s ease-in-out infinite'}}/>
-        </svg>
-        <div style={{display:'flex',flexDirection:'column',gap:'1px',alignItems:'center'}}>
-          <div style={{width:'8px',height:'8px',borderRight:'2px solid rgba(255,255,255,0.7)',borderBottom:'2px solid rgba(255,255,255,0.7)',transform:'rotate(45deg)',marginTop:'2px'}}/>
-          <div style={{width:'8px',height:'8px',borderRight:'2px solid rgba(255,255,255,0.35)',borderBottom:'2px solid rgba(255,255,255,0.35)',transform:'rotate(45deg)',marginTop:'-4px'}}/>
-        </div>
+
+      {/* down arrows */}
+      <div style={{display:'flex',flexDirection:'column',alignItems:'center',animation:'arrowDown 1.5s ease-in-out infinite'}}>
+        {chevron(0.6, false)}
+        {chevron(0.3, false)}
       </div>
     </div>
   )
@@ -1200,6 +1217,14 @@ export default function App() {
           0% { transform: translateY(0); opacity: 1 }
           100% { transform: translateY(6px); opacity: 0 }
         }
+        @keyframes arrowDown {
+          0%,100% { transform: translateY(0); opacity: 0.5 }
+          50% { transform: translateY(5px); opacity: 1 }
+        }
+        @keyframes arrowUp {
+          0%,100% { transform: translateY(0); opacity: 0.5 }
+          50% { transform: translateY(-5px); opacity: 1 }
+        }
         @keyframes revealUp {
           from { opacity: 0; transform: translateY(14px) }
           to { opacity: 1; transform: translateY(0) }
@@ -1247,7 +1272,7 @@ export default function App() {
               visible={!!activeSection}
               scrollsLeft={scrollsLeft}
             />
-            <ScrollIndicator visible={!atHome && !activeSection} />
+            <ScrollIndicator visible={!activeSection} />
           </>
         )}
       </div>
