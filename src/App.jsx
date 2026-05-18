@@ -624,7 +624,7 @@ function SectionPanel({ section, visible, scrollsLeft }) {
           </div>
         </div>
 
-        <div style={{flex:1, overflowY:'auto', padding:'24px 36px 24px', position:'relative'}}>
+        <div style={{flex:1, minHeight:0, overflowY:'auto', padding:'24px 36px 24px', position:'relative'}}>
           {panels[section]}
         </div>
 
