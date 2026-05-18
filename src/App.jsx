@@ -47,6 +47,12 @@ const SECTION_AT = {
 // How many scrolls to fill before advancing
 const SCROLL_THRESHOLD = 3
 
+// Touch controls
+const TOUCH_MOVE_SENSITIVITY  = 0.000014
+const TOUCH_LOOK_SENSITIVITY  = 0.0018
+const FLICK_VELOCITY_SCALE    = 0.45
+const DIRECTION_LOCK_PX       = 12
+
 // ─── Target date for countdown (change as needed) ─────────────────────────
 const EVENT_DATE = new Date('2026-05-18T00:00:00')
 
@@ -1097,7 +1103,6 @@ export default function App() {
     const onMouseDown = e => {
       dragging = true; lastX = e.clientX; lastY = e.clientY
       sharedRefs.dragging.current = true
-      setIsDragging(true)
     }
     const onMouseMove = e => {
       if (!dragging) return
@@ -1109,7 +1114,7 @@ export default function App() {
       }
       sharedRefs.autoYaw.current = false
     }
-    const onMouseUp = () => { dragging = false; sharedRefs.dragging.current = false; setIsDragging(false) }
+    const onMouseUp = () => { dragging = false; sharedRefs.dragging.current = false }
     window.addEventListener('mousedown', onMouseDown)
     window.addEventListener('mousemove', onMouseMove)
     window.addEventListener('mouseup',   onMouseUp)
@@ -1122,6 +1127,7 @@ export default function App() {
 
   useEffect(() => {
     const dragState = { active:false, x:0, y:0 }
+    const state = dragState
     const onTouchStart = e => {
       if (e.touches.length > 1) { state.active = false; return }
       const t = e.touches[0]
