@@ -138,7 +138,7 @@ function Scene({ sharedRefs, onReady }) {
     wps.current = built
     sharedRefs.wpsRef.current = built
     sharedRefs.yaw.current = ROAD_YAWS[0]
-    sharedRefs.pitch.current = -0.04
+    sharedRefs.pitch.current = 0
     camera.position.copy(built[0].pos)
     camera.rotation.order='YXZ'
     camera.rotation.y=sharedRefs.yaw.current
@@ -581,6 +581,22 @@ function SectionPanel({ section, visible, scrollsLeft }) {
       background:'rgba(0,0,0,0.55)',
       backdropFilter:'blur(3px)',
     }}>
+      <style>{`
+        @keyframes back3d-pulse{0%,100%{box-shadow:0 0 0 #00e5ff00}50%{box-shadow:0 0 10px #00e5ff66}}
+        @keyframes ov-slidein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+        .back3d{
+          font-family:'Share Tech Mono','Courier New',monospace;
+          font-size:12px;letter-spacing:.1em;color:#00e5ff;
+          border:1px solid rgba(0,229,255,.65);border-radius:999px;
+          padding:6px 18px;background:rgba(0,0,0,.7);
+          backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+          cursor:pointer;user-select:none;
+          animation:back3d-pulse 2.5s ease-in-out infinite;
+          white-space:nowrap;transition:background .2s;
+        }
+        .back3d:hover{background:rgba(0,229,255,.12);}
+      `}</style>
+
       <div style={{
         width:'100%', maxWidth:'1000px',
         maxHeight:'calc(100vh - 130px)',
@@ -667,6 +683,13 @@ function SectionPanel({ section, visible, scrollsLeft }) {
           background:'linear-gradient(90deg,transparent,#00f5ff,#ff0080,#00f5ff,transparent)',
         }}/>
       </div>
+
+      <iframe
+        src={TWO_D_URL}
+        style={{ width:'100%', height:'100%', border:'none' }}
+        allowFullScreen
+        title="2D View"
+      />
     </div>
   )
 }
@@ -1025,14 +1048,15 @@ function ContactContent() {
 // ─── App ─────────────────────────────────────────────────────────────────────
 export default function App() {
   const sharedRefs = useRef({
-    pathT:   { current: 0 },
-    targetT: { current: -1 },
-    vel:     { current: 0 },
-    yaw:     { current: 0 },
-    pitch:   { current: -0.04 },
-    eyeH:    { current: 100 },
-    autoYaw: { current: false },
-    wpsRef:  { current: [] },
+    pathT:    { current: 0 },
+    targetT:  { current: -1 },
+    vel:      { current: 0 },
+    yaw:      { current: 0 },
+    pitch:    { current: 0 },
+    eyeH:     { current: 100 },
+    autoYaw:  { current: false },
+    wpsRef:   { current: [] },
+    dragging: { current: false },
   }).current
 
   const [numWps,      setNumWps]      = useState(0)
@@ -1068,39 +1092,81 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    let lastX = null, lastY = null
-    const onMove = e => {
-      if (lastX !== null) {
-        const dx = e.clientX - lastX
-        const dy = e.clientY - lastY
-        sharedRefs.yaw.current   -= dx * 0.0016
-        sharedRefs.pitch.current -= dy * 0.0016
-        sharedRefs.pitch.current  = Math.max(-1.35, Math.min(1.35, sharedRefs.pitch.current))
-        sharedRefs.autoYaw.current = false
-      }
-      lastX = e.clientX; lastY = e.clientY
+    let dragging = false
+    let lastX = 0, lastY = 0
+    const onMouseDown = e => {
+      dragging = true; lastX = e.clientX; lastY = e.clientY
+      sharedRefs.dragging.current = true
+      setIsDragging(true)
     }
-    window.addEventListener('mousemove', onMove)
-    return () => window.removeEventListener('mousemove', onMove)
+    const onMouseMove = e => {
+      if (!dragging) return
+      const dx = e.clientX - lastX, dy = e.clientY - lastY
+      lastX = e.clientX; lastY = e.clientY
+      sharedRefs.yaw.current -= dx * 0.0022
+      if (window.innerWidth > 600) {
+        sharedRefs.pitch.current = Math.max(-0.35, Math.min(0.35, sharedRefs.pitch.current + dy * 0.0022))
+      }
+      sharedRefs.autoYaw.current = false
+    }
+    const onMouseUp = () => { dragging = false; sharedRefs.dragging.current = false; setIsDragging(false) }
+    window.addEventListener('mousedown', onMouseDown)
+    window.addEventListener('mousemove', onMouseMove)
+    window.addEventListener('mouseup',   onMouseUp)
+    return () => {
+      window.removeEventListener('mousedown', onMouseDown)
+      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('mouseup',   onMouseUp)
+    }
   }, [])
 
   useEffect(() => {
     const dragState = { active:false, x:0, y:0 }
     const onTouchStart = e => {
+      if (e.touches.length > 1) { state.active = false; return }
       const t = e.touches[0]
-      dragState.active = true; dragState.x = t.clientX; dragState.y = t.clientY
+      Object.assign(state, { active:true, startX:t.clientX, startY:t.clientY, lastX:t.clientX, lastY:t.clientY, startTime:Date.now(), totalDX:0, totalDY:0, direction:null, vx:0, vy:0 })
+      sharedRefs.dragging.current = true
       sharedRefs.autoYaw.current = false
+      sharedRefs.targetT.current = -1
     }
+
     const onTouchMove = e => {
-      if (!dragState.active) return
+      if (!state.active || e.touches.length > 1) return
       const t = e.touches[0]
-      const dx = t.clientX - dragState.x, dy = t.clientY - dragState.y
-      dragState.x = t.clientX; dragState.y = t.clientY
-      sharedRefs.yaw.current   -= dx * 0.0038
-      sharedRefs.pitch.current -= dy * 0.0038
-      sharedRefs.pitch.current  = Math.max(-1.35, Math.min(1.35, sharedRefs.pitch.current))
+      const dx = t.clientX - state.lastX, dy = t.clientY - state.lastY
+      state.lastX = t.clientX; state.lastY = t.clientY
+      state.vx = state.vx*0.6 + dx*0.4
+      state.vy = state.vy*0.6 + dy*0.4
+      state.totalDX += dx; state.totalDY += dy
+
+      if (!state.direction) {
+        const adx = Math.abs(state.totalDX), ady = Math.abs(state.totalDY)
+        if (adx > DIRECTION_LOCK_PX || ady > DIRECTION_LOCK_PX) {
+          if (ady > adx*1.2) state.direction = 'vertical'
+          else if (adx > ady*1.2) state.direction = 'horizontal'
+          else state.direction = 'free'
+        }
+        return
+      }
+
+      if (state.direction === 'vertical' || state.direction === 'free') {
+        sharedRefs.vel.current += -dy * TOUCH_MOVE_SENSITIVITY
+        sharedRefs.targetT.current = -1
+      }
+      if (state.direction === 'horizontal' || state.direction === 'free') { sharedRefs.yaw.current -= dx*TOUCH_LOOK_SENSITIVITY; sharedRefs.autoYaw.current = false }
     }
-    const onTouchEnd = () => { dragState.active = false }
+
+    const onTouchEnd = e => {
+      if (!state.active) return
+      state.active = false
+      sharedRefs.dragging.current = false
+      const elapsed = Date.now() - state.startTime
+      if (elapsed < 220 && (state.direction === 'vertical' || state.direction === 'free')) {
+        sharedRefs.vel.current += -state.vy * TOUCH_MOVE_SENSITIVITY * FLICK_VELOCITY_SCALE * 18
+        sharedRefs.targetT.current = -1
+      }
+    }
     window.addEventListener('touchstart', onTouchStart, { passive: true })
     window.addEventListener('touchmove',  onTouchMove,  { passive: true })
     window.addEventListener('touchend',   onTouchEnd)
@@ -1114,28 +1180,16 @@ export default function App() {
   useEffect(() => {
     const onWheel = e => {
       e.preventDefault()
-      const norm = e.deltaMode===1 ? 40 : e.deltaMode===2 ? 800 : 1
-      const dy = e.deltaY * norm, dx = e.deltaX * norm
-      const wpIdx = getDisplayWpIdx(sharedRefs.pathT.current)
-      if (wpIdx >= 0) {
-        const lock = scrollLock.current
-        if (lock.lockedWpIdx !== wpIdx) { lock.lockedWpIdx = wpIdx; lock.count = 0 }
-        if (lock.count < SCROLL_THRESHOLD) {
-          lock.count += 1
-          setScrollsLeft(SCROLL_THRESHOLD - lock.count)
-          return
-        }
-      } else {
-        scrollLock.current = { lockedWpIdx: -1, count: 0 }
-      }
-      sharedRefs.vel.current    += dy * 0.000016
+      const norm = e.deltaMode===1?40:e.deltaMode===2?800:1
+      const dy = e.deltaY*norm, dx = e.deltaX*norm
+      sharedRefs.vel.current += dy*0.000016
       sharedRefs.targetT.current = -1
       sharedRefs.yaw.current    -= dx * 0.0022
       sharedRefs.autoYaw.current = true
     }
-    window.addEventListener('wheel', onWheel, { passive: false })
+    window.addEventListener('wheel', onWheel, { passive:false })
     return () => window.removeEventListener('wheel', onWheel)
-  }, [getDisplayWpIdx])
+  }, [])
 
   useEffect(() => {
     if (numWps < 2) return
@@ -1145,12 +1199,9 @@ export default function App() {
       if (e.key==='ArrowRight'||e.key==='ArrowDown') { e.preventDefault(); idx=Math.min(maxT,Math.floor(sharedRefs.pathT.current+1)) }
       else if (e.key==='ArrowLeft'||e.key==='ArrowUp') { e.preventDefault(); idx=Math.max(0,Math.ceil(sharedRefs.pathT.current-1)) }
       if (idx >= 0) {
-        sharedRefs.targetT.current = idx
-        sharedRefs.autoYaw.current = false
+        sharedRefs.targetT.current = idx; sharedRefs.autoYaw.current = false
         const wp = sharedRefs.wpsRef.current[idx]
         if (wp) { sharedRefs.yaw.current=wp.yaw; sharedRefs.pitch.current=-0.04 }
-        scrollLock.current = { lockedWpIdx:-1, count:0 }
-        setScrollsLeft(SCROLL_THRESHOLD)
       }
     }
     window.addEventListener('keydown', onKey)
