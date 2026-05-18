@@ -102,7 +102,8 @@ function catmullRomYaw(t,wps){
 // ─── Always-Visible Switch to 2D Bar ────────────────────────────────────────
 function Switch2DBar() {
   return (
-    <a href='https://www.rivierafest.online/'
+    <div
+      onClick={() => { window.top.location.href = 'https://www.rivierafest.online/' }}
       style={{
         position:'fixed', top:0, left:0, right:0,
         zIndex:99999,
@@ -134,7 +135,7 @@ function Switch2DBar() {
       <svg width='9' height='9' viewBox='0 0 9 9' fill='none'>
         <path d='M1.5 7.5L7.5 1.5M7.5 1.5H3M7.5 1.5V6' stroke='#00f5ff' strokeWidth='1.3' strokeLinecap='round'/>
       </svg>
-    </a>
+    </div>
   )
 }
 
