@@ -208,101 +208,10 @@ function NeonCorners({ color='#00f5ff', size=28, thick=3 }) {
   )
 }
 
-// ─── Top Navbar ─────────────────────────────────────────────────────────────
-function Navbar({ activeSection, onNav }) {
-  const links = ['HOME','SCHEDULE','ACTIVITIES','SPONSORS','GALLERY','CONTACT']
-  return (
-    <nav style={{
-      position:'fixed', top:0, left:0, right:0, zIndex:200,
-      display:'flex', alignItems:'center', justifyContent:'space-between',
-      padding:'0 32px',
-      height:'58px',
-      background:'linear-gradient(180deg,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.6) 100%)',
-      borderBottom:'1px solid rgba(0,245,255,0.15)',
-      backdropFilter:'blur(12px)',
-    }}>
-      <div style={{
-        display:'flex', alignItems:'center', gap:'10px',
-        fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.12em',
-      }}>
-        <div style={{
-          width:'36px', height:'36px', borderRadius:'6px', overflow:'hidden',
-          border:'1.5px solid rgba(0,245,255,0.5)',
-          background:'linear-gradient(135deg,#001a1a,#003333)',
-          display:'flex', alignItems:'center', justifyContent:'center',
-          fontSize:'1.1rem',
-        }}>⚡</div>
-        <span style={{
-          color:'#00f5ff', fontSize:'1.05rem', fontWeight:700,
-          textShadow:'0 0 16px #00f5ff88',
-          letterSpacing:'0.18em',
-        }}>CYBERfest</span>
-        <span style={{
-          color:'rgba(255,0,128,0.9)', fontSize:'1.05rem', fontWeight:700,
-          textShadow:'0 0 16px #ff008088',
-        }}>2026</span>
-      </div>
-
-      <div style={{display:'flex', alignItems:'center', gap:'4px'}}>
-        {links.map(link => {
-          const key = link.toLowerCase()
-          const isActive = activeSection === key
-          return (
-            <button key={link} onClick={() => onNav(key)} style={{
-              background:'none', border:'none', cursor:'pointer',
-              padding:'6px 14px',
-              color: isActive ? '#00f5ff' : 'rgba(255,255,255,0.65)',
-              fontSize:'0.7rem', fontFamily:"'Orbitron',sans-serif",
-              letterSpacing:'0.14em', fontWeight: isActive ? 700 : 400,
-              textShadow: isActive ? '0 0 12px #00f5ff' : 'none',
-              borderBottom: isActive ? '2px solid #00f5ff' : '2px solid transparent',
-              transition:'all 0.25s ease',
-              position:'relative',
-            }}>
-              {link}
-              {isActive && (
-                <span style={{
-                  position:'absolute', bottom:'-2px', left:'50%',
-                  transform:'translateX(-50%)',
-                  width:'4px', height:'4px', borderRadius:'50%',
-                  background:'#00f5ff',
-                  boxShadow:'0 0 8px #00f5ff',
-                }}/>
-              )}
-            </button>
-          )
-        })}
-      </div>
-
-      <button style={{
-        background:'linear-gradient(135deg,rgba(0,245,255,0.12),rgba(0,245,255,0.04))',
-        border:'1.5px solid rgba(0,245,255,0.6)',
-        borderRadius:'6px', padding:'9px 22px',
-        color:'#00f5ff', fontSize:'0.7rem',
-        fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.16em', fontWeight:700,
-        cursor:'pointer',
-        boxShadow:'0 0 16px rgba(0,245,255,0.2)',
-        transition:'all 0.25s ease',
-      }}
-        onMouseEnter={e=>{e.target.style.boxShadow='0 0 28px rgba(0,245,255,0.55)';e.target.style.background='linear-gradient(135deg,rgba(0,245,255,0.25),rgba(0,245,255,0.1))'}}
-        onMouseLeave={e=>{e.target.style.boxShadow='0 0 16px rgba(0,245,255,0.2)';e.target.style.background='linear-gradient(135deg,rgba(0,245,255,0.12),rgba(0,245,255,0.04))'}}
-        onClick={() => onNav('home')}
-      >
-        ENTER ARENA ⚡
-      </button>
-    </nav>
-  )
-}
 
 // ─── Countdown Box ──────────────────────────────────────────────────────────
 function CountdownBox({ time }) {
   const pad = n => String(n).padStart(2,'0')
-  const units = [
-    { val: pad(time.d), label:'DAYS' },
-    { val: pad(time.h), label:'HRS' },
-    { val: pad(time.m), label:'MIN' },
-    { val: pad(time.s), label:'SEC' },
-  ]
   return (
     <div style={{
       border:'1.5px solid rgba(0,245,255,0.35)',
@@ -312,7 +221,7 @@ function CountdownBox({ time }) {
       backdropFilter:'blur(8px)',
       position:'relative',
       boxShadow:'0 0 30px rgba(0,245,255,0.1), inset 0 0 30px rgba(0,0,0,0.5)',
-      minWidth:'280px',
+      minWidth:'300px',
     }}>
       <NeonCorners color='#00f5ff' size={16} thick={2}/>
       <div style={{
@@ -324,21 +233,18 @@ function CountdownBox({ time }) {
           textShadow:'0 0 8px #00ff88', animation:'blinkDot 1.2s ease-in-out infinite'}}>◈ ACTIVE</span>
       </div>
       <div style={{height:'1px',background:'rgba(0,245,255,0.15)',margin:'8px 0 14px'}}/>
-      <div style={{display:'flex',gap:'10px',justifyContent:'center',marginBottom:'14px'}}>
-        {units.map(({val,label},i)=>(
-          <div key={i} style={{textAlign:'center'}}>
-            <div style={{
-              background:'rgba(0,0,0,0.6)',
-              border:'1px solid rgba(0,245,255,0.25)',
-              borderRadius:'6px', padding:'8px 12px',
-              color:'#ffffff', fontSize:'1.55rem',
-              fontFamily:"'Orbitron',sans-serif", fontWeight:700,
-              letterSpacing:'0.06em', lineHeight:1,
-              textShadow:'0 0 20px rgba(255,255,255,0.4)',
-              minWidth:'46px',
-            }}>{val}</div>
-            <div style={{color:'rgba(255,255,255,0.4)',fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.18em',marginTop:'4px'}}>{label}</div>
-          </div>
+      <div style={{textAlign:'center',marginBottom:'8px'}}>
+        <span style={{
+          color:'#ffee00', fontSize:'2.6rem', fontWeight:900,
+          fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.1em',
+          textShadow:'0 0 24px rgba(255,238,0,0.7)',
+        }}>
+          {pad(time.d)}:{pad(time.h)}:{pad(time.m)}
+        </span>
+      </div>
+      <div style={{display:'flex',justifyContent:'center',gap:'38px',marginBottom:'14px'}}>
+        {['DAYS','HOURS','MINUTES'].map((l,i)=>(
+          <span key={i} style={{color:'rgba(255,255,255,0.45)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.16em'}}>{l}</span>
         ))}
       </div>
       <div style={{display:'flex',justifyContent:'space-between',marginTop:'4px'}}>
@@ -375,7 +281,7 @@ function HomePanel({ visible, onEnter, time }) {
       transition:'opacity 0.6s ease',
       opacity: visible ? 1 : 0,
       display:'flex', alignItems:'center',
-      padding:'80px 60px 40px',
+      padding:'30px 60px 40px',
       background: visible ? 'linear-gradient(90deg,rgba(0,0,0,0.72) 45%,rgba(0,0,0,0.2) 100%)' : 'transparent',
     }}>
       <div style={{flex:1, maxWidth:'520px'}}>
@@ -398,7 +304,7 @@ function HomePanel({ visible, onEnter, time }) {
           textShadow:'0 0 40px rgba(255,255,255,0.2)',
           marginBottom:'2px',
           animation:'titleFlicker 6s ease-in-out infinite',
-        }}>CYBER<br/>FEST</div>
+        }}>RIVIERA<br/>FEST</div>
 
         <div style={{
           fontFamily:"'Orbitron',sans-serif", fontWeight:900,
@@ -519,7 +425,7 @@ function ScrollIndicator({ visible }) {
 function FillerBar({ progress, label }) {
   return (
     <div style={{
-      position:'fixed', top:'58px', left:0, right:0, zIndex:190,
+      position:'fixed', top:0, left:0, right:0, zIndex:190,
       padding:'0 0 0 0',
     }}>
       <div style={{
@@ -1124,7 +1030,7 @@ export default function App() {
       sharedRefs.vel.current    += dy * 0.000016
       sharedRefs.targetT.current = -1
       sharedRefs.yaw.current    -= dx * 0.0022
-      sharedRefs.autoYaw.current = false
+      sharedRefs.autoYaw.current = true
     }
     window.addEventListener('wheel', onWheel, { passive: false })
     return () => window.removeEventListener('wheel', onWheel)
@@ -1243,7 +1149,6 @@ export default function App() {
           </Canvas>
         </CanvasErrorBoundary>
 
-        <Navbar activeSection={activeNav} onNav={navigateTo} />
         <FillerBar progress={fillerProgress} label={activeSection} />
         <HomePanel
           visible={atHome && !activeSection}
