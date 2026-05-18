@@ -105,7 +105,7 @@ function Switch2DBar() {
     <div
       onClick={() => { window.top.location.href = 'https://www.rivierafest.online/' }}
       style={{
-        position:'fixed', top:0, left:0, right:0,
+        position:'fixed', top:'52px', left:0, right:0,
         zIndex:99999,
         height:'38px',
         display:'flex', alignItems:'center', justifyContent:'center',
@@ -411,49 +411,25 @@ function Navbar({ activeSection, onNav }) {
         })}
       </div>
 
-      <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
-        <button style={{
-          background:'transparent',
-          border:'1px solid rgba(200,40,40,0.6)',
-          borderRadius:'3px', padding:'7px 18px',
-          color:'rgba(255,255,255,0.85)', fontSize:'0.72rem',
-          fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.1em', fontWeight:600,
-          cursor:'pointer',
-          display:'flex', alignItems:'center', gap:'6px',
-          transition:'all 0.2s ease',
-        }}
-          onMouseEnter={e=>{e.currentTarget.style.background='rgba(200,40,40,0.15)';e.currentTarget.style.borderColor='rgba(200,40,40,0.9)'}}
-          onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(200,40,40,0.6)'}}
-          onClick={() => onNav('schedule')}
-        >
-          ENTER GAMES
-          <svg width='10' height='10' viewBox='0 0 10 10' fill='none'>
-            <path d='M2 8L8 2M8 2H3M8 2V7' stroke='rgba(255,255,255,0.7)' strokeWidth='1.4' strokeLinecap='round'/>
-          </svg>
-        </button>
-        <a href='https://www.rivierafest.online/' style={{
-          background:'linear-gradient(135deg,rgba(0,245,255,0.15),rgba(0,180,255,0.1))',
-          border:'1px solid rgba(0,245,255,0.55)',
-          borderRadius:'3px', padding:'7px 16px',
-          color:'#00f5ff', fontSize:'0.72rem',
-          fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.1em', fontWeight:700,
-          cursor:'pointer', textDecoration:'none',
-          display:'flex', alignItems:'center', gap:'6px',
-          transition:'all 0.2s ease',
-          boxShadow:'0 0 10px rgba(0,245,255,0.15)',
-        }}
-          onMouseEnter={e=>{e.currentTarget.style.background='rgba(0,245,255,0.22)';e.currentTarget.style.boxShadow='0 0 18px rgba(0,245,255,0.35)'}}
-          onMouseLeave={e=>{e.currentTarget.style.background='linear-gradient(135deg,rgba(0,245,255,0.15),rgba(0,180,255,0.1))';e.currentTarget.style.boxShadow='0 0 10px rgba(0,245,255,0.15)'}}
-        >
-          <svg width='11' height='11' viewBox='0 0 11 11' fill='none'>
-            <rect x='1' y='1' width='4' height='4' rx='0.5' stroke='#00f5ff' strokeWidth='1.3'/>
-            <rect x='6' y='1' width='4' height='4' rx='0.5' stroke='#00f5ff' strokeWidth='1.3'/>
-            <rect x='1' y='6' width='4' height='4' rx='0.5' stroke='#00f5ff' strokeWidth='1.3'/>
-            <rect x='6' y='6' width='4' height='4' rx='0.5' stroke='#00f5ff' strokeWidth='1.3'/>
-          </svg>
-          SWITCH TO 2D
-        </a>
-      </div>
+      <button style={{
+        background:'transparent',
+        border:'1px solid rgba(200,40,40,0.6)',
+        borderRadius:'3px', padding:'7px 18px',
+        color:'rgba(255,255,255,0.85)', fontSize:'0.72rem',
+        fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.1em', fontWeight:600,
+        cursor:'pointer',
+        display:'flex', alignItems:'center', gap:'6px',
+        transition:'all 0.2s ease',
+      }}
+        onMouseEnter={e=>{e.currentTarget.style.background='rgba(200,40,40,0.15)';e.currentTarget.style.borderColor='rgba(200,40,40,0.9)'}}
+        onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(200,40,40,0.6)'}}
+        onClick={() => onNav('schedule')}
+      >
+        ENTER GAMES
+        <svg width='10' height='10' viewBox='0 0 10 10' fill='none'>
+          <path d='M2 8L8 2M8 2H3M8 2V7' stroke='rgba(255,255,255,0.7)' strokeWidth='1.4' strokeLinecap='round'/>
+        </svg>
+      </button>
     </nav>
   )
 }
