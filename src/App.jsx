@@ -99,6 +99,45 @@ function catmullRomYaw(t,wps){
   return y1+m1*f+(-3*d12+2*m1+m2)*t2+(2*d12-m1-m2)*t3
 }
 
+// ─── Always-Visible Switch to 2D Bar ────────────────────────────────────────
+function Switch2DBar() {
+  return (
+    <a href='https://www.rivierafest.online/'
+      style={{
+        position:'fixed', top:0, left:0, right:0,
+        zIndex:99999,
+        height:'38px',
+        display:'flex', alignItems:'center', justifyContent:'center',
+        gap:'10px',
+        background:'rgba(0,4,10,0.95)',
+        borderBottom:'1px solid rgba(0,245,255,0.3)',
+        backdropFilter:'blur(10px)',
+        textDecoration:'none',
+        cursor:'pointer',
+        transition:'background 0.2s ease',
+      }}
+      onMouseEnter={e=>e.currentTarget.style.background='rgba(0,245,255,0.12)'}
+      onMouseLeave={e=>e.currentTarget.style.background='rgba(0,4,10,0.95)'}
+    >
+      <svg width='12' height='12' viewBox='0 0 12 12' fill='none'>
+        <rect x='0.5' y='0.5' width='4.5' height='4.5' rx='0.5' stroke='#00f5ff' strokeWidth='1.2'/>
+        <rect x='7' y='0.5' width='4.5' height='4.5' rx='0.5' stroke='#00f5ff' strokeWidth='1.2'/>
+        <rect x='0.5' y='7' width='4.5' height='4.5' rx='0.5' stroke='#00f5ff' strokeWidth='1.2'/>
+        <rect x='7' y='7' width='4.5' height='4.5' rx='0.5' stroke='#00f5ff' strokeWidth='1.2'/>
+      </svg>
+      <span style={{
+        fontFamily:"'Orbitron',sans-serif",
+        fontSize:'0.65rem', fontWeight:700,
+        letterSpacing:'0.22em', color:'#00f5ff',
+        textTransform:'uppercase',
+      }}>SWITCH TO 2D</span>
+      <svg width='9' height='9' viewBox='0 0 9 9' fill='none'>
+        <path d='M1.5 7.5L7.5 1.5M7.5 1.5H3M7.5 1.5V6' stroke='#00f5ff' strokeWidth='1.3' strokeLinecap='round'/>
+      </svg>
+    </a>
+  )
+}
+
 // ─── Loading Screen ─────────────────────────────────────────────────────────
 function LoadingScreen({ fading }) {
   const [dots, setDots] = useState('')
@@ -391,7 +430,7 @@ function Navbar({ activeSection, onNav }) {
             <path d='M2 8L8 2M8 2H3M8 2V7' stroke='rgba(255,255,255,0.7)' strokeWidth='1.4' strokeLinecap='round'/>
           </svg>
         </button>
-        <a href='https://www.rivierafest.online/' target='_blank' rel='noopener noreferrer' style={{
+        <a href='https://www.rivierafest.online/' style={{
           background:'linear-gradient(135deg,rgba(0,245,255,0.15),rgba(0,180,255,0.1))',
           border:'1px solid rgba(0,245,255,0.55)',
           borderRadius:'3px', padding:'7px 16px',
@@ -1418,7 +1457,8 @@ export default function App() {
         ::-webkit-scrollbar-track { background: transparent }
       `}</style>
 
-      <div style={{ width:'100vw', height:'100vh', overflow:'hidden', background:'#030a0f' }}>
+      <Switch2DBar />
+      <div style={{ width:'100vw', height:'100vh', overflow:'hidden', background:'#030a0f', paddingTop:'38px' }}>
         <CanvasErrorBoundary>
           <Canvas
             camera={{ fov:65, near:1, far:9000000 }}
