@@ -99,42 +99,39 @@ function catmullRomYaw(t,wps){
   return y1+m1*f+(-3*d12+2*m1+m2)*t2+(2*d12-m1-m2)*t3
 }
 
-// ─── Always-Visible Switch to 2D Bar ────────────────────────────────────────
+// ─── Switch to 2D Button (small, below Enter Games) ─────────────────────────
 function Switch2DBar() {
   return (
     <div
       onClick={() => { window.top.location.href = 'https://www.rivierafest.online/' }}
       style={{
-        position:'fixed', top:'52px', left:0, right:0,
+        position:'fixed', top:'52px', right:'24px',
         zIndex:99999,
-        height:'38px',
-        display:'flex', alignItems:'center', justifyContent:'center',
-        gap:'10px',
-        background:'rgba(0,4,10,0.95)',
-        borderBottom:'1px solid rgba(0,245,255,0.3)',
-        backdropFilter:'blur(10px)',
-        textDecoration:'none',
+        display:'flex', alignItems:'center', gap:'6px',
+        padding:'7px 18px',
+        background:'transparent',
+        border:'1px solid rgba(0,245,255,0.6)',
+        borderRadius:'3px',
         cursor:'pointer',
-        transition:'background 0.2s ease',
+        transition:'all 0.2s ease',
+        backdropFilter:'blur(8px)',
       }}
-      onMouseEnter={e=>e.currentTarget.style.background='rgba(0,245,255,0.12)'}
-      onMouseLeave={e=>e.currentTarget.style.background='rgba(0,4,10,0.95)'}
+      onMouseEnter={e=>{e.currentTarget.style.background='rgba(0,245,255,0.12)';e.currentTarget.style.borderColor='rgba(0,245,255,0.9)'}}
+      onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(0,245,255,0.55)'}}
     >
-      <svg width='12' height='12' viewBox='0 0 12 12' fill='none'>
-        <rect x='0.5' y='0.5' width='4.5' height='4.5' rx='0.5' stroke='#00f5ff' strokeWidth='1.2'/>
-        <rect x='7' y='0.5' width='4.5' height='4.5' rx='0.5' stroke='#00f5ff' strokeWidth='1.2'/>
-        <rect x='0.5' y='7' width='4.5' height='4.5' rx='0.5' stroke='#00f5ff' strokeWidth='1.2'/>
-        <rect x='7' y='7' width='4.5' height='4.5' rx='0.5' stroke='#00f5ff' strokeWidth='1.2'/>
+      <svg width='10' height='10' viewBox='0 0 10 10' fill='none'>
+        <rect x='0.5' y='0.5' width='3.5' height='3.5' rx='0.4' stroke='#00f5ff' strokeWidth='1.1'/>
+        <rect x='6' y='0.5' width='3.5' height='3.5' rx='0.4' stroke='#00f5ff' strokeWidth='1.1'/>
+        <rect x='0.5' y='6' width='3.5' height='3.5' rx='0.4' stroke='#00f5ff' strokeWidth='1.1'/>
+        <rect x='6' y='6' width='3.5' height='3.5' rx='0.4' stroke='#00f5ff' strokeWidth='1.1'/>
       </svg>
       <span style={{
-        fontFamily:"'Orbitron',sans-serif",
-        fontSize:'0.65rem', fontWeight:700,
-        letterSpacing:'0.22em', color:'#00f5ff',
+        fontFamily:"'Rajdhani',sans-serif",
+        fontSize:'0.72rem', fontWeight:700,
+        letterSpacing:'0.1em', color:'#00f5ff',
         textTransform:'uppercase',
+        whiteSpace:'nowrap',
       }}>SWITCH TO 2D</span>
-      <svg width='9' height='9' viewBox='0 0 9 9' fill='none'>
-        <path d='M1.5 7.5L7.5 1.5M7.5 1.5H3M7.5 1.5V6' stroke='#00f5ff' strokeWidth='1.3' strokeLinecap='round'/>
-      </svg>
     </div>
   )
 }
