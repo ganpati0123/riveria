@@ -58,6 +58,16 @@ const DIRECTION_LOCK_PX       = 12
 // ─── Target date for countdown (change as needed) ─────────────────────────
 const EVENT_DATE = new Date('2026-05-18T00:00:00')
 
+function useWindowWidth() {
+  const [w, setW] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024)
+  useEffect(() => {
+    const h = () => setW(window.innerWidth)
+    window.addEventListener('resize', h)
+    return () => window.removeEventListener('resize', h)
+  }, [])
+  return w
+}
+
 function useCountdown() {
   const [time, setTime] = useState({ d:0, h:0, m:0, s:0 })
   useEffect(() => {
@@ -351,101 +361,164 @@ function NeonCorners({ color='#00f5ff', size=28, thick=3 }) {
 // ─── Riviera Navbar ─────────────────────────────────────────────────────────
 function Navbar({ activeSection, onNav }) {
   const links = ['Home','Schedule','Activities','Sponsors','Gallery','Contact']
+  const [menuOpen, setMenuOpen] = useState(false)
+  const w = useWindowWidth()
+  const isMobile = w <= 500
+
+  const handleNav = (key) => { onNav(key); setMenuOpen(false) }
+
   return (
-    <nav style={{
-      position:'fixed', top:0, left:0, right:0, zIndex:200,
-      display:'flex', alignItems:'center', justifyContent:'space-between',
-      padding:'0 24px',
-      height:'52px',
-      background:'rgba(8,4,4,0.92)',
-      borderBottom:'1px solid rgba(180,20,20,0.18)',
-      backdropFilter:'blur(10px)',
-    }}>
-      <div style={{
-        display:'flex', alignItems:'center', gap:'8px',
-        cursor:'pointer',
-      }} onClick={() => onNav('home')}>
+    <>
+      <nav style={{
+        position:'fixed', top:0, left:0, right:0, zIndex:200,
+        display:'flex', alignItems:'center', justifyContent:'space-between',
+        padding:'0 16px',
+        height:'52px',
+        background:'rgba(8,4,4,0.95)',
+        borderBottom:'1px solid rgba(180,20,20,0.18)',
+        backdropFilter:'blur(10px)',
+      }}>
+        {/* Logo */}
         <div style={{
-          width:'28px', height:'28px',
-          display:'flex', alignItems:'center', justifyContent:'center',
-        }}>
-          <svg width='28' height='28' viewBox='0 0 28 28' fill='none'>
+          display:'flex', alignItems:'center', gap:'8px', cursor:'pointer',
+        }} onClick={() => handleNav('home')}>
+          <svg width='24' height='24' viewBox='0 0 28 28' fill='none'>
             <polygon points='14,2 26,24 2,24' fill='none' stroke='#cc1a1a' strokeWidth='2.2'/>
             <polygon points='14,7 22,21 6,21' fill='#cc1a1a' opacity='0.3'/>
           </svg>
+          <span style={{
+            color:'#ffffff', fontSize: isMobile ? '0.9rem' : '1.05rem', fontWeight:800,
+            fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.22em',
+            textTransform:'uppercase',
+            textShadow:'0 0 12px rgba(200,30,30,0.4)',
+          }}>RIVIERA</span>
         </div>
-        <span style={{
-          color:'#ffffff', fontSize:'1.05rem', fontWeight:800,
-          fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.22em',
-          textTransform:'uppercase',
-          textShadow:'0 0 12px rgba(200,30,30,0.4)',
-        }}>RIVIERA</span>
-      </div>
 
-      <div style={{display:'flex', alignItems:'center', gap:'2px'}}>
-        {links.map(link => {
-          const key = link.toLowerCase()
-          const isActive = activeSection === key
-          return (
-            <button key={link} onClick={() => onNav(key)} style={{
-              background:'none',
-              border: isActive ? '1px solid rgba(220,50,50,0.55)' : '1px solid transparent',
-              borderRadius:'3px',
-              cursor:'pointer',
-              padding:'5px 16px',
-              color: isActive ? '#ffffff' : 'rgba(255,255,255,0.55)',
-              fontSize:'0.8rem',
-              fontFamily:"'Rajdhani',sans-serif",
-              letterSpacing:'0.06em',
-              fontWeight: isActive ? 600 : 400,
-              transition:'all 0.2s ease',
-              whiteSpace:'nowrap',
-            }}
-              onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = 'rgba(255,255,255,0.85)' }}
-              onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = 'rgba(255,255,255,0.55)' }}
-            >
-              {link}
-            </button>
-          )
-        })}
-      </div>
+        {/* Desktop links */}
+        {!isMobile && (
+          <div style={{display:'flex', alignItems:'center', gap:'2px'}}>
+            {links.map(link => {
+              const key = link.toLowerCase()
+              const isActive = activeSection === key
+              return (
+                <button key={link} onClick={() => handleNav(key)} style={{
+                  background:'none',
+                  border: isActive ? '1px solid rgba(220,50,50,0.55)' : '1px solid transparent',
+                  borderRadius:'3px', cursor:'pointer', padding:'5px 16px',
+                  color: isActive ? '#ffffff' : 'rgba(255,255,255,0.55)',
+                  fontSize:'0.8rem', fontFamily:"'Rajdhani',sans-serif",
+                  letterSpacing:'0.06em', fontWeight: isActive ? 600 : 400,
+                  transition:'all 0.2s ease', whiteSpace:'nowrap',
+                }}
+                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.color='rgba(255,255,255,0.85)' }}
+                  onMouseLeave={e => { if (!isActive) e.currentTarget.style.color='rgba(255,255,255,0.55)' }}
+                >{link}</button>
+              )
+            })}
+          </div>
+        )}
 
-      <button style={{
-        background:'transparent',
-        border:'1px solid rgba(200,40,40,0.6)',
-        borderRadius:'3px', padding:'7px 18px',
-        color:'rgba(255,255,255,0.85)', fontSize:'0.72rem',
-        fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.1em', fontWeight:600,
-        cursor:'pointer',
-        display:'flex', alignItems:'center', gap:'6px',
-        transition:'all 0.2s ease',
-      }}
-        onMouseEnter={e=>{e.currentTarget.style.background='rgba(200,40,40,0.15)';e.currentTarget.style.borderColor='rgba(200,40,40,0.9)'}}
-        onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(200,40,40,0.6)'}}
-        onClick={() => onNav('schedule')}
-      >
-        ENTER GAMES
-        <svg width='10' height='10' viewBox='0 0 10 10' fill='none'>
-          <path d='M2 8L8 2M8 2H3M8 2V7' stroke='rgba(255,255,255,0.7)' strokeWidth='1.4' strokeLinecap='round'/>
-        </svg>
-      </button>
-    </nav>
+        {/* Desktop: Enter Games | Mobile: Hamburger */}
+        {!isMobile ? (
+          <button style={{
+            background:'transparent', border:'1px solid rgba(200,40,40,0.6)',
+            borderRadius:'3px', padding:'7px 18px',
+            color:'rgba(255,255,255,0.85)', fontSize:'0.72rem',
+            fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.1em', fontWeight:600,
+            cursor:'pointer', display:'flex', alignItems:'center', gap:'6px',
+            transition:'all 0.2s ease',
+          }}
+            onMouseEnter={e=>{e.currentTarget.style.background='rgba(200,40,40,0.15)';e.currentTarget.style.borderColor='rgba(200,40,40,0.9)'}}
+            onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(200,40,40,0.6)'}}
+            onClick={() => handleNav('schedule')}
+          >
+            ENTER GAMES
+            <svg width='10' height='10' viewBox='0 0 10 10' fill='none'>
+              <path d='M2 8L8 2M8 2H3M8 2V7' stroke='rgba(255,255,255,0.7)' strokeWidth='1.4' strokeLinecap='round'/>
+            </svg>
+          </button>
+        ) : (
+          <button onClick={() => setMenuOpen(o => !o)} style={{
+            background:'transparent', border:'1px solid rgba(0,245,255,0.35)',
+            borderRadius:'4px', padding:'7px 10px',
+            cursor:'pointer', display:'flex', flexDirection:'column',
+            gap:'5px', alignItems:'center', justifyContent:'center',
+            transition:'all 0.2s ease',
+          }}>
+            {menuOpen ? (
+              <svg width='18' height='18' viewBox='0 0 18 18' fill='none'>
+                <line x1='2' y1='2' x2='16' y2='16' stroke='#00f5ff' strokeWidth='2' strokeLinecap='round'/>
+                <line x1='16' y1='2' x2='2' y2='16' stroke='#00f5ff' strokeWidth='2' strokeLinecap='round'/>
+              </svg>
+            ) : (
+              <>
+                <span style={{display:'block',width:'20px',height:'2px',background:'#00f5ff',borderRadius:'2px',boxShadow:'0 0 6px #00f5ff'}}/>
+                <span style={{display:'block',width:'20px',height:'2px',background:'#00f5ff',borderRadius:'2px',boxShadow:'0 0 6px #00f5ff'}}/>
+                <span style={{display:'block',width:'20px',height:'2px',background:'#00f5ff',borderRadius:'2px',boxShadow:'0 0 6px #00f5ff'}}/>
+              </>
+            )}
+          </button>
+        )}
+      </nav>
+
+      {/* Mobile dropdown menu */}
+      {isMobile && menuOpen && (
+        <div style={{
+          position:'fixed', top:'52px', left:0, right:0, zIndex:199,
+          background:'rgba(4,8,16,0.98)', backdropFilter:'blur(12px)',
+          borderBottom:'1px solid rgba(0,245,255,0.2)',
+          animation:'mobileMenuOpen 0.22s ease forwards',
+          overflow:'hidden',
+        }}>
+          {links.map((link, i) => {
+            const key = link.toLowerCase()
+            const isActive = activeSection === key
+            return (
+              <button key={link} onClick={() => handleNav(key)} style={{
+                display:'block', width:'100%', textAlign:'left',
+                padding:'14px 24px',
+                background: isActive ? 'rgba(0,245,255,0.06)' : 'transparent',
+                border:'none',
+                borderBottom: i < links.length-1 ? '1px solid rgba(0,245,255,0.07)' : 'none',
+                borderLeft: isActive ? '3px solid #00f5ff' : '3px solid transparent',
+                color: isActive ? '#00f5ff' : 'rgba(255,255,255,0.7)',
+                fontSize:'0.9rem', fontFamily:"'Rajdhani',sans-serif",
+                fontWeight: isActive ? 700 : 500,
+                letterSpacing:'0.12em', textTransform:'uppercase',
+                cursor:'pointer',
+              }}>{link}</button>
+            )
+          })}
+          <button onClick={() => handleNav('schedule')} style={{
+            display:'block', width:'100%', textAlign:'center',
+            padding:'14px 24px',
+            background:'linear-gradient(135deg,rgba(255,0,128,0.15),rgba(204,0,102,0.1))',
+            border:'none',
+            borderTop:'1px solid rgba(255,0,128,0.2)',
+            color:'#ff0080', fontSize:'0.75rem',
+            fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.18em', fontWeight:700,
+            cursor:'pointer',
+          }}>⚡ ENTER THE GAMES</button>
+        </div>
+      )}
+    </>
   )
 }
 
 // ─── Countdown Box ──────────────────────────────────────────────────────────
-function CountdownBox({ time }) {
+function CountdownBox({ time, isMobile }) {
   const pad = n => String(n).padStart(2,'0')
   return (
     <div style={{
       border:'1.5px solid rgba(0,245,255,0.35)',
       borderRadius:'10px',
       background:'linear-gradient(160deg,rgba(0,10,20,0.9),rgba(0,20,30,0.85))',
-      padding:'18px 22px',
+      padding: isMobile ? '10px 12px' : '18px 22px',
       backdropFilter:'blur(8px)',
       position:'relative',
       boxShadow:'0 0 30px rgba(0,245,255,0.1), inset 0 0 30px rgba(0,0,0,0.5)',
-      minWidth:'300px',
+      minWidth: isMobile ? 'auto' : '300px',
+      width: isMobile ? '100%' : 'auto',
     }}>
       <NeonCorners color='#00f5ff' size={16} thick={2}/>
       <div style={{
@@ -456,19 +529,19 @@ function CountdownBox({ time }) {
         <span style={{color:'#00ff88',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.12em',
           textShadow:'0 0 8px #00ff88', animation:'blinkDot 1.2s ease-in-out infinite'}}>◈ ACTIVE</span>
       </div>
-      <div style={{height:'1px',background:'rgba(0,245,255,0.15)',margin:'8px 0 14px'}}/>
-      <div style={{textAlign:'center',marginBottom:'8px'}}>
+      <div style={{height:'1px',background:'rgba(0,245,255,0.15)',margin: isMobile ? '5px 0 8px' : '8px 0 14px'}}/>
+      <div style={{textAlign:'center',marginBottom: isMobile ? '4px' : '8px'}}>
         <span style={{
-          color:'#ffee00', fontSize:'2.6rem', fontWeight:900,
+          color:'#ffee00', fontSize: isMobile ? '1.6rem' : '2.6rem', fontWeight:900,
           fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.1em',
           textShadow:'0 0 24px rgba(255,238,0,0.7)',
         }}>
           {pad(time.d)}:{pad(time.h)}:{pad(time.m)}
         </span>
       </div>
-      <div style={{display:'flex',justifyContent:'center',gap:'38px',marginBottom:'14px'}}>
+      <div style={{display:'flex',justifyContent:'center',gap: isMobile ? '20px' : '38px',marginBottom: isMobile ? '8px' : '14px'}}>
         {['DAYS','HOURS','MINUTES'].map((l,i)=>(
-          <span key={i} style={{color:'rgba(255,255,255,0.45)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.16em'}}>{l}</span>
+          <span key={i} style={{color:'rgba(255,255,255,0.45)',fontSize:'0.45rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.12em'}}>{l}</span>
         ))}
       </div>
       <div style={{display:'flex',justifyContent:'space-between',marginTop:'4px'}}>
@@ -498,6 +571,80 @@ function CountdownBox({ time }) {
 
 // ─── HOME Panel (shown at waypoint 0) ───────────────────────────────────────
 function HomePanel({ visible, onEnter, time }) {
+  const w = useWindowWidth()
+  const isMobile = w <= 500
+
+  if (isMobile) return (
+    <div style={{
+      position:'fixed', inset:0, zIndex:100,
+      pointerEvents: visible ? 'auto' : 'none',
+      transition:'opacity 0.6s ease',
+      opacity: visible ? 1 : 0,
+      display:'flex', flexDirection:'column', justifyContent:'flex-end',
+      padding:'62px 18px 24px',
+      background: visible ? 'linear-gradient(180deg,rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.82) 60%)' : 'transparent',
+    }}>
+      <div style={{
+        color:'rgba(0,245,255,0.6)', fontSize:'0.48rem',
+        fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.28em',
+        marginBottom:'8px', textAlign:'center',
+      }}>◉ PROTOCOL INITIATED</div>
+
+      <div style={{
+        fontFamily:"'Orbitron',sans-serif", fontWeight:900,
+        fontSize:'2.2rem', lineHeight:1.0, color:'#ffffff',
+        letterSpacing:'0.04em', textAlign:'center',
+        textShadow:'0 0 30px rgba(255,255,255,0.2)',
+        animation:'titleFlicker 6s ease-in-out infinite',
+      }}>RIVIERA FEST</div>
+
+      <div style={{
+        fontFamily:"'Orbitron',sans-serif", fontWeight:900,
+        fontSize:'1.9rem', lineHeight:1.0, textAlign:'center',
+        background:'linear-gradient(90deg,#ff0080,#ff6600)',
+        WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
+        filter:'drop-shadow(0 0 16px #ff008088)',
+        marginBottom:'10px',
+      }}>2026</div>
+
+      <div style={{
+        color:'rgba(0,245,255,0.8)', fontSize:'0.55rem',
+        fontFamily:"'Orbitron',sans-serif", fontWeight:700,
+        letterSpacing:'0.22em', marginBottom:'14px', textAlign:'center',
+      }}>ENTER THE DIGITAL ARENA</div>
+
+      <CountdownBox time={time} isMobile={true}/>
+
+      <div style={{display:'flex',gap:'10px',marginTop:'14px'}}>
+        <button onClick={onEnter} style={{
+          flex:1,
+          background:'linear-gradient(135deg,#ff0080,#cc0066)',
+          border:'none', borderRadius:'6px', padding:'11px 0',
+          color:'#fff', fontSize:'0.62rem',
+          fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.14em', fontWeight:700,
+          cursor:'pointer', boxShadow:'0 0 20px rgba(255,0,128,0.4)',
+        }}>⚡ ENTER GAMES</button>
+        <button style={{
+          flex:1,
+          background:'transparent', border:'1.5px solid rgba(0,245,255,0.4)',
+          borderRadius:'6px', padding:'11px 0',
+          color:'rgba(0,245,255,0.85)', fontSize:'0.62rem',
+          fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.12em',
+          cursor:'pointer',
+        }}>◈ PROTOCOL</button>
+      </div>
+
+      <div style={{display:'flex',justifyContent:'center',gap:'24px',marginTop:'14px'}}>
+        {[['3','DAYS'],['50+','EVENTS'],['10K+','PLAYERS']].map(([val,lbl],i)=>(
+          <div key={i} style={{textAlign:'center'}}>
+            <div style={{color:'#fff',fontSize:'1.1rem',fontWeight:800,fontFamily:"'Orbitron',sans-serif"}}>{val}</div>
+            <div style={{color:'rgba(255,255,255,0.35)',fontSize:'0.45rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.14em'}}>{lbl}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
   return (
     <div style={{
       position:'fixed', inset:0, zIndex:100,
@@ -522,23 +669,17 @@ function HomePanel({ visible, onEnter, time }) {
         <div style={{
           fontFamily:"'Orbitron',sans-serif", fontWeight:900,
           fontSize:'clamp(2.8rem,5vw,4.8rem)',
-          lineHeight:1.0,
-          color:'#ffffff',
-          letterSpacing:'0.04em',
-          textShadow:'0 0 40px rgba(255,255,255,0.2)',
-          marginBottom:'2px',
+          lineHeight:1.0, color:'#ffffff', letterSpacing:'0.04em',
+          textShadow:'0 0 40px rgba(255,255,255,0.2)', marginBottom:'2px',
           animation:'titleFlicker 6s ease-in-out infinite',
         }}>RIVIERA<br/>FEST</div>
 
         <div style={{
           fontFamily:"'Orbitron',sans-serif", fontWeight:900,
           fontSize:'clamp(2.4rem,4.5vw,4.2rem)',
-          lineHeight:1.0,
-          background:'linear-gradient(90deg,#ff0080,#ff6600)',
+          lineHeight:1.0, background:'linear-gradient(90deg,#ff0080,#ff6600)',
           WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
-          letterSpacing:'0.04em',
-          textShadow:'none',
-          marginBottom:'18px',
+          letterSpacing:'0.04em', marginBottom:'18px',
           filter:'drop-shadow(0 0 20px #ff008088)',
         }}>2026</div>
 
@@ -550,10 +691,8 @@ function HomePanel({ visible, onEnter, time }) {
         }}>ENTER THE DIGITAL ARENA</div>
 
         <p style={{
-          color:'rgba(255,255,255,0.6)',
-          fontSize:'0.9rem', lineHeight:1.75,
-          maxWidth:'420px', marginBottom:'32px',
-          fontFamily:"'Rajdhani',sans-serif",
+          color:'rgba(255,255,255,0.6)', fontSize:'0.9rem', lineHeight:1.75,
+          maxWidth:'420px', marginBottom:'32px', fontFamily:"'Rajdhani',sans-serif",
         }}>
           The arena awaits. A convergence of technology, innovation,
           and relentless competition — where only the extraordinary survive.
@@ -563,14 +702,11 @@ function HomePanel({ visible, onEnter, time }) {
         <div style={{display:'flex',gap:'14px',flexWrap:'wrap',marginBottom:'40px'}}>
           <button onClick={onEnter} style={{
             background:'linear-gradient(135deg,#ff0080,#cc0066)',
-            border:'none', borderRadius:'6px',
-            padding:'13px 28px',
+            border:'none', borderRadius:'6px', padding:'13px 28px',
             color:'#fff', fontSize:'0.72rem',
             fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.18em', fontWeight:700,
-            cursor:'pointer',
-            boxShadow:'0 0 28px rgba(255,0,128,0.45)',
-            display:'flex', alignItems:'center', gap:'8px',
-            transition:'all 0.25s ease',
+            cursor:'pointer', boxShadow:'0 0 28px rgba(255,0,128,0.45)',
+            display:'flex', alignItems:'center', gap:'8px', transition:'all 0.25s ease',
           }}
             onMouseEnter={e=>{e.currentTarget.style.boxShadow='0 0 48px rgba(255,0,128,0.7)'}}
             onMouseLeave={e=>{e.currentTarget.style.boxShadow='0 0 28px rgba(255,0,128,0.45)'}}
@@ -578,8 +714,7 @@ function HomePanel({ visible, onEnter, time }) {
             ENTER THE GAMES <span style={{fontSize:'1rem'}}>→</span>
           </button>
           <button style={{
-            background:'transparent',
-            border:'1.5px solid rgba(0,245,255,0.45)',
+            background:'transparent', border:'1.5px solid rgba(0,245,255,0.45)',
             borderRadius:'6px', padding:'13px 28px',
             color:'rgba(0,245,255,0.85)', fontSize:'0.72rem',
             fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.18em',
@@ -587,19 +722,13 @@ function HomePanel({ visible, onEnter, time }) {
           }}
             onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.9)';e.currentTarget.style.color='#00f5ff'}}
             onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.45)';e.currentTarget.style.color='rgba(0,245,255,0.85)'}}
-          >
-            ◈ VIEW PROTOCOL
-          </button>
+          >◈ VIEW PROTOCOL</button>
         </div>
 
         <div style={{display:'flex',gap:'32px'}}>
           {[['3','DAYS'],['50+','EVENTS'],['10K+','PLAYERS']].map(([val,lbl],i)=>(
             <div key={i}>
-              <div style={{
-                color:'#ffffff',fontSize:'1.6rem',fontWeight:800,
-                fontFamily:"'Orbitron',sans-serif",
-                textShadow:'0 0 20px rgba(255,255,255,0.3)',
-              }}>{val}</div>
+              <div style={{color:'#ffffff',fontSize:'1.6rem',fontWeight:800,fontFamily:"'Orbitron',sans-serif",textShadow:'0 0 20px rgba(255,255,255,0.3)'}}>{val}</div>
               <div style={{color:'rgba(255,255,255,0.35)',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.18em'}}>{lbl}</div>
             </div>
           ))}
@@ -607,7 +736,7 @@ function HomePanel({ visible, onEnter, time }) {
       </div>
 
       <div style={{display:'flex',flexDirection:'column',gap:'16px',alignItems:'flex-end',marginLeft:'auto'}}>
-        <CountdownBox time={time}/>
+        <CountdownBox time={time} isMobile={false}/>
       </div>
     </div>
   )
@@ -690,6 +819,8 @@ function FillerBar({ progress, label }) {
 // ─── Full-screen Section Panel ───────────────────────────────────────────────
 function SectionPanel({ section, visible, scrollsLeft }) {
   const absorbed = SCROLL_THRESHOLD - scrollsLeft
+  const pw = useWindowWidth()
+  const isMobile = pw <= 500
   const [isOpen,      setIsOpen]      = useState(false)
   const [closing,     setClosing]     = useState(false)
   const [shownSection,setShownSection]= useState(section)
@@ -736,7 +867,7 @@ function SectionPanel({ section, visible, scrollsLeft }) {
       position:'fixed', inset:0, zIndex:100,
       display:'flex', alignItems:'center', justifyContent:'center',
       pointerEvents: closing ? 'none' : 'auto',
-      padding:'64px 40px 56px',
+      padding: isMobile ? '58px 8px 8px' : '64px 40px 56px',
       animation: closing ? 'overlayClose 0.52s ease forwards' : 'overlayOpen 0.38s ease forwards',
     }}>
       <style>{`
@@ -875,7 +1006,7 @@ function SectionPanel({ section, visible, scrollsLeft }) {
 
         {/* Header */}
         <div style={{
-          padding:'16px 52px 14px', position:'relative', zIndex:5,
+          padding: isMobile ? '10px 16px 10px' : '16px 52px 14px', position:'relative', zIndex:5,
           borderBottom:'1px solid rgba(0,245,255,0.1)',
           flexShrink:0,
           display:'flex', alignItems:'flex-start', justifyContent:'space-between',
@@ -883,26 +1014,26 @@ function SectionPanel({ section, visible, scrollsLeft }) {
         }}>
           <div>
             <div style={{
-              color:'rgba(0,245,255,0.55)', fontSize:'0.5rem',
-              fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.38em',
-              marginBottom:'8px', display:'flex', alignItems:'center', gap:'10px',
+              color:'rgba(0,245,255,0.55)', fontSize:'0.46rem',
+              fontFamily:"'Orbitron',sans-serif", letterSpacing: isMobile ? '0.2em' : '0.38em',
+              marginBottom: isMobile ? '4px' : '8px', display:'flex', alignItems:'center', gap:'8px',
             }}>
-              <span style={{display:'inline-block',width:'28px',height:'1px',background:'rgba(0,245,255,0.45)'}}/>
+              {!isMobile && <span style={{display:'inline-block',width:'28px',height:'1px',background:'rgba(0,245,255,0.45)'}}/>}
               ◈ {info.tag} ◈
-              <span style={{display:'inline-block',width:'28px',height:'1px',background:'rgba(0,245,255,0.45)'}}/>
+              {!isMobile && <span style={{display:'inline-block',width:'28px',height:'1px',background:'rgba(0,245,255,0.45)'}}/>}
             </div>
             <h2 style={{
               color:'#00f5ff', margin:0,
-              fontSize:'clamp(1.7rem,3.2vw,2.5rem)',
+              fontSize: isMobile ? '1.3rem' : 'clamp(1.7rem,3.2vw,2.5rem)',
               fontWeight:900,
               fontFamily:"'Orbitron',sans-serif",
-              letterSpacing:'0.12em',
+              letterSpacing:'0.1em',
               animation:'titleGlitch 8s ease-in-out infinite',
             }}>{info.title}</h2>
           </div>
 
           {/* Scroll counter */}
-          <div style={{display:'flex',gap:'7px',alignItems:'center',flexShrink:0,paddingTop:'10px'}}>
+          <div style={{display:'flex',gap:'5px',alignItems:'center',flexShrink:0,paddingTop: isMobile ? '4px' : '10px'}}>
             {[0,1,2].map(i=>(
               <div key={i} style={{
                 width: i<absorbed?'30px':'10px', height:'10px',
@@ -924,13 +1055,13 @@ function SectionPanel({ section, visible, scrollsLeft }) {
         </div>
 
         {/* Scrollable content */}
-        <div style={{flex:1, minHeight:0, overflowY:'auto', padding:'22px 52px 36px', position:'relative', zIndex:5}}>
+        <div style={{flex:1, minHeight:0, overflowY:'auto', padding: isMobile ? '12px 14px 20px' : '22px 52px 36px', position:'relative', zIndex:5}}>
           {panels[shownSection]}
         </div>
 
         {/* Footer progress */}
         <div style={{
-          padding:'8px 52px 12px', flexShrink:0, zIndex:5, position:'relative',
+          padding: isMobile ? '6px 14px 8px' : '8px 52px 12px', flexShrink:0, zIndex:5, position:'relative',
           borderTop:'1px solid rgba(0,245,255,0.08)',
           background:'rgba(0,0,0,0.55)',
           display:'flex', alignItems:'center', gap:'16px',
@@ -1619,6 +1750,10 @@ export default function App() {
           97% { opacity: 0.85 }
           98% { opacity: 1 }
           99% { opacity: 0.9 }
+        }
+        @keyframes mobileMenuOpen {
+          from { opacity:0; transform:translateY(-8px); }
+          to   { opacity:1; transform:translateY(0); }
         }
         ::-webkit-scrollbar { width: 4px }
         ::-webkit-scrollbar-thumb { background: rgba(0,245,255,0.25); border-radius: 4px }
