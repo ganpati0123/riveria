@@ -795,7 +795,7 @@ function SectionPanel({ section, visible, scrollsLeft }) {
           </div>
         </div>
 
-        <div style={{flex:1, minHeight:0, overflowY:'auto', padding:'24px 36px 24px', position:'relative'}}>
+        <div style={{flex:1, minHeight:0, overflowY:'auto', padding:'24px 36px 48px', position:'relative'}}>
           {panels[section]}
         </div>
 
@@ -903,14 +903,10 @@ function ScheduleContent() {
 // ─── Activities Content ──────────────────────────────────────────────────────
 function ActivitiesContent() {
   const activities = [
-    { sector:'SECTOR-01', tag:'RECON', icon:'◉', name:'Hidden Protocol', desc:'Navigate a web of encoded clues across the arena. Decode, pursue, and outmaneuver rival squads in a high-stakes survival pursuit.', status:'ACTIVE' },
-    { sector:'SECTOR-02', tag:'PERFORMANCE', icon:'♪', name:'Crimson Stage', desc:'Where performance becomes a weapon. Electrifying acts under crimson lights in the most intense cultural showdown.', status:'ACTIVE' },
+    { sector:'RECON-01', tag:'RECON', icon:'◉', name:'Hidden Protocol', desc:'Navigate a web of encoded clues across the arena. Decode, pursue, and outmaneuver rival squads in a high-stakes survival pursuit.', status:'ACTIVE' },
+    { sector:'PERFORMANCE-02', tag:'PERFORMANCE', icon:'♪', name:'Crimson Stage', desc:'Where performance becomes a weapon. Electrifying acts under crimson lights in the most intense cultural showdown.', status:'ACTIVE' },
     { sector:'COMBAT-03', tag:'DIGITAL', icon:'⚙', name:'Digital Combat', desc:'Enter the digital battlefield. Only reflexes, strategy, and ruthless precision will determine the survivors.', status:'ACTIVE' },
     { sector:'TACTICAL-04', tag:'INNOVATION', icon:'◈', name:'Innovation Forge', desc:'A vault of cutting-edge creations and experimental technology. Where visionary minds showcase weapons of innovation.', status:'ACTIVE' },
-    { sector:'SECTOR-05', tag:'MUSIC', icon:'▶', name:'Sonic Assault', desc:'Bass drops and beats collide in a relentless sonic battle. The crowd becomes the arena.', status:'UPCOMING' },
-    { sector:'SECTOR-06', tag:'DESIGN', icon:'✦', name:'Pixel Protocol', desc:'Visual artistry meets tactical precision. Create, compete, and conquer the design domain.', status:'UPCOMING' },
-    { sector:'SECTOR-07', tag:'ROBOTICS', icon:'⚡', name:'Mech Uprising', desc:'Build, program, and deploy. The last machine standing wins glory in the arena.', status:'UPCOMING' },
-    { sector:'SECTOR-08', tag:'QUIZ', icon:'?', name:'Data Extraction', desc:'Knowledge is power. Extract answers faster than rival teams in the high-stakes intelligence war.', status:'UPCOMING' },
   ]
   return (
     <div>
@@ -961,53 +957,52 @@ function ActivitiesContent() {
 // ─── Sponsors Content ────────────────────────────────────────────────────────
 function SponsorsContent() {
   const tiers = [
-    { name:'TIER ALPHA', color:'#00f5ff', glow:'rgba(0,245,255,0.4)', sponsors:['Sprite','Coca-Cola'] },
-    { name:'TIER BETA', color:'#ff0080', glow:'rgba(255,0,128,0.4)', sponsors:['Fanta','Pepsi'] },
-    { name:'TIER GAMMA', color:'rgba(255,215,0,0.9)', glow:'rgba(255,215,0,0.35)', sponsors:['TechCorp','InnoLabs','FutureSys','DataStream'] },
-    { name:'TIER DELTA', color:'rgba(255,255,255,0.5)', glow:'rgba(255,255,255,0.2)', sponsors:['PixelWorks','NeonArts','CodeCraft','ByteForge','SignalRush','GridMind'] },
+    { name:'TIER—ALPHA', color:'#00f5ff', glow:'rgba(0,245,255,0.4)', sponsors:[
+      { name:'Sprite', bg:'#00a651', text:'#ffffff', font:'Georgia,serif', style:'italic' },
+      { name:'Coca-Cola', bg:'#e61c24', text:'#ffffff', font:'Georgia,serif', style:'italic' },
+    ]},
+    { name:'TIER—BRAVO', color:'#ff0080', glow:'rgba(255,0,128,0.4)', sponsors:[
+      { name:'FANTA', bg:'#ff6b00', text:'#ffffff', font:"'Orbitron',sans-serif", style:'normal' },
+      { name:'PEPSI', bg:'#004b93', text:'#ffffff', font:"'Orbitron',sans-serif", style:'normal' },
+    ]},
   ]
-  const sponsorColors = {
-    'Sprite':  { bg:'#00a651', text:'#ffffff' },
-    'Coca-Cola':{ bg:'#e61c24', text:'#ffffff' },
-    'Fanta':   { bg:'#ff6b00', text:'#ffffff' },
-    'Pepsi':   { bg:'#004b93', text:'#ffffff' },
-  }
   return (
     <div>
-      <div style={{textAlign:'center',marginBottom:'22px'}}>
+      <div style={{textAlign:'center',marginBottom:'28px'}}>
         <div style={{color:'rgba(0,245,255,0.5)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.3em',marginBottom:'8px'}}>◈ STRATEGIC ALLIES ◈</div>
         <p style={{color:'rgba(255,255,255,0.45)',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif"}}>Organizations powering the games from behind the line.</p>
       </div>
       {tiers.map((tier,ti)=>(
-        <div key={ti} style={{marginBottom:'22px',animation:`revealUp 0.4s ${ti*0.1}s both`}}>
-          <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'12px'}}>
+        <div key={ti} style={{marginBottom:'28px',animation:`revealUp 0.4s ${ti*0.1}s both`}}>
+          <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'16px'}}>
             <div style={{flex:1,height:'1px',background:`linear-gradient(90deg,transparent,${tier.color}44)`}}/>
             <span style={{color:tier.color,fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.24em',textShadow:`0 0 12px ${tier.glow}`}}>{tier.name}</span>
             <div style={{flex:1,height:'1px',background:`linear-gradient(90deg,${tier.color}44,transparent)`}}/>
           </div>
-          <div style={{display:'flex',flexWrap:'wrap',gap:'10px'}}>
-            {tier.sponsors.map((sp,si)=>{
-              const sc = sponsorColors[sp]
-              return (
-                <div key={si} style={{
-                  flex: ti<2?'1':'none', minWidth: ti<2?'200px':'120px',
-                  padding: ti<2?'28px 20px':'14px 16px',
-                  borderRadius:'4px',
-                  background: sc ? sc.bg : 'rgba(0,245,255,0.05)',
-                  border: sc ? 'none' : `1px solid ${tier.color}33`,
-                  display:'flex',alignItems:'center',justifyContent:'center',
-                  fontFamily: sc?'Georgia,serif':'Orbitron,sans-serif',
-                  fontStyle: sc?'italic':'normal',
-                  fontWeight: 700,
-                  fontSize: ti<2?'1.2rem':'0.7rem',
-                  color: sc ? sc.text : tier.color,
-                  letterSpacing: sc?'0.02em':'0.1em',
-                  cursor:'default',
-                }}>
-                  {sp}
-                </div>
-              )
-            })}
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'}}>
+            {tier.sponsors.map((sp,si)=>(
+              <div key={si} style={{
+                padding:'40px 24px',
+                borderRadius:'4px',
+                background: sp.bg,
+                border:`2px solid ${tier.color}33`,
+                display:'flex',alignItems:'center',justifyContent:'center',
+                fontFamily: sp.font,
+                fontStyle: sp.style,
+                fontWeight:700,
+                fontSize:'1.6rem',
+                color: sp.text,
+                letterSpacing:'0.02em',
+                boxShadow:`0 0 24px ${tier.glow}`,
+                position:'relative',
+                overflow:'hidden',
+              }}>
+                <div style={{position:'absolute',top:'6px',left:'8px',fontSize:'0.45rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.15em',color:`${sp.text}88`}}>{tier.name}</div>
+                <div style={{position:'absolute',top:'6px',right:'8px',fontSize:'0.45rem',fontFamily:"'Orbitron',sans-serif",color:`${sp.text}88`}}>◉ ACTIVE</div>
+                <div style={{position:'absolute',bottom:'6px',left:'8px',fontSize:'0.45rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em',color:`${sp.text}66`}}>{sp.name.toUpperCase()}</div>
+                {sp.name}
+              </div>
+            ))}
           </div>
         </div>
       ))}
@@ -1017,65 +1012,75 @@ function SponsorsContent() {
 
 // ─── Gallery Content ─────────────────────────────────────────────────────────
 function GalleryContent() {
-  const [active, setActive] = useState(1)
-  const items = [
-    { title:'Cyber Arena 2024', year:'2024', desc:'A convergence of technology and performance under the city\'s neon canopy.' },
-    { title:'Digital Uprising', year:'2024', desc:'Thousands of players, one arena — the most electrifying competition yet.' },
-    { title:'Protocol Night', year:'2023', desc:'When the lights went out and the protocols began — an unforgettable night.' },
-    { title:'Crimson Finals', year:'2023', desc:'Championship battles that rewrote the record books forever.' },
-    { title:'Neon Genesis', year:'2022', desc:'The first edition that started it all — where legends were born.' },
-    { title:'Ghost Signal', year:'2022', desc:'Stealth, strategy, and survival in the arena\'s inaugural season.' },
+  const [sector, setSector] = useState(0)
+  const [expanded, setExpanded] = useState(null)
+
+  const sectors = [
+    {
+      tag:'SECTOR—01', title:'Crimson Stage 2025',
+      desc:'Electrifying performances and relentless energy from the main combat stage.',
+      images:['/img_s1_1.png','/img_s1_2.png','/img_s1_3.png','/img_s1_4.png'],
+    },
+    {
+      tag:'SECTOR—02', title:'Non-Combat Operations',
+      desc:'Tactical creativity, strategic gaming, and high-stakes challenges beyond the digital battlefield.',
+      images:['/img_s2_1.png','/img_s2_2.png','/img_s2_3.png','/img_s2_4.png'],
+    },
+    {
+      tag:'SECTOR—03', title:'Final Domain',
+      desc:'The crowd ignited as the bass dropped in the final arena showdown.',
+      images:['/img_s3_1.png','/img_s3_2.png','/img_s3_3.png','/img_s3_4.png'],
+    },
   ]
+  const s = sectors[sector]
+
   return (
     <div>
-      <div style={{textAlign:'center',marginBottom:'22px'}}>
-        <div style={{color:'rgba(0,245,255,0.5)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.3em',marginBottom:'8px'}}>◈ ARCHIVE FEED ◈</div>
-        <p style={{color:'rgba(255,255,255,0.45)',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif"}}>Chronicles from previous operations. Study the fallen. Learn from the survivors.</p>
+      <div style={{display:'flex',gap:'8px',marginBottom:'20px'}}>
+        {sectors.map((sec,i)=>(
+          <button key={i} onClick={()=>{setSector(i);setExpanded(null)}} style={{
+            background: sector===i?'rgba(255,0,128,0.15)':'transparent',
+            border: sector===i?'1.5px solid rgba(255,0,128,0.6)':'1.5px solid rgba(0,245,255,0.2)',
+            borderRadius:'4px', padding:'7px 18px',
+            color: sector===i?'#ff0080':'rgba(255,255,255,0.45)',
+            fontSize:'0.6rem', fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.16em',
+            cursor:'pointer', transition:'all 0.25s ease',
+            boxShadow: sector===i?'0 0 16px rgba(255,0,128,0.25)':'none',
+          }}>◈ {sec.tag}</button>
+        ))}
       </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:'14px'}}>
-        {items.map((item,i)=>(
-          <div key={i} onClick={()=>setActive(i)} style={{
-            padding:'0', borderRadius:'4px', overflow:'hidden',
-            border:`1.5px solid ${active===i?'rgba(0,245,255,0.5)':'rgba(0,245,255,0.12)'}`,
-            background:'linear-gradient(160deg,rgba(0,10,20,0.9),rgba(0,5,15,0.7))',
-            cursor:'pointer',
-            animation:`revealUp 0.4s ${i*0.07}s both`,
-            transition:'all 0.3s ease',
-            boxShadow: active===i?'0 0 20px rgba(0,245,255,0.2)':'none',
-          }}>
-            <div style={{
-              height:'120px',
-              background:`linear-gradient(160deg, hsl(${i*40+180},70%,10%), hsl(${i*40+200},60%,6%))`,
-              display:'flex',alignItems:'center',justifyContent:'center',
-              borderBottom:'1px solid rgba(0,245,255,0.1)',
-              position:'relative', overflow:'hidden',
-            }}>
-              <div style={{
-                position:'absolute',inset:0,
-                backgroundImage:'linear-gradient(rgba(0,245,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,255,0.03) 1px,transparent 1px)',
-                backgroundSize:'20px 20px',
-              }}/>
-              <div style={{
-                fontFamily:"'Orbitron',sans-serif",fontWeight:900,
-                fontSize:'2.5rem',color:'rgba(0,245,255,0.06)',
-                letterSpacing:'0.2em',position:'absolute',
-              }}>IMG</div>
-              <div style={{
-                border:'1px solid rgba(0,245,255,0.25)',
-                borderRadius:'50%',width:'40px',height:'40px',
-                display:'flex',alignItems:'center',justifyContent:'center',
-                color:'rgba(0,245,255,0.5)',fontSize:'1.2rem',zIndex:1,
-              }}>◈</div>
-            </div>
-            <div style={{padding:'12px 14px'}}>
-              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'5px'}}>
-                <div style={{color:'#ffffff',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,textTransform:'uppercase',letterSpacing:'0.06em'}}>{item.title}</div>
-                <span style={{color:'rgba(0,245,255,0.5)',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",border:'1px solid rgba(0,245,255,0.25)',borderRadius:'3px',padding:'1px 6px'}}>{item.year}</span>
-              </div>
-              <div style={{color:'rgba(255,255,255,0.45)',fontSize:'0.75rem',fontFamily:"'Rajdhani',sans-serif",lineHeight:1.4}}>{item.desc}</div>
-            </div>
+
+      <div style={{marginBottom:'16px'}}>
+        <div style={{color:'rgba(0,245,255,0.5)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.2em',marginBottom:'4px'}}>{s.tag}</div>
+        <div style={{color:'#ffffff',fontSize:'1.3rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:'4px'}}>{s.title}</div>
+        <div style={{color:'rgba(255,255,255,0.5)',fontSize:'0.8rem',fontFamily:"'Rajdhani',sans-serif"}}>{s.desc}</div>
+      </div>
+
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gridTemplateRows:'200px 200px',gap:'8px'}}>
+        <div
+          style={{gridRow:'1 / span 2',position:'relative',overflow:'hidden',borderRadius:'4px',border:'1px solid rgba(0,245,255,0.2)',cursor:'pointer'}}
+          onClick={()=>setExpanded(expanded===0?null:0)}
+        >
+          <img src={s.images[0]} alt="" style={{width:'100%',height:'100%',objectFit:'cover',transition:'transform 0.3s ease',transform:expanded===0?'scale(1.05)':'scale(1)'}}/>
+          {expanded===0 && <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,0.4)',display:'flex',alignItems:'flex-end',padding:'12px'}}>
+            <span style={{color:'rgba(0,245,255,0.8)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>◉ FILE 01</span>
+          </div>}
+        </div>
+        {[1,2,3].map(idx=>(
+          <div key={idx}
+            style={{position:'relative',overflow:'hidden',borderRadius:'4px',border:`1px solid ${expanded===idx?'rgba(0,245,255,0.5)':'rgba(0,245,255,0.2)'}`,cursor:'pointer',transition:'border-color 0.2s'}}
+            onClick={()=>setExpanded(expanded===idx?null:idx)}
+          >
+            <img src={s.images[idx]} alt="" style={{width:'100%',height:'100%',objectFit:'cover',transition:'transform 0.3s ease',transform:expanded===idx?'scale(1.05)':'scale(1)'}}/>
+            {expanded===idx && <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,0.4)',display:'flex',alignItems:'flex-end',padding:'8px'}}>
+              <span style={{color:'rgba(0,245,255,0.8)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>◉ FILE 0{idx+1}</span>
+            </div>}
           </div>
         ))}
+      </div>
+
+      <div style={{marginTop:'10px',display:'flex',justifyContent:'flex-end'}}>
+        <span style={{color:'rgba(255,0,128,0.7)',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.15em',cursor:'default'}}>ACCESS {s.images.length} FILES ›</span>
       </div>
     </div>
   )
@@ -1084,91 +1089,85 @@ function GalleryContent() {
 // ─── Contact Content ─────────────────────────────────────────────────────────
 function ContactContent() {
   const people = [
-    { role:'Website, App\nand Payments', img:'👨‍💻' },
-    { role:'Registrations\nand Correspondence', img:'👩‍💼' },
-    { role:'Logistics and\nOperations', img:'👨‍💼' },
-    { role:'Sponsorships\nand Company\nCollaborations', img:'🧑‍💼' },
-    { role:'Reception and\nAccommodation', img:'👩‍🦰' },
-    { role:'Online\nCollaborations\nand Publicity', img:'👨‍🦱' },
-    { role:'Guest Lectures\nand Paper\nPresentation', img:'👩‍🔬' },
-    { role:'General Secretary,\nStudents\' Union', img:'🧑' },
-    { role:'President,\nStudents\' Union', img:'🕶️' },
+    { name:'HARSHITA', phone:'7209593920', img:'/harshita.png' },
+    { name:'BIBHUTI BISHAL', phone:'6201371315', img:'/bibhuti.png' },
   ]
   return (
     <div>
-      <div style={{textAlign:'center',marginBottom:'22px'}}>
+      <div style={{textAlign:'center',marginBottom:'28px'}}>
         <div style={{color:'rgba(0,245,255,0.5)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.3em',marginBottom:'8px'}}>◈ COMMUNICATIONS ◈</div>
-        <p style={{color:'rgba(255,255,255,0.45)',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif"}}>Reach the command units directly. Every sector has a handler.</p>
+        <p style={{color:'rgba(255,255,255,0.45)',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif"}}>Reach the command units directly.</p>
       </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(150px,1fr))',gap:'12px',marginBottom:'24px'}}>
+
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'24px',maxWidth:'600px',margin:'0 auto 32px'}}>
         {people.map((p,i)=>(
           <div key={i} style={{
-            border:'1.5px solid rgba(0,245,255,0.18)',
-            borderRadius:'4px', overflow:'hidden',
-            background:'linear-gradient(160deg,rgba(0,10,20,0.9),rgba(0,5,15,0.7))',
-            animation:`revealUp 0.4s ${i*0.05}s both`,
-            cursor:'default',
+            border:'1.5px solid rgba(0,245,255,0.25)',
+            borderRadius:'6px', overflow:'hidden',
+            background:'linear-gradient(160deg,rgba(0,10,20,0.95),rgba(0,5,15,0.8))',
+            animation:`revealUp 0.4s ${i*0.1}s both`,
             transition:'all 0.3s ease',
           }}
-            onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.5)';e.currentTarget.style.boxShadow='0 0 16px rgba(0,245,255,0.15)'}}
-            onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.18)';e.currentTarget.style.boxShadow='none'}}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.6)';e.currentTarget.style.boxShadow='0 0 24px rgba(0,245,255,0.15)'}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.25)';e.currentTarget.style.boxShadow='none'}}
           >
             <div style={{
-              height:'100px', position:'relative', overflow:'hidden',
-              background:'linear-gradient(160deg,rgba(0,20,40,0.9),rgba(0,10,20,0.7))',
-              borderBottom:'1px solid rgba(0,245,255,0.1)',
-              display:'flex',alignItems:'center',justifyContent:'center',
+              width:'100%', aspectRatio:'1/1', overflow:'hidden',
+              borderBottom:'1px solid rgba(0,245,255,0.15)',
+              position:'relative',
             }}>
-              <div style={{
-                position:'absolute',inset:0,
-                backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(0,245,255,0.02) 4px,rgba(0,245,255,0.02) 5px)',
+              <img src={p.img} alt={p.name} style={{
+                width:'100%',height:'100%',objectFit:'cover',objectPosition:'center top',
+                display:'block',
               }}/>
               <div style={{
-                width:'56px',height:'56px',borderRadius:'4px',
-                background:'rgba(0,245,255,0.08)',
-                border:'1px solid rgba(0,245,255,0.25)',
-                display:'flex',alignItems:'center',justifyContent:'center',
-                fontSize:'1.8rem',zIndex:1,
-              }}>{p.img}</div>
-              <div style={{
-                position:'absolute',bottom:'4px',right:'6px',
-                width:'8px',height:'8px',borderRadius:'50%',
-                background:'rgba(0,0,0,0.8)',
-                border:'1px solid rgba(0,245,255,0.3)',
-                display:'flex',alignItems:'center',justifyContent:'center',
-              }}>
-                <div style={{width:'4px',height:'4px',borderRadius:'50%',background:'rgba(0,245,255,0.6)'}}/>
-              </div>
+                position:'absolute',inset:0,
+                background:'linear-gradient(to bottom,transparent 60%,rgba(0,0,0,0.5))',
+              }}/>
             </div>
-            <div style={{padding:'10px 10px'}}>
+            <div style={{padding:'14px 14px 16px',textAlign:'center'}}>
               <div style={{
-                color:'rgba(0,245,255,0.9)',fontSize:'0.66rem',
-                fontFamily:"'Rajdhani',sans-serif",fontWeight:700,
-                textAlign:'center',lineHeight:1.35,letterSpacing:'0.02em',
-                whiteSpace:'pre-line',
-              }}>{p.role}</div>
+                color:'#ffffff',fontSize:'0.9rem',
+                fontFamily:"'Orbitron',sans-serif",fontWeight:700,
+                letterSpacing:'0.08em',marginBottom:'8px',
+              }}>{p.name}</div>
+              <a href={`tel:+91${p.phone}`} style={{
+                display:'inline-flex',alignItems:'center',gap:'6px',
+                color:'rgba(0,245,255,0.9)',
+                fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:600,
+                letterSpacing:'0.05em',textDecoration:'none',
+                border:'1px solid rgba(0,245,255,0.3)',
+                borderRadius:'3px',padding:'5px 12px',
+                transition:'all 0.2s ease',
+              }}
+                onMouseEnter={e=>{e.currentTarget.style.background='rgba(0,245,255,0.1)'}}
+                onMouseLeave={e=>{e.currentTarget.style.background='transparent'}}
+              >
+                <span style={{fontSize:'0.7rem'}}>📞</span> {p.phone}
+              </a>
             </div>
           </div>
         ))}
       </div>
+
       <div style={{
-        display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'12px',
-        borderTop:'1px solid rgba(0,245,255,0.1)',paddingTop:'18px',
+        display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'12px',
+        borderTop:'1px solid rgba(0,245,255,0.1)',paddingTop:'20px',
+        maxWidth:'600px',margin:'0 auto',
       }}>
         {[
-          {icon:'✉', label:'info@cyberfest2026.com'},
-          {icon:'📞', label:'+91 9142047263'},
-          {icon:'📍', label:'HIT Campus, West Bengal'},
+          {icon:'✉', label:'rivierafest2026@hit.ac.in'},
+          {icon:'📍', label:'HIT Haldia, Purba Medinipur, WB'},
         ].map((c,i)=>(
           <div key={i} style={{
             display:'flex',gap:'10px',alignItems:'center',
-            padding:'10px 14px',
+            padding:'12px 16px',
             border:'1px solid rgba(0,245,255,0.12)',
             borderRadius:'4px',
             background:'rgba(0,245,255,0.03)',
           }}>
             <div style={{fontSize:'1.1rem'}}>{c.icon}</div>
-            <span style={{color:'rgba(255,255,255,0.6)',fontSize:'0.7rem',fontFamily:"'Rajdhani',sans-serif"}}>{c.label}</span>
+            <span style={{color:'rgba(255,255,255,0.6)',fontSize:'0.75rem',fontFamily:"'Rajdhani',sans-serif"}}>{c.label}</span>
           </div>
         ))}
       </div>
