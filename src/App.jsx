@@ -456,6 +456,7 @@ function Navbar({ activeSection, onNav }) {
         </a>
       </div>
     </nav>
+    </>
   )
 }
 
