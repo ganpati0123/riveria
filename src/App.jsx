@@ -311,7 +311,7 @@ function Scene({ sharedRefs, onReady }) {
       sharedRefs.pathT.current+=sharedRefs.vel.current
       if(sharedRefs.pathT.current<=0){sharedRefs.pathT.current=0;if(sharedRefs.vel.current<0)sharedRefs.vel.current=0}
       if(sharedRefs.pathT.current>=maxT){sharedRefs.pathT.current=maxT;if(sharedRefs.vel.current>0)sharedRefs.vel.current=0}
-      sharedRefs.vel.current*=0.88
+      sharedRefs.vel.current*=0.93
       if(Math.abs(sharedRefs.vel.current)<0.000006)sharedRefs.vel.current=0
     }
     camera.position.copy(catmullRomPoint(sharedRefs.pathT.current,wps.current))
@@ -1494,7 +1494,7 @@ export default function App() {
       const t = e.touches[0]
       const dx = t.clientX - dragState.x, dy = t.clientY - dragState.y
       dragState.x = t.clientX; dragState.y = t.clientY
-      sharedRefs.vel.current -= dy * 0.00008
+      sharedRefs.vel.current -= dy * 0.0003
       sharedRefs.yaw.current -= dx * 0.0022
     }
     const onTouchEnd = () => {
