@@ -302,10 +302,16 @@ function Scene({ sharedRefs, onReady }) {
       const diff=sharedRefs.targetT.current-sharedRefs.pathT.current
       sharedRefs.pathT.current+=diff*Math.min(1,2.2*dt)
       sharedRefs.vel.current=0
+      const destWpIdx=Math.round(sharedRefs.targetT.current)
+      if(destWpIdx>=0 && destWpIdx<ROAD_YAWS.length){
+        sharedRefs.yaw.current=lerpAngle(sharedRefs.yaw.current,ROAD_YAWS[destWpIdx],Math.min(1,3.5*dt))
+      }
       if(Math.abs(diff)<0.0005){
         sharedRefs.pathT.current=sharedRefs.targetT.current
         sharedRefs.targetT.current=-1
         sharedRefs.autoYaw.current=false
+        if(destWpIdx>=0 && destWpIdx<ROAD_YAWS.length)
+          sharedRefs.yaw.current=ROAD_YAWS[destWpIdx]
       }
     } else {
       sharedRefs.pathT.current+=sharedRefs.vel.current
@@ -1448,11 +1454,7 @@ export default function App() {
     if (wp === undefined) return
     sharedRefs.targetT.current = wp
     sharedRefs.autoYaw.current = false
-    const wpData = sharedRefs.wpsRef.current[wp]
-    if (wpData) {
-      sharedRefs.yaw.current = wpData.yaw
-      sharedRefs.pitch.current = -0.04
-    }
+    sharedRefs.pitch.current = -0.04
     scrollLock.current = { lockedWpIdx: -1, count: 0 }
     setScrollsLeft(SCROLL_THRESHOLD)
     setActiveNav(key)
@@ -1464,6 +1466,7 @@ export default function App() {
     const onUp   = () => { pressed = false }
     const onMove = e => {
       if (!pressed) return
+      if (sharedRefs.targetT.current >= 0) return
       const dx = e.clientX - lastX
       const dy = e.clientY - lastY
       lastX = e.clientX; lastY = e.clientY
@@ -1487,13 +1490,14 @@ export default function App() {
     const onTouchStart = e => {
       const t = e.touches[0]
       dragState.active = true; dragState.x = t.clientX; dragState.y = t.clientY
-      sharedRefs.autoYaw.current = false
+      if (sharedRefs.targetT.current < 0) sharedRefs.autoYaw.current = false
     }
     const onTouchMove = e => {
       if (!dragState.active) return
       const t = e.touches[0]
       const dx = t.clientX - dragState.x, dy = t.clientY - dragState.y
       dragState.x = t.clientX; dragState.y = t.clientY
+      if (sharedRefs.targetT.current >= 0) return
       sharedRefs.vel.current -= dy * 0.0003
       sharedRefs.yaw.current -= dx * 0.0022
     }
