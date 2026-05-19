@@ -110,7 +110,7 @@ function Switch2DBar() {
     <div
       onClick={() => { window.top.location.href = 'https://www.rivierafest.online/' }}
       style={{
-        position:'fixed', top:'52px', right:'24px',
+        position:'fixed', top:'60px', right:'24px',
         zIndex:99999,
         display:'flex', alignItems:'center', gap:'6px',
         padding:'7px 18px',
@@ -432,28 +432,6 @@ function Navbar({ activeSection, onNav }) {
           </svg>
         </button>
 
-        <a href='https://www.rivierafest.online/' target='_blank' rel='noopener noreferrer'
-          style={{
-            background:'transparent',
-            border:'1px solid rgba(0,200,220,0.5)',
-            borderRadius:'3px', padding:'5px 18px',
-            color:'rgba(0,220,255,0.85)', fontSize:'0.65rem',
-            fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.1em', fontWeight:600,
-            cursor:'pointer',
-            display:'flex', alignItems:'center', justifyContent:'center', gap:'5px',
-            transition:'all 0.2s ease',
-            textDecoration:'none',
-            whiteSpace:'nowrap',
-          }}
-          onMouseEnter={e=>{e.currentTarget.style.background='rgba(0,200,220,0.12)';e.currentTarget.style.borderColor='rgba(0,220,255,0.9)'}}
-          onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(0,200,220,0.5)'}}
-        >
-          <svg width='8' height='8' viewBox='0 0 10 10' fill='none'>
-            <rect x='1' y='1' width='8' height='8' rx='1' stroke='rgba(0,220,255,0.7)' strokeWidth='1.3'/>
-            <path d='M3 5h4M5 3l2 2-2 2' stroke='rgba(0,220,255,0.7)' strokeWidth='1.2' strokeLinecap='round'/>
-          </svg>
-          SWITCH TO 2D
-        </a>
       </div>
     </nav>
     </>
@@ -1648,7 +1626,7 @@ export default function App() {
       `}</style>
 
       <Switch2DBar />
-      <div style={{ position:'fixed', top:'52px', left:0, right:0, bottom:0, overflow:'hidden', background:'#030a0f', transform:'translateZ(0)', WebkitTransform:'translateZ(0)' }}>
+      <div style={{ position:'fixed', top:0, left:0, right:0, bottom:0, overflow:'hidden', background:'#030a0f', transform:'translateZ(0)', WebkitTransform:'translateZ(0)' }}>
         <CanvasErrorBoundary>
           <Canvas
             camera={{ fov:65, near:1, far:9000000 }}
