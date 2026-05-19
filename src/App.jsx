@@ -186,33 +186,33 @@ function LoadingScreen({ fading }) {
 
       {/* Logo / title */}
       <div style={{
-        color:'rgba(0,245,255,0.5)', fontSize:'clamp(0.38rem,1.8vw,0.6rem)',
-        letterSpacing:'0.4em', marginBottom:'clamp(6px,2vw,16px)',
+        color:'rgba(0,245,255,0.5)', fontSize:'0.6rem',
+        letterSpacing:'0.4em', marginBottom:'16px',
         animation:'blinkDot 1.5s ease-in-out infinite',
       }}>◉ SYSTEM BOOT</div>
 
       <div style={{
-        fontSize:'clamp(1.2rem,4.5vw,4rem)', fontWeight:900,
+        fontSize:'clamp(2.2rem,6vw,4rem)', fontWeight:900,
         color:'#ffffff', letterSpacing:'0.08em',
         textShadow:'0 0 40px rgba(255,255,255,0.15)',
         lineHeight:1,
       }}>RIVIERA</div>
       <div style={{
-        fontSize:'clamp(1.2rem,4.5vw,4rem)', fontWeight:900,
+        fontSize:'clamp(2.2rem,6vw,4rem)', fontWeight:900,
         letterSpacing:'0.08em', lineHeight:1,
         background:'linear-gradient(90deg,#ff0080,#ff6600)',
         WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
         filter:'drop-shadow(0 0 18px #ff008077)',
-        marginBottom:'clamp(4px,1.5vw,8px)',
+        marginBottom:'8px',
       }}>FEST 2026</div>
 
       <div style={{
-        color:'rgba(0,245,255,0.7)', fontSize:'clamp(0.38rem,1.8vw,0.58rem)',
-        letterSpacing:'0.3em', marginBottom:'clamp(18px,5vw,48px)',
+        color:'rgba(0,245,255,0.7)', fontSize:'0.58rem',
+        letterSpacing:'0.3em', marginBottom:'48px',
       }}>ENTERING THE DIGITAL ARENA</div>
 
       {/* Progress bar */}
-      <div style={{width:'clamp(150px,38vw,380px)', marginBottom:'clamp(6px,2vw,12px)'}}>
+      <div style={{width:'clamp(220px,40vw,380px)', marginBottom:'12px'}}>
         <div style={{
           height:'2px', background:'rgba(0,245,255,0.1)',
           borderRadius:'2px', overflow:'hidden',
@@ -487,7 +487,7 @@ function CountdownBox({ time, isMobile }) {
       <div style={{height:'1px',background:'rgba(0,245,255,0.15)',margin: isMobile ? '5px 0 8px' : '8px 0 14px'}}/>
       <div style={{textAlign:'center',marginBottom: isMobile ? '4px' : '8px'}}>
         <span style={{
-          color:'#ffee00', fontSize: isMobile ? '1.6rem' : '2.6rem', fontWeight:900,
+          color:'#ffee00', fontSize: isMobile ? '1rem' : '2.6rem', fontWeight:900,
           fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.1em',
           textShadow:'0 0 24px rgba(255,238,0,0.7)',
         }}>
@@ -536,18 +536,18 @@ function HomePanel({ visible, onEnter, time }) {
       transition:'opacity 0.6s ease',
       opacity: visible ? 1 : 0,
       display:'flex', flexDirection:'column', justifyContent:'flex-end',
-      padding:'62px 18px 24px',
+      padding:'62px 12px 14px',
       background: visible ? 'linear-gradient(180deg,rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.82) 60%)' : 'transparent',
     }}>
       <div style={{
-        color:'rgba(0,245,255,0.6)', fontSize:'0.48rem',
-        fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.28em',
-        marginBottom:'8px', textAlign:'center',
+        color:'rgba(0,245,255,0.6)', fontSize:'0.38rem',
+        fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.22em',
+        marginBottom:'5px', textAlign:'center',
       }}>◉ PROTOCOL INITIATED</div>
 
       <div style={{
         fontFamily:"'Orbitron',sans-serif", fontWeight:900,
-        fontSize:'2.2rem', lineHeight:1.0, color:'#ffffff',
+        fontSize:'1.35rem', lineHeight:1.0, color:'#ffffff',
         letterSpacing:'0.04em', textAlign:'center',
         textShadow:'0 0 30px rgba(255,255,255,0.2)',
         animation:'titleFlicker 6s ease-in-out infinite',
@@ -555,45 +555,45 @@ function HomePanel({ visible, onEnter, time }) {
 
       <div style={{
         fontFamily:"'Orbitron',sans-serif", fontWeight:900,
-        fontSize:'1.9rem', lineHeight:1.0, textAlign:'center',
+        fontSize:'1.2rem', lineHeight:1.0, textAlign:'center',
         background:'linear-gradient(90deg,#ff0080,#ff6600)',
         WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
         filter:'drop-shadow(0 0 16px #ff008088)',
-        marginBottom:'10px',
+        marginBottom:'6px',
       }}>2026</div>
 
       <div style={{
-        color:'rgba(0,245,255,0.8)', fontSize:'0.55rem',
+        color:'rgba(0,245,255,0.8)', fontSize:'0.42rem',
         fontFamily:"'Orbitron',sans-serif", fontWeight:700,
-        letterSpacing:'0.22em', marginBottom:'14px', textAlign:'center',
+        letterSpacing:'0.18em', marginBottom:'8px', textAlign:'center',
       }}>ENTER THE DIGITAL ARENA</div>
 
       <CountdownBox time={time} isMobile={true}/>
 
-      <div style={{display:'flex',gap:'10px',marginTop:'14px'}}>
+      <div style={{display:'flex',gap:'8px',marginTop:'8px'}}>
         <button onClick={onEnter} style={{
           flex:1,
           background:'linear-gradient(135deg,#ff0080,#cc0066)',
-          border:'none', borderRadius:'6px', padding:'11px 0',
-          color:'#fff', fontSize:'0.62rem',
-          fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.14em', fontWeight:700,
+          border:'none', borderRadius:'6px', padding:'8px 0',
+          color:'#fff', fontSize:'0.52rem',
+          fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.12em', fontWeight:700,
           cursor:'pointer', boxShadow:'0 0 20px rgba(255,0,128,0.4)',
         }}>⚡ ENTER GAMES</button>
         <button style={{
           flex:1,
           background:'transparent', border:'1.5px solid rgba(0,245,255,0.4)',
-          borderRadius:'6px', padding:'11px 0',
-          color:'rgba(0,245,255,0.85)', fontSize:'0.62rem',
-          fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.12em',
+          borderRadius:'6px', padding:'8px 0',
+          color:'rgba(0,245,255,0.85)', fontSize:'0.52rem',
+          fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.1em',
           cursor:'pointer',
         }}>◈ PROTOCOL</button>
       </div>
 
-      <div style={{display:'flex',justifyContent:'center',gap:'24px',marginTop:'14px'}}>
+      <div style={{display:'flex',justifyContent:'center',gap:'18px',marginTop:'8px'}}>
         {[['3','DAYS'],['50+','EVENTS'],['10K+','PLAYERS']].map(([val,lbl],i)=>(
           <div key={i} style={{textAlign:'center'}}>
-            <div style={{color:'#fff',fontSize:'1.1rem',fontWeight:800,fontFamily:"'Orbitron',sans-serif"}}>{val}</div>
-            <div style={{color:'rgba(255,255,255,0.35)',fontSize:'0.45rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.14em'}}>{lbl}</div>
+            <div style={{color:'#fff',fontSize:'0.85rem',fontWeight:800,fontFamily:"'Orbitron',sans-serif"}}>{val}</div>
+            <div style={{color:'rgba(255,255,255,0.35)',fontSize:'0.38rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.12em'}}>{lbl}</div>
           </div>
         ))}
       </div>
