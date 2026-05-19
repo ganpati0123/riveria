@@ -1059,6 +1059,8 @@ function ScheduleContent() {
 
 // ─── Activities Content ──────────────────────────────────────────────────────
 function ActivitiesContent() {
+  const pw = useWindowWidth()
+  const m = pw <= 500
   const activities = [
     { sector:'RECON-01', tag:'RECON', icon:'◉', name:'Hidden Protocol', desc:'Navigate a web of encoded clues across the arena. Decode, pursue, and outmaneuver rival squads in a high-stakes survival pursuit.', status:'ACTIVE' },
     { sector:'PERFORMANCE-02', tag:'PERFORMANCE', icon:'♪', name:'Crimson Stage', desc:'Where performance becomes a weapon. Electrifying acts under crimson lights in the most intense cultural showdown.', status:'ACTIVE' },
@@ -1066,14 +1068,14 @@ function ActivitiesContent() {
   ]
   return (
     <div>
-      <div style={{textAlign:'center',marginBottom:'22px'}}>
-        <div style={{color:'rgba(0,245,255,0.5)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.3em',marginBottom:'8px'}}>◈ COMBAT DOMAINS ◈</div>
-        <p style={{color:'rgba(255,255,255,0.45)',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif"}}>Each domain is a unique trial of skill, strategy, and survival. Choose your battlefield wisely.</p>
+      <div style={{textAlign:'center',marginBottom: m ? '8px' : '22px'}}>
+        <div style={{color:'rgba(0,245,255,0.5)',fontSize: m ? '0.42rem' : '0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.3em',marginBottom: m ? '4px' : '8px'}}>◈ COMBAT DOMAINS ◈</div>
+        {!m && <p style={{color:'rgba(255,255,255,0.45)',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif"}}>Each domain is a unique trial of skill, strategy, and survival. Choose your battlefield wisely.</p>}
       </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'16px'}}>
+      <div style={{display:'grid',gridTemplateColumns: m ? 'repeat(3,1fr)' : 'repeat(3,1fr)',gap: m ? '6px' : '16px'}}>
         {activities.map((a,i)=>(
           <div key={i} style={{
-            padding:'22px 18px', borderRadius:'4px',
+            padding: m ? '8px 6px' : '22px 18px', borderRadius:'4px',
             border:'1px solid rgba(0,245,255,0.15)',
             background:'linear-gradient(160deg,rgba(0,10,20,0.8),rgba(0,5,15,0.6))',
             position:'relative', overflow:'hidden',
@@ -1085,23 +1087,23 @@ function ActivitiesContent() {
             onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.4)';e.currentTarget.style.background='linear-gradient(160deg,rgba(0,20,35,0.9),rgba(0,10,25,0.8))'}}
             onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.15)';e.currentTarget.style.background='linear-gradient(160deg,rgba(0,10,20,0.8),rgba(0,5,15,0.6))'}}
           >
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'12px'}}>
-              <span style={{color:'rgba(0,245,255,0.35)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>{a.sector}</span>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom: m ? '4px' : '12px'}}>
+              <span style={{color:'rgba(0,245,255,0.35)',fontSize: m ? '0.36rem' : '0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.05em'}}>{a.sector}</span>
               <span style={{
-                color:'#00ff88', fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em',
-                border:'1px solid rgba(0,255,136,0.3)',borderRadius:'3px',padding:'1px 5px',
-              }}>◉ ACTIVE</span>
+                color:'#00ff88', fontSize: m ? '0.32rem' : '0.48rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.05em',
+                border:'1px solid rgba(0,255,136,0.3)',borderRadius:'3px',padding: m ? '1px 3px' : '1px 5px',
+              }}>◉ {m ? '' : 'ACTIVE'}</span>
             </div>
-            <div style={{fontSize:'1.8rem',marginBottom:'10px',filter:'drop-shadow(0 0 10px rgba(0,245,255,0.6))'}}>{a.icon}</div>
-            <div style={{color:'#ffffff',fontSize:'1.1rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,letterSpacing:'0.06em',marginBottom:'8px',textTransform:'uppercase'}}>{a.name}</div>
-            <div style={{color:'rgba(255,255,255,0.5)',fontSize:'0.8rem',fontFamily:"'Rajdhani',sans-serif",lineHeight:1.5,marginBottom:'18px',flex:1}}>{a.desc}</div>
+            <div style={{fontSize: m ? '1rem' : '1.8rem',marginBottom: m ? '4px' : '10px',filter:'drop-shadow(0 0 10px rgba(0,245,255,0.6))'}}>{a.icon}</div>
+            <div style={{color:'#ffffff',fontSize: m ? '0.6rem' : '1.1rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,letterSpacing:'0.04em',marginBottom: m ? '3px' : '8px',textTransform:'uppercase'}}>{a.name}</div>
+            <div style={{color:'rgba(255,255,255,0.5)',fontSize: m ? '0.5rem' : '0.8rem',fontFamily:"'Rajdhani',sans-serif",lineHeight:1.4,marginBottom: m ? '6px' : '18px',flex:1}}>{a.desc}</div>
             <button style={{
               background:'transparent',border:'1px solid rgba(0,245,255,0.3)',
-              borderRadius:'3px',padding:'6px 12px',
-              color:'rgba(0,245,255,0.7)',fontSize:'0.52rem',
-              fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.12em',
+              borderRadius:'3px',padding: m ? '3px 4px' : '6px 12px',
+              color:'rgba(0,245,255,0.7)',fontSize: m ? '0.36rem' : '0.52rem',
+              fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.08em',
               cursor:'pointer',width:'100%',
-            }}>ACCESS DOMAIN →</button>
+            }}>ACCESS →</button>
           </div>
         ))}
       </div>
