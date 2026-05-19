@@ -270,25 +270,50 @@ function Navbar({ activeSection, onNav }) {
         })}
       </div>
 
-      <button style={{
-        background:'transparent',
-        border:'1px solid rgba(200,40,40,0.6)',
-        borderRadius:'3px', padding:'7px 18px',
-        color:'rgba(255,255,255,0.85)', fontSize:'0.72rem',
-        fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.1em', fontWeight:600,
-        cursor:'pointer',
-        display:'flex', alignItems:'center', gap:'6px',
-        transition:'all 0.2s ease',
-      }}
-        onMouseEnter={e=>{e.currentTarget.style.background='rgba(200,40,40,0.15)';e.currentTarget.style.borderColor='rgba(200,40,40,0.9)'}}
-        onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(200,40,40,0.6)'}}
-        onClick={() => onNav('schedule')}
-      >
-        ENTER GAMES
-        <svg width='10' height='10' viewBox='0 0 10 10' fill='none'>
-          <path d='M2 8L8 2M8 2H3M8 2V7' stroke='rgba(255,255,255,0.7)' strokeWidth='1.4' strokeLinecap='round'/>
-        </svg>
-      </button>
+      <div style={{display:'flex', flexDirection:'column', gap:'5px', alignItems:'stretch'}}>
+        <button style={{
+          background:'transparent',
+          border:'1px solid rgba(200,40,40,0.6)',
+          borderRadius:'3px', padding:'5px 18px',
+          color:'rgba(255,255,255,0.85)', fontSize:'0.72rem',
+          fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.1em', fontWeight:600,
+          cursor:'pointer',
+          display:'flex', alignItems:'center', justifyContent:'center', gap:'6px',
+          transition:'all 0.2s ease',
+        }}
+          onMouseEnter={e=>{e.currentTarget.style.background='rgba(200,40,40,0.15)';e.currentTarget.style.borderColor='rgba(200,40,40,0.9)'}}
+          onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(200,40,40,0.6)'}}
+          onClick={() => onNav('schedule')}
+        >
+          ENTER GAMES
+          <svg width='9' height='9' viewBox='0 0 10 10' fill='none'>
+            <path d='M2 8L8 2M8 2H3M8 2V7' stroke='rgba(255,255,255,0.7)' strokeWidth='1.4' strokeLinecap='round'/>
+          </svg>
+        </button>
+
+        <a href='https://www.rivierafest.online/' target='_blank' rel='noopener noreferrer'
+          style={{
+            background:'transparent',
+            border:'1px solid rgba(0,200,220,0.5)',
+            borderRadius:'3px', padding:'5px 18px',
+            color:'rgba(0,220,255,0.85)', fontSize:'0.65rem',
+            fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.1em', fontWeight:600,
+            cursor:'pointer',
+            display:'flex', alignItems:'center', justifyContent:'center', gap:'5px',
+            transition:'all 0.2s ease',
+            textDecoration:'none',
+            whiteSpace:'nowrap',
+          }}
+          onMouseEnter={e=>{e.currentTarget.style.background='rgba(0,200,220,0.12)';e.currentTarget.style.borderColor='rgba(0,220,255,0.9)'}}
+          onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(0,200,220,0.5)'}}
+        >
+          <svg width='8' height='8' viewBox='0 0 10 10' fill='none'>
+            <rect x='1' y='1' width='8' height='8' rx='1' stroke='rgba(0,220,255,0.7)' strokeWidth='1.3'/>
+            <path d='M3 5h4M5 3l2 2-2 2' stroke='rgba(0,220,255,0.7)' strokeWidth='1.2' strokeLinecap='round'/>
+          </svg>
+          SWITCH TO 2D
+        </a>
+      </div>
     </nav>
   )
 }
