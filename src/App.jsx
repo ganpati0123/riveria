@@ -1499,12 +1499,6 @@ export default function App() {
     }
     const onTouchEnd = () => {
       dragState.active = false
-      const t = sharedRefs.pathT.current
-      const rounded = Math.round(t)
-      if (Math.abs(t - rounded) < 0.45 && rounded >= 0) {
-        sharedRefs.targetT.current = rounded
-        sharedRefs.vel.current = 0
-      }
     }
     window.addEventListener('touchstart', onTouchStart, { passive: true })
     window.addEventListener('touchmove',  onTouchMove,  { passive: true })
