@@ -468,7 +468,7 @@ function CountdownBox({ time, isMobile }) {
       border:'1.5px solid rgba(0,245,255,0.35)',
       borderRadius:'10px',
       background:'linear-gradient(160deg,rgba(0,10,20,0.9),rgba(0,20,30,0.85))',
-      padding: isMobile ? '10px 12px' : '18px 22px',
+      padding: isMobile ? '6px 8px' : '18px 22px',
       backdropFilter:'blur(8px)',
       position:'relative',
       boxShadow:'0 0 30px rgba(0,245,255,0.1), inset 0 0 30px rgba(0,0,0,0.5)',
@@ -536,7 +536,7 @@ function HomePanel({ visible, onEnter, time }) {
       transition:'opacity 0.6s ease',
       opacity: visible ? 1 : 0,
       display:'flex', flexDirection:'column', justifyContent:'flex-end',
-      padding:'62px 12px 14px',
+      padding:'54px 10px 8px',
       background: visible ? 'linear-gradient(180deg,rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.82) 60%)' : 'transparent',
     }}>
       <div style={{
@@ -547,7 +547,7 @@ function HomePanel({ visible, onEnter, time }) {
 
       <div style={{
         fontFamily:"'Orbitron',sans-serif", fontWeight:900,
-        fontSize:'1.35rem', lineHeight:1.0, color:'#ffffff',
+        fontSize:'0.85rem', lineHeight:1.0, color:'#ffffff',
         letterSpacing:'0.04em', textAlign:'center',
         textShadow:'0 0 30px rgba(255,255,255,0.2)',
         animation:'titleFlicker 6s ease-in-out infinite',
@@ -555,7 +555,7 @@ function HomePanel({ visible, onEnter, time }) {
 
       <div style={{
         fontFamily:"'Orbitron',sans-serif", fontWeight:900,
-        fontSize:'1.2rem', lineHeight:1.0, textAlign:'center',
+        fontSize:'0.75rem', lineHeight:1.0, textAlign:'center',
         background:'linear-gradient(90deg,#ff0080,#ff6600)',
         WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
         filter:'drop-shadow(0 0 16px #ff008088)',
@@ -574,16 +574,16 @@ function HomePanel({ visible, onEnter, time }) {
         <button onClick={onEnter} style={{
           flex:1,
           background:'linear-gradient(135deg,#ff0080,#cc0066)',
-          border:'none', borderRadius:'6px', padding:'8px 0',
-          color:'#fff', fontSize:'0.52rem',
+          border:'none', borderRadius:'6px', padding:'5px 0',
+          color:'#fff', fontSize:'0.42rem',
           fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.12em', fontWeight:700,
           cursor:'pointer', boxShadow:'0 0 20px rgba(255,0,128,0.4)',
         }}>⚡ ENTER GAMES</button>
         <button style={{
           flex:1,
           background:'transparent', border:'1.5px solid rgba(0,245,255,0.4)',
-          borderRadius:'6px', padding:'8px 0',
-          color:'rgba(0,245,255,0.85)', fontSize:'0.52rem',
+          borderRadius:'6px', padding:'5px 0',
+          color:'rgba(0,245,255,0.85)', fontSize:'0.42rem',
           fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.1em',
           cursor:'pointer',
         }}>◈ PROTOCOL</button>
@@ -592,8 +592,8 @@ function HomePanel({ visible, onEnter, time }) {
       <div style={{display:'flex',justifyContent:'center',gap:'18px',marginTop:'8px'}}>
         {[['3','DAYS'],['50+','EVENTS'],['10K+','PLAYERS']].map(([val,lbl],i)=>(
           <div key={i} style={{textAlign:'center'}}>
-            <div style={{color:'#fff',fontSize:'0.85rem',fontWeight:800,fontFamily:"'Orbitron',sans-serif"}}>{val}</div>
-            <div style={{color:'rgba(255,255,255,0.35)',fontSize:'0.38rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.12em'}}>{lbl}</div>
+            <div style={{color:'#fff',fontSize:'0.6rem',fontWeight:800,fontFamily:"'Orbitron',sans-serif"}}>{val}</div>
+            <div style={{color:'rgba(255,255,255,0.35)',fontSize:'0.3rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.12em'}}>{lbl}</div>
           </div>
         ))}
       </div>
@@ -820,12 +820,12 @@ function SectionPanel({ section, visible, scrollsLeft }) {
       position:'fixed', inset:0, zIndex:100,
       display:'flex', alignItems:'center', justifyContent:'center',
       pointerEvents: closing ? 'none' : 'auto',
-      padding: isMobile ? '58px 8px 8px' : '64px 40px 56px',
+      padding: isMobile ? '54px 6px 6px' : '64px 40px 56px',
       animation: closing ? 'overlayClose 0.52s ease forwards' : 'overlayOpen 0.38s ease forwards',
     }}>
       <div style={{
         width:'100%', maxWidth:'1060px',
-        maxHeight:'calc(100vh - 124px)',
+        maxHeight: isMobile ? 'calc(100vh - 70px)' : 'calc(100vh - 124px)',
         background:'linear-gradient(150deg,rgba(0,4,14,0.99) 0%,rgba(0,12,26,0.98) 55%,rgba(0,6,16,0.99) 100%)',
         borderRadius:'3px',
         border:'1.5px solid rgba(0,245,255,0.55)',
@@ -912,7 +912,7 @@ function SectionPanel({ section, visible, scrollsLeft }) {
 
         {/* Header */}
         <div style={{
-          padding: isMobile ? '10px 16px 10px' : '16px 52px 14px', position:'relative', zIndex:5,
+          padding: isMobile ? '6px 10px 6px' : '16px 52px 14px', position:'relative', zIndex:5,
           borderBottom:'1px solid rgba(0,245,255,0.1)',
           flexShrink:0,
           display:'flex', alignItems:'flex-start', justifyContent:'space-between',
@@ -930,7 +930,7 @@ function SectionPanel({ section, visible, scrollsLeft }) {
             </div>
             <h2 style={{
               color:'#00f5ff', margin:0,
-              fontSize: isMobile ? '1.3rem' : 'clamp(1.7rem,3.2vw,2.5rem)',
+              fontSize: isMobile ? '0.8rem' : 'clamp(1.7rem,3.2vw,2.5rem)',
               fontWeight:900,
               fontFamily:"'Orbitron',sans-serif",
               letterSpacing:'0.1em',
@@ -961,7 +961,7 @@ function SectionPanel({ section, visible, scrollsLeft }) {
         </div>
 
         {/* Scrollable content */}
-        <div style={{flex:1, minHeight:0, overflowY:'auto', padding: isMobile ? '12px 14px 20px' : '22px 52px 36px', position:'relative', zIndex:5}}>
+        <div style={{flex:1, minHeight:0, overflowY:'auto', padding: isMobile ? '6px 8px 10px' : '22px 52px 36px', position:'relative', zIndex:5}}>
           {panels[shownSection]}
         </div>
 
