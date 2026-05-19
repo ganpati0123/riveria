@@ -40,6 +40,9 @@ const SECTION_AT = {
   2: 'activities',
   3: 'sponsors',
   4: 'gallery',
+  5: 'gallery1',
+  6: 'gallery2',
+  7: 'gallery3',
   10: 'contact',
 }
 
@@ -695,6 +698,9 @@ function SectionPanel({ section, visible, scrollsLeft }) {
     activities: <ActivitiesContent />,
     sponsors: <SponsorsContent />,
     gallery: <GalleryContent />,
+    gallery1: <GallerySectorContent sectorIndex={0} />,
+    gallery2: <GallerySectorContent sectorIndex={1} />,
+    gallery3: <GallerySectorContent sectorIndex={2} />,
     contact: <ContactContent />,
   }
 
@@ -703,6 +709,9 @@ function SectionPanel({ section, visible, scrollsLeft }) {
     activities: { tag:'COMBAT DOMAINS', title:'ACTIVITIES' },
     sponsors: { tag:'STRATEGIC ALLIES', title:'SPONSORS' },
     gallery: { tag:'ARCHIVE FEED', title:'GALLERY' },
+    gallery1: { tag:'ARCHIVE FEED', title:'SECTOR 01' },
+    gallery2: { tag:'ARCHIVE FEED', title:'SECTOR 02' },
+    gallery3: { tag:'ARCHIVE FEED', title:'SECTOR 03' },
     contact: { tag:'COMMUNICATIONS', title:'CONTACT US' },
   }
   const info = titles[section] || { tag:'', title:'' }
@@ -1005,6 +1014,64 @@ function SponsorsContent() {
           </div>
         </div>
       ))}
+    </div>
+  )
+}
+
+// ─── Single Sector Gallery Content ───────────────────────────────────────────
+const GALLERY_SECTORS = [
+  {
+    tag:'SECTOR—01', title:'Crimson Stage 2025',
+    desc:'Electrifying performances and relentless energy from the main combat stage.',
+    images:['/img_s1_1.png','/img_s1_2.png','/img_s1_3.png','/img_s1_4.png'],
+  },
+  {
+    tag:'SECTOR—02', title:'Non-Combat Operations',
+    desc:'Tactical creativity, strategic gaming, and high-stakes challenges beyond the digital battlefield.',
+    images:['/img_s2_1.png','/img_s2_2.png','/img_s2_3.png','/img_s2_4.png'],
+  },
+  {
+    tag:'SECTOR—03', title:'Final Domain',
+    desc:'The crowd ignited as the bass dropped in the final arena showdown.',
+    images:['/img_s3_1.png','/img_s3_2.png','/img_s3_3.png','/img_s3_4.png'],
+  },
+]
+
+function GallerySectorContent({ sectorIndex }) {
+  const [expanded, setExpanded] = useState(null)
+  const s = GALLERY_SECTORS[sectorIndex]
+  return (
+    <div>
+      <div style={{marginBottom:'16px'}}>
+        <div style={{color:'rgba(0,245,255,0.5)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.2em',marginBottom:'4px'}}>{s.tag}</div>
+        <div style={{color:'#ffffff',fontSize:'1.3rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:'4px'}}>{s.title}</div>
+        <div style={{color:'rgba(255,255,255,0.5)',fontSize:'0.8rem',fontFamily:"'Rajdhani',sans-serif"}}>{s.desc}</div>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gridTemplateRows:'200px 200px',gap:'8px'}}>
+        <div
+          style={{gridRow:'1 / span 2',position:'relative',overflow:'hidden',borderRadius:'4px',border:'1px solid rgba(0,245,255,0.2)',cursor:'pointer'}}
+          onClick={()=>setExpanded(expanded===0?null:0)}
+        >
+          <img src={s.images[0]} alt="" style={{width:'100%',height:'100%',objectFit:'cover',transition:'transform 0.3s ease',transform:expanded===0?'scale(1.05)':'scale(1)'}}/>
+          {expanded===0 && <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,0.4)',display:'flex',alignItems:'flex-end',padding:'12px'}}>
+            <span style={{color:'rgba(0,245,255,0.8)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>◉ FILE 01</span>
+          </div>}
+        </div>
+        {[1,2,3].map(idx=>(
+          <div key={idx}
+            style={{position:'relative',overflow:'hidden',borderRadius:'4px',border:`1px solid ${expanded===idx?'rgba(0,245,255,0.5)':'rgba(0,245,255,0.2)'}`,cursor:'pointer',transition:'border-color 0.2s'}}
+            onClick={()=>setExpanded(expanded===idx?null:idx)}
+          >
+            <img src={s.images[idx]} alt="" style={{width:'100%',height:'100%',objectFit:'cover',transition:'transform 0.3s ease',transform:expanded===idx?'scale(1.05)':'scale(1)'}}/>
+            {expanded===idx && <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,0.4)',display:'flex',alignItems:'flex-end',padding:'8px'}}>
+              <span style={{color:'rgba(0,245,255,0.8)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>◉ FILE 0{idx+1}</span>
+            </div>}
+          </div>
+        ))}
+      </div>
+      <div style={{marginTop:'10px',display:'flex',justifyContent:'flex-end'}}>
+        <span style={{color:'rgba(255,0,128,0.7)',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.15em',cursor:'default'}}>ACCESS {s.images.length} FILES ›</span>
+      </div>
     </div>
   )
 }
