@@ -2,12 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
     <title>CYBERfest 2026 | Enter the Digital Arena</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      html, body, #root { width: 100%; height: 100%; overflow: hidden; }
-      body { background: #030a0f; }
+      html {
+        width: 100%;
+        height: 100%;
+        height: -webkit-fill-available;
+        overflow: hidden;
+      }
+      body {
+        width: 100%;
+        height: 100%;
+        min-height: -webkit-fill-available;
+        overflow: hidden;
+        background: #030a0f;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+      }
+      #root { width: 100%; height: 100%; overflow: hidden; }
     </style>
   </head>
   <body>

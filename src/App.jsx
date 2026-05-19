@@ -536,8 +536,11 @@ function HomePanel({ visible, onEnter, time }) {
       transition:'opacity 0.6s ease',
       opacity: visible ? 1 : 0,
       display:'flex', flexDirection:'column',
-      padding:'12px 10px 10px',
+      padding:'12px 10px env(safe-area-inset-bottom, 10px)',
       background:'linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0.88) 25%)',
+      transform:'translateZ(0)',
+      WebkitTransform:'translateZ(0)',
+      willChange:'transform',
     }}>
       <div style={{
         color:'rgba(0,245,255,0.6)', fontSize:'0.38rem',
