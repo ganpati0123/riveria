@@ -15,33 +15,20 @@ const WP_NAMES = [
   'Object_7',
   'Object_622',
   'Object_1099',
-  'Object_1033',
-  'Object_1108',
   'Bus_stop001_87',
-  'Object_628',
-  'Object_13',
-  'Object_619',
-  'Object_1063',
-  'Object_1015',
-  'Object_1069',
-  'Object_1084',
 ]
 const ROAD_YAWS = [
-  -Math.PI/2, -Math.PI/2, 0, -Math.PI/2, -Math.PI/2,
-  -Math.PI/2, Math.PI, Math.PI, Math.PI/2, Math.PI/2,
-  0, 0, 0,
+  -Math.PI/2, -Math.PI/2, 0, -Math.PI/2,
 ]
 
 // Nav sections → waypoint index
-const NAV_WP = { home:0, schedule:1, activities:2, sponsors:3, gallery:4, contact:5 }
+const NAV_WP = { home:0, schedule:1, activities:2, sponsors:2, gallery:2, contact:3 }
 
 // Section panels shown at these waypoint indices
 const SECTION_AT = {
   1: 'schedule',
   2: 'activities',
-  3: 'sponsors',
-  4: 'gallery',
-  5: 'contact',
+  3: 'contact',
 }
 
 // How many scrolls to fill before advancing
