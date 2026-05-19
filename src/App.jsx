@@ -186,33 +186,33 @@ function LoadingScreen({ fading }) {
 
       {/* Logo / title */}
       <div style={{
-        color:'rgba(0,245,255,0.5)', fontSize:'0.6rem',
-        letterSpacing:'0.4em', marginBottom:'16px',
+        color:'rgba(0,245,255,0.5)', fontSize:'clamp(0.38rem,1.8vw,0.6rem)',
+        letterSpacing:'0.4em', marginBottom:'clamp(6px,2vw,16px)',
         animation:'blinkDot 1.5s ease-in-out infinite',
       }}>◉ SYSTEM BOOT</div>
 
       <div style={{
-        fontSize:'clamp(2.2rem,6vw,4rem)', fontWeight:900,
+        fontSize:'clamp(1.2rem,4.5vw,4rem)', fontWeight:900,
         color:'#ffffff', letterSpacing:'0.08em',
         textShadow:'0 0 40px rgba(255,255,255,0.15)',
         lineHeight:1,
       }}>RIVIERA</div>
       <div style={{
-        fontSize:'clamp(2.2rem,6vw,4rem)', fontWeight:900,
+        fontSize:'clamp(1.2rem,4.5vw,4rem)', fontWeight:900,
         letterSpacing:'0.08em', lineHeight:1,
         background:'linear-gradient(90deg,#ff0080,#ff6600)',
         WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
         filter:'drop-shadow(0 0 18px #ff008077)',
-        marginBottom:'8px',
+        marginBottom:'clamp(4px,1.5vw,8px)',
       }}>FEST 2026</div>
 
       <div style={{
-        color:'rgba(0,245,255,0.7)', fontSize:'0.58rem',
-        letterSpacing:'0.3em', marginBottom:'48px',
+        color:'rgba(0,245,255,0.7)', fontSize:'clamp(0.38rem,1.8vw,0.58rem)',
+        letterSpacing:'0.3em', marginBottom:'clamp(18px,5vw,48px)',
       }}>ENTERING THE DIGITAL ARENA</div>
 
       {/* Progress bar */}
-      <div style={{width:'clamp(220px,40vw,380px)', marginBottom:'12px'}}>
+      <div style={{width:'clamp(150px,38vw,380px)', marginBottom:'clamp(6px,2vw,12px)'}}>
         <div style={{
           height:'2px', background:'rgba(0,245,255,0.1)',
           borderRadius:'2px', overflow:'hidden',
