@@ -478,7 +478,7 @@ function CountdownBox({ time }) {
         </div>
         <div style={{textAlign:'right'}}>
           <div style={{color:'rgba(0,245,255,0.45)',fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.14em',marginBottom:'2px'}}>LOCATION</div>
-          <div style={{color:'rgba(255,255,255,0.8)',fontSize:'0.6rem',fontFamily:"'Orbitron',sans-serif",fontWeight:600}}>NIT HALDIA</div>
+          <div style={{color:'rgba(255,255,255,0.8)',fontSize:'0.6rem',fontFamily:"'Orbitron',sans-serif",fontWeight:600}}>HIT HALDIA</div>
         </div>
       </div>
       <div style={{display:'flex',gap:'8px',marginTop:'12px'}}>
@@ -690,143 +690,272 @@ function FillerBar({ progress, label }) {
 // ─── Full-screen Section Panel ───────────────────────────────────────────────
 function SectionPanel({ section, visible, scrollsLeft }) {
   const absorbed = SCROLL_THRESHOLD - scrollsLeft
+  const [isOpen,      setIsOpen]      = useState(false)
+  const [closing,     setClosing]     = useState(false)
+  const [shownSection,setShownSection]= useState(section)
 
-  if (!section) return null
+  useEffect(() => {
+    if (visible && section) {
+      setShownSection(section)
+      setClosing(false)
+      setIsOpen(true)
+    } else if (isOpen) {
+      setClosing(true)
+      const t = setTimeout(() => { setIsOpen(false); setClosing(false) }, 520)
+      return () => clearTimeout(t)
+    }
+  }, [visible, section])
+
+  if (!isOpen && !closing) return null
 
   const panels = {
-    schedule: <ScheduleContent />,
-    activities: <ActivitiesContent />,
-    sponsors: <SponsorsContent />,
-    gallery: <GalleryContent />,
-    gallery1: <GallerySectorContent sectorIndex={0} />,
-    gallery2: <GallerySectorContent sectorIndex={1} />,
-    gallery3: <GallerySectorContent sectorIndex={2} />,
-    contact: <ContactContent />,
+    schedule:  <ScheduleContent />,
+    activities:<ActivitiesContent />,
+    sponsors:  <SponsorsContent />,
+    gallery:   <GalleryContent />,
+    gallery1:  <GallerySectorContent sectorIndex={0} />,
+    gallery2:  <GallerySectorContent sectorIndex={1} />,
+    gallery3:  <GallerySectorContent sectorIndex={2} />,
+    contact:   <ContactContent />,
   }
 
   const titles = {
-    schedule: { tag:'COMBAT LOG', title:'SCHEDULE' },
-    activities: { tag:'COMBAT DOMAINS', title:'ACTIVITIES' },
-    sponsors: { tag:'STRATEGIC ALLIES', title:'SPONSORS' },
-    gallery: { tag:'ARCHIVE FEED', title:'GALLERY' },
-    gallery1: { tag:'ARCHIVE FEED', title:'SECTOR 01' },
-    gallery2: { tag:'ARCHIVE FEED', title:'SECTOR 02' },
-    gallery3: { tag:'ARCHIVE FEED', title:'SECTOR 03' },
-    contact: { tag:'COMMUNICATIONS', title:'CONTACT US' },
+    schedule:   { tag:'COMBAT LOG',       title:'SCHEDULE'   },
+    activities: { tag:'COMBAT DOMAINS',   title:'ACTIVITIES' },
+    sponsors:   { tag:'STRATEGIC ALLIES', title:'SPONSORS'   },
+    gallery:    { tag:'ARCHIVE FEED',     title:'GALLERY'    },
+    gallery1:   { tag:'ARCHIVE FEED',     title:'SECTOR 01'  },
+    gallery2:   { tag:'ARCHIVE FEED',     title:'SECTOR 02'  },
+    gallery3:   { tag:'ARCHIVE FEED',     title:'SECTOR 03'  },
+    contact:    { tag:'COMMUNICATIONS',   title:'CONTACT US' },
   }
-  const info = titles[section] || { tag:'', title:'' }
+  const info = titles[shownSection] || { tag:'', title:'' }
 
   return (
     <div style={{
       position:'fixed', inset:0, zIndex:100,
       display:'flex', alignItems:'center', justifyContent:'center',
-      pointerEvents: visible ? 'auto' : 'none',
-      transition:'opacity 0.5s ease',
-      opacity: visible ? 1 : 0,
-      padding:'70px 40px 60px',
-      background:'rgba(0,0,0,0.55)',
-      backdropFilter:'blur(3px)',
+      pointerEvents: closing ? 'none' : 'auto',
+      padding:'64px 40px 56px',
+      animation: closing ? 'overlayClose 0.52s ease forwards' : 'overlayOpen 0.38s ease forwards',
     }}>
       <style>{`
-        @keyframes back3d-pulse{0%,100%{box-shadow:0 0 0 #00e5ff00}50%{box-shadow:0 0 10px #00e5ff66}}
-        @keyframes ov-slidein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-        .back3d{
-          font-family:'Share Tech Mono','Courier New',monospace;
-          font-size:12px;letter-spacing:.1em;color:#00e5ff;
-          border:1px solid rgba(0,229,255,.65);border-radius:999px;
-          padding:6px 18px;background:rgba(0,0,0,.7);
-          backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-          cursor:pointer;user-select:none;
-          animation:back3d-pulse 2.5s ease-in-out infinite;
-          white-space:nowrap;transition:background .2s;
+        @keyframes overlayOpen {
+          from { background:rgba(0,0,0,0); backdrop-filter:blur(0px); }
+          to   { background:rgba(0,0,0,0.68); backdrop-filter:blur(5px); }
         }
-        .back3d:hover{background:rgba(0,229,255,.12);}
+        @keyframes overlayClose {
+          from { background:rgba(0,0,0,0.68); backdrop-filter:blur(5px); }
+          to   { background:rgba(0,0,0,0); backdrop-filter:blur(0px); }
+        }
+        @keyframes panelOpen {
+          0%   { opacity:0; transform:scale(0.86) translateY(28px); filter:blur(12px); }
+          60%  { filter:blur(0); }
+          100% { opacity:1; transform:scale(1) translateY(0); filter:blur(0); }
+        }
+        @keyframes panelClose {
+          0%   { opacity:1; transform:scale(1) translateY(0); filter:blur(0); }
+          100% { opacity:0; transform:scale(0.91) translateY(-18px); filter:blur(14px); }
+        }
+        @keyframes scanSweep {
+          0%   { top:-4px; opacity:0.9; }
+          100% { top:100%; opacity:0; }
+        }
+        @keyframes cornerPulse {
+          0%,100% { filter:drop-shadow(0 0 5px #00f5ff) drop-shadow(0 0 12px rgba(0,245,255,0.4)); }
+          50%     { filter:drop-shadow(0 0 12px #00f5ff) drop-shadow(0 0 28px rgba(0,245,255,0.7)) drop-shadow(0 0 50px rgba(0,245,255,0.25)); }
+        }
+        @keyframes titleGlitch {
+          0%,92%,100% { clip-path:none; transform:none; text-shadow:0 0 32px rgba(0,245,255,0.9),0 0 64px rgba(0,245,255,0.35); }
+          93% { clip-path:inset(15% 0 55% 0); transform:translateX(-4px) skewX(-2deg); text-shadow:4px 0 #ff0080,-4px 0 #00f5ff; }
+          94% { clip-path:inset(55% 0 10% 0); transform:translateX(4px) skewX(2deg); text-shadow:-4px 0 #ff0080,4px 0 #00f5ff; }
+          95% { clip-path:none; transform:none; }
+        }
+        @keyframes gridPulse {
+          0%,100% { opacity:0.022; }
+          50%     { opacity:0.045; }
+        }
+        @keyframes topBarScan {
+          0%   { background-position:200% 0; }
+          100% { background-position:-200% 0; }
+        }
+        @keyframes dotBlink {
+          0%,100% { opacity:1; }
+          50%     { opacity:0.2; }
+        }
       `}</style>
 
+      {/* Panel box */}
       <div style={{
-        width:'100%', maxWidth:'1000px',
-        maxHeight:'calc(100vh - 130px)',
-        background:'linear-gradient(160deg,rgba(0,8,16,0.97) 0%,rgba(0,15,25,0.97) 100%)',
-        borderRadius:'4px',
-        border:'1.5px solid rgba(0,245,255,0.35)',
-        boxShadow:'0 0 0 1px rgba(0,245,255,0.08), 0 0 60px rgba(0,245,255,0.12), inset 0 0 80px rgba(0,0,0,0.6)',
+        width:'100%', maxWidth:'1060px',
+        maxHeight:'calc(100vh - 124px)',
+        background:'linear-gradient(150deg,rgba(0,4,14,0.99) 0%,rgba(0,12,26,0.98) 55%,rgba(0,6,16,0.99) 100%)',
+        borderRadius:'3px',
+        border:'1.5px solid rgba(0,245,255,0.55)',
+        boxShadow:`
+          0 0 0 1px rgba(0,245,255,0.07),
+          0 0 60px rgba(0,245,255,0.14),
+          0 0 130px rgba(0,245,255,0.06),
+          0 30px 80px rgba(0,0,0,0.8),
+          inset 0 0 120px rgba(0,0,0,0.65)
+        `,
         position:'relative',
         overflow:'hidden',
         display:'flex', flexDirection:'column',
+        animation: closing
+          ? 'panelClose 0.52s cubic-bezier(0.4,0,1,1) forwards'
+          : 'panelOpen  0.46s cubic-bezier(0,0,0.2,1) forwards',
       }}>
-        <NeonCorners color='#00f5ff' size={32} thick={2.5}/>
 
+        {/* Circuit / grid background */}
         <div style={{
-          height:'2px',
-          background:'linear-gradient(90deg,transparent,#00f5ff,#ff0080,#00f5ff,transparent)',
-          animation:'scanLine 3s linear infinite',
-          backgroundSize:'200% 100%',
+          position:'absolute', inset:0, pointerEvents:'none', zIndex:0,
+          backgroundImage:`
+            repeating-linear-gradient(0deg,  transparent, transparent 47px, rgba(0,245,255,0.04) 47px, rgba(0,245,255,0.04) 48px),
+            repeating-linear-gradient(90deg, transparent, transparent 47px, rgba(0,245,255,0.04) 47px, rgba(0,245,255,0.04) 48px)
+          `,
+          animation:'gridPulse 4s ease-in-out infinite',
         }}/>
 
+        {/* Radial glow center */}
         <div style={{
-          padding:'20px 36px 16px',
+          position:'absolute', inset:0, pointerEvents:'none', zIndex:0,
+          background:'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(0,245,255,0.04) 0%, transparent 70%)',
+        }}/>
+
+        {/* Opening scan sweep */}
+        {!closing && (
+          <div style={{
+            position:'absolute', left:0, right:0, height:'4px', zIndex:20,
+            background:'linear-gradient(90deg,transparent 5%,rgba(0,245,255,0.7) 35%,rgba(255,0,128,0.5) 50%,rgba(0,245,255,0.7) 65%,transparent 95%)',
+            boxShadow:'0 0 18px rgba(0,245,255,0.8)',
+            animation:'scanSweep 0.65s ease-out forwards',
+            pointerEvents:'none',
+          }}/>
+        )}
+
+        {/* Big corner brackets */}
+        {[
+          {top:0,    left:0,  borderTop:'2.5px solid #00f5ff', borderLeft:'2.5px solid #00f5ff'},
+          {top:0,    right:0, borderTop:'2.5px solid #00f5ff', borderRight:'2.5px solid #00f5ff'},
+          {bottom:0, left:0,  borderBottom:'2.5px solid #00f5ff', borderLeft:'2.5px solid #00f5ff'},
+          {bottom:0, right:0, borderBottom:'2.5px solid #00f5ff', borderRight:'2.5px solid #00f5ff'},
+        ].map((s,i)=>(
+          <div key={i} style={{
+            position:'absolute', width:'56px', height:'56px', zIndex:10, ...s,
+            animation:'cornerPulse 2.8s ease-in-out infinite',
+            animationDelay:`${i*0.18}s`,
+          }}/>
+        ))}
+
+        {/* Inner corner dots */}
+        {[
+          {top:'57px',  left:'57px'},
+          {top:'57px',  right:'57px'},
+          {bottom:'57px',left:'57px'},
+          {bottom:'57px',right:'57px'},
+        ].map((s,i)=>(
+          <div key={i} style={{
+            position:'absolute', width:'4px', height:'4px', borderRadius:'50%',
+            background:'#00f5ff', zIndex:10, ...s,
+            boxShadow:'0 0 8px #00f5ff, 0 0 16px rgba(0,245,255,0.6)',
+            animation:'dotBlink 2.5s ease-in-out infinite',
+            animationDelay:`${i*0.22}s`,
+          }}/>
+        ))}
+
+        {/* Top scan bar */}
+        <div style={{
+          height:'3px', flexShrink:0, zIndex:5, position:'relative',
+          background:'linear-gradient(90deg,transparent 0%,#00f5ff 25%,#ff0080 50%,#00f5ff 75%,transparent 100%)',
+          backgroundSize:'300% 100%',
+          animation:'topBarScan 2.5s linear infinite',
+          boxShadow:'0 0 16px rgba(0,245,255,0.7)',
+        }}/>
+
+        {/* Header */}
+        <div style={{
+          padding:'16px 52px 14px', position:'relative', zIndex:5,
           borderBottom:'1px solid rgba(0,245,255,0.1)',
-          display:'flex', alignItems:'center', justifyContent:'space-between',
           flexShrink:0,
+          display:'flex', alignItems:'flex-start', justifyContent:'space-between',
+          background:'linear-gradient(90deg,rgba(0,245,255,0.03) 0%,transparent 60%)',
         }}>
           <div>
             <div style={{
-              color:'rgba(0,245,255,0.5)', fontSize:'0.52rem',
-              fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.3em',
-              marginBottom:'4px',
-            }}>◈ {info.tag}</div>
+              color:'rgba(0,245,255,0.55)', fontSize:'0.5rem',
+              fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.38em',
+              marginBottom:'8px', display:'flex', alignItems:'center', gap:'10px',
+            }}>
+              <span style={{display:'inline-block',width:'28px',height:'1px',background:'rgba(0,245,255,0.45)'}}/>
+              ◈ {info.tag} ◈
+              <span style={{display:'inline-block',width:'28px',height:'1px',background:'rgba(0,245,255,0.45)'}}/>
+            </div>
             <h2 style={{
-              color:'#00f5ff', fontSize:'2rem', fontWeight:900,
-              fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.1em',
-              margin:0,
-              textShadow:'0 0 30px rgba(0,245,255,0.6)',
-              animation:'glowPulse 3s ease-in-out infinite',
+              color:'#00f5ff', margin:0,
+              fontSize:'clamp(1.7rem,3.2vw,2.5rem)',
+              fontWeight:900,
+              fontFamily:"'Orbitron',sans-serif",
+              letterSpacing:'0.12em',
+              animation:'titleGlitch 8s ease-in-out infinite',
             }}>{info.title}</h2>
           </div>
-          <div style={{display:'flex',gap:'6px',alignItems:'center'}}>
+
+          {/* Scroll counter */}
+          <div style={{display:'flex',gap:'7px',alignItems:'center',flexShrink:0,paddingTop:'10px'}}>
             {[0,1,2].map(i=>(
               <div key={i} style={{
-                width: i<absorbed?'24px':'10px', height:'10px',
+                width: i<absorbed?'30px':'10px', height:'10px',
                 borderRadius:'99px',
-                background: i<absorbed?'linear-gradient(90deg,#00f5ff,#ff0080)':'rgba(0,245,255,0.1)',
-                border:'1px solid rgba(0,245,255,0.3)',
-                transition:'all 0.4s ease',
-                boxShadow: i<absorbed?'0 0 10px rgba(0,245,255,0.6)':'none',
+                background: i<absorbed?'linear-gradient(90deg,#00f5ff,#ff0080)':'rgba(0,245,255,0.08)',
+                border:'1px solid rgba(0,245,255,0.28)',
+                transition:'all 0.45s cubic-bezier(0,0,0.2,1)',
+                boxShadow: i<absorbed?'0 0 14px rgba(0,245,255,0.75)':'none',
               }}/>
             ))}
             <span style={{
-              color:'rgba(0,245,255,0.5)', fontSize:'0.52rem',
-              fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.16em', marginLeft:'8px',
+              color:'rgba(0,245,255,0.4)', fontSize:'0.48rem',
+              fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.13em', marginLeft:'10px',
+              whiteSpace:'nowrap',
             }}>
-              {scrollsLeft>0 ? `${scrollsLeft} SCROLL${scrollsLeft>1?'S':''} TO ADVANCE` : 'SCROLL TO CONTINUE'}
+              {scrollsLeft>0 ? `${scrollsLeft} TO ADVANCE` : 'SCROLL ›'}
             </span>
           </div>
         </div>
 
-        <div style={{flex:1, minHeight:0, overflowY:'auto', padding:'24px 36px 48px', position:'relative'}}>
-          {panels[section]}
+        {/* Scrollable content */}
+        <div style={{flex:1, minHeight:0, overflowY:'auto', padding:'22px 52px 36px', position:'relative', zIndex:5}}>
+          {panels[shownSection]}
         </div>
 
+        {/* Footer progress */}
         <div style={{
-          padding:'10px 36px 14px',
-          borderTop:'1px solid rgba(0,245,255,0.1)',
-          flexShrink:0,
-          background:'rgba(0,0,0,0.4)',
+          padding:'8px 52px 12px', flexShrink:0, zIndex:5, position:'relative',
+          borderTop:'1px solid rgba(0,245,255,0.08)',
+          background:'rgba(0,0,0,0.55)',
+          display:'flex', alignItems:'center', gap:'16px',
         }}>
-          <div style={{height:'2px',borderRadius:'99px',background:'rgba(0,245,255,0.08)',overflow:'hidden'}}>
+          <div style={{flex:1,height:'2px',borderRadius:'99px',background:'rgba(0,245,255,0.06)',overflow:'hidden'}}>
             <div style={{
-              height:'100%',borderRadius:'99px',
+              height:'100%', borderRadius:'99px',
               width:`${Math.min(100,(absorbed/3)*100)}%`,
               background:'linear-gradient(90deg,#00f5ff,#ff0080)',
-              transition:'width 0.4s ease',
-              boxShadow:'0 0 12px rgba(0,245,255,0.7)',
+              transition:'width 0.45s ease',
+              boxShadow:'0 0 14px rgba(0,245,255,0.85)',
             }}/>
           </div>
+          <span style={{
+            color:'rgba(0,245,255,0.3)', fontSize:'0.44rem',
+            fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.18em',
+            whiteSpace:'nowrap', flexShrink:0,
+          }}>◉ RIVIERA 2026</span>
         </div>
 
+        {/* Bottom scan bar */}
         <div style={{
-          height:'2px',
-          background:'linear-gradient(90deg,transparent,#00f5ff,#ff0080,#00f5ff,transparent)',
+          height:'3px', flexShrink:0, zIndex:5,
+          background:'linear-gradient(90deg,transparent 0%,rgba(0,245,255,0.5) 30%,rgba(255,0,128,0.4) 50%,rgba(0,245,255,0.5) 70%,transparent 100%)',
+          boxShadow:'0 0 10px rgba(0,245,255,0.4)',
         }}/>
       </div>
     </div>
