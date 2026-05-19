@@ -605,13 +605,16 @@ function HomePanel({ visible, onEnter, time }) {
 
   return (
     <div style={{
-      position:'fixed', inset:0, zIndex:100,
+      position:'fixed', bottom:0, left:0, right:0, zIndex:100,
       pointerEvents: visible ? 'auto' : 'none',
       transition:'opacity 0.6s ease',
       opacity: visible ? 1 : 0,
-      display:'flex', alignItems:'center',
-      padding:'30px 60px 40px',
-      background: visible ? 'linear-gradient(90deg,rgba(0,0,0,0.72) 45%,rgba(0,0,0,0.2) 100%)' : 'transparent',
+      display:'flex', alignItems:'flex-end',
+      padding:'20px 40px 32px',
+      background: visible ? 'linear-gradient(0deg,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.4) 70%,transparent 100%)' : 'transparent',
+      transform:'translateZ(0)',
+      WebkitTransform:'translateZ(0)',
+      willChange:'transform',
     }}>
       <div style={{flex:1, maxWidth:'520px'}}>
         <div style={{
@@ -1497,9 +1500,8 @@ export default function App() {
       const t = e.touches[0]
       const dx = t.clientX - dragState.x, dy = t.clientY - dragState.y
       dragState.x = t.clientX; dragState.y = t.clientY
-      sharedRefs.yaw.current   -= dx * 0.0038
-      sharedRefs.pitch.current -= dy * 0.0038
-      sharedRefs.pitch.current  = Math.max(-1.35, Math.min(1.35, sharedRefs.pitch.current))
+      sharedRefs.vel.current += dy * 0.000022
+      sharedRefs.yaw.current -= dx * 0.0022
     }
     const onTouchEnd = () => { dragState.active = false }
     window.addEventListener('touchstart', onTouchStart, { passive: true })
@@ -1646,12 +1648,12 @@ export default function App() {
       `}</style>
 
       <Switch2DBar />
-      <div style={{ width:'100vw', height:'100vh', overflow:'hidden', background:'#030a0f', paddingTop:'38px' }}>
+      <div style={{ position:'fixed', top:'52px', left:0, right:0, bottom:0, overflow:'hidden', background:'#030a0f', transform:'translateZ(0)', WebkitTransform:'translateZ(0)' }}>
         <CanvasErrorBoundary>
           <Canvas
             camera={{ fov:65, near:1, far:9000000 }}
             gl={{ antialias:true }}
-            style={{ width:'100%', height:'100%', position:'absolute', inset:0 }}
+            style={{ width:'100%', height:'100%', display:'block' }}
             onCreated={({ gl }) => { gl.outputColorSpace = THREE.SRGBColorSpace }}
           >
             <color attach="background" args={['#030a12']} />
