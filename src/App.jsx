@@ -33,7 +33,7 @@ const ROAD_YAWS = [
 ]
 
 // Nav sections → waypoint index
-const NAV_WP = { home:0, schedule:1, activities:2, sponsors:3, gallery:4, contact:11 }
+const NAV_WP = { home:0, schedule:1, activities:2, sponsors:3, gallery:4, contact:7 }
 
 // Section panels shown at these waypoint indices
 const SECTION_AT = {
@@ -41,7 +41,9 @@ const SECTION_AT = {
   2: 'activities',
   3: 'sponsors',
   4: 'gallery',
-  11: 'contact',
+  5: 'gallery2',
+  6: 'gallery3',
+  7: 'contact',
 }
 
 // How many scrolls to fill before advancing
@@ -363,7 +365,7 @@ function CountdownBox({ time }) {
         </div>
         <div style={{textAlign:'right'}}>
           <div style={{color:'rgba(0,245,255,0.45)',fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.14em',marginBottom:'2px'}}>LOCATION</div>
-          <div style={{color:'rgba(255,255,255,0.8)',fontSize:'0.6rem',fontFamily:"'Orbitron',sans-serif",fontWeight:600}}>NIT HALDIA</div>
+          <div style={{color:'rgba(255,255,255,0.8)',fontSize:'0.6rem',fontFamily:"'Orbitron',sans-serif",fontWeight:600}}>HIT HALDIA</div>
         </div>
       </div>
       <div style={{display:'flex',gap:'8px',marginTop:'12px'}}>
@@ -583,6 +585,8 @@ function SectionPanel({ section, visible, scrollsLeft }) {
     activities: <ActivitiesContent />,
     sponsors: <SponsorsContent />,
     gallery: <GalleryContent />,
+    gallery2: <Gallery2Content />,
+    gallery3: <Gallery3Content />,
     contact: <ContactContent />,
   }
 
@@ -590,7 +594,9 @@ function SectionPanel({ section, visible, scrollsLeft }) {
     schedule: { tag:'COMBAT LOG', title:'SCHEDULE' },
     activities: { tag:'COMBAT DOMAINS', title:'ACTIVITIES' },
     sponsors: { tag:'STRATEGIC ALLIES', title:'SPONSORS' },
-    gallery: { tag:'ARCHIVE FEED', title:'GALLERY' },
+    gallery: { tag:'SECTOR—01', title:'CRIMSON STAGE 2025' },
+    gallery2: { tag:'SECTOR—02', title:'NON-COMBAT OPERATIONS' },
+    gallery3: { tag:'SECTOR—03', title:'FINAL DOMAIN' },
     contact: { tag:'COMMUNICATIONS', title:'CONTACT US' },
   }
   const info = titles[section] || { tag:'', title:'' }
@@ -702,42 +708,42 @@ function ScheduleContent() {
   const days = ['SECTOR 01','SECTOR 02','FINAL PHASE']
   const events = [
     [
-      { time:'09:00', title:'Opening Protocol', desc:'The games are formally declared active — the culling begins now.', num:'01', venue:'Main Arena', seats:'Open' },
-      { time:'11:00', title:'Hidden Protocol R-I', desc:'Navigate through layers of mystery and deception — the first elimination round begins.', num:'02', venue:'Zone B', seats:'Limited' },
-      { time:'14:00', title:'Crimson Runway', desc:'Style meets danger on the stage where fashion becomes a weapon of self-expression.', num:'03', venue:'Stage C', seats:'Open' },
+      { time:'09:00', title:'Digital Combat', desc:'Enter the arena where strategy, skill, and survival instincts collide in a brutal gaming showdown.', num:'01', venue:'Checkpoint 01', seats:'Sector PM' },
+      { time:'11:00', title:'Hidden Protocol R-I', desc:'Navigate through layers of mystery and deception — the first elimination round begins.', num:'02', venue:'Checkpoint 01', seats:'Sector PM' },
+      { time:'14:00', title:'Crimson Runway', desc:'Style meets danger on the stage where fashion becomes a weapon of self-expression.', num:'03', venue:'Checkpoint 01', seats:'Sector PM' },
     ],
     [
-      { time:'07:54', title:'Synchronized Assault', desc:'Coordinated movement, relentless energy — the stage trembles under collective force.', num:'01', venue:'Main Arena', seats:'Open' },
-      { time:'09:00', title:'Open Domain', desc:'Raw talent, unfiltered voices — step into the arena and claim your moment.', num:'02', venue:'Zone A', seats:'Open' },
-      { time:'11:30', title:'Digital Siege', desc:'Hack, strategize, and outlast — the digital battlefield awaits your command.', num:'03', venue:'Cyber Hub', seats:'Limited' },
+      { time:'07:54', title:'Opening Protocol', desc:'The games are formally declared active — the culling begins now.', num:'01', venue:'Checkpoint 01', seats:'Sector PM' },
+      { time:'07:30', title:'Synchronized Assault', desc:'Coordinated movement, relentless energy — the stage trembles under collective force.', num:'02', venue:'Checkpoint 01', seats:'Sector PM' },
+      { time:'09:00', title:'Open Domain', desc:'Raw talent, unfiltered voices — step into the arena and claim your moment.', num:'03', venue:'Checkpoint 01', seats:'Sector PM' },
     ],
     [
-      { time:'07:30', title:'Hidden Protocol — Final', desc:'The last survivors face the ultimate treasure pursuit. No second chances.', num:'01', venue:'Zone B', seats:'Finals Only' },
-      { time:'14:30', title:'Digital Combat — Finals', desc:'Championship combat. The strongest players battle for the title.', num:'02', venue:'Cyber Hub', seats:'Finals Only' },
-      { time:'20:00', title:'Crimson Stage', desc:'The grand cultural showdown — where art, music, and performance ignite the final night.', num:'03', venue:'Main Arena', seats:'Open' },
+      { time:'07:30', title:'Hidden Protocol — Final', desc:'The last survivors face the ultimate treasure pursuit. No second chances.', num:'01', venue:'Checkpoint 01', seats:'Sector PM' },
+      { time:'14:30', title:'Digital Combat — Finals', desc:'Championship combat. The strongest players battle for the title.', num:'02', venue:'Checkpoint 01', seats:'Sector PM' },
+      { time:'20:00', title:'Crimson Stage', desc:'The grand cultural showdown — where art, music, and performance ignite the final night.', num:'03', venue:'Checkpoint 01', seats:'Sector PM' },
     ],
   ]
   return (
     <div>
-      <div style={{display:'flex',gap:'8px',marginBottom:'22px'}}>
+      <div style={{display:'flex',gap:'8px',marginBottom:'16px'}}>
         {days.map((d,i)=>(
           <button key={i} onClick={()=>setDay(i)} style={{
             background: day===i ? 'rgba(255,0,128,0.15)' : 'transparent',
             border: day===i ? '1.5px solid rgba(255,0,128,0.6)' : '1.5px solid rgba(0,245,255,0.2)',
-            borderRadius:'4px', padding:'7px 18px',
+            borderRadius:'4px', padding:'6px 16px',
             color: day===i ? '#ff0080' : 'rgba(255,255,255,0.45)',
-            fontSize:'0.6rem', fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.16em',
+            fontSize:'0.58rem', fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.14em',
             cursor:'pointer',
             boxShadow: day===i ? '0 0 16px rgba(255,0,128,0.25)' : 'none',
             transition:'all 0.25s ease',
           }}>◈ {d}</button>
         ))}
       </div>
-      <div style={{display:'flex',gap:'18px',flexDirection:'column'}}>
+      <div style={{display:'flex',gap:'10px',flexDirection:'column'}}>
         {events[day].map((ev,i)=>(
           <div key={i} style={{
-            display:'flex', gap:'18px', alignItems:'flex-start',
-            padding:'16px 18px',
+            display:'flex', gap:'14px', alignItems:'flex-start',
+            padding:'12px 14px',
             border:'1px solid rgba(0,245,255,0.12)',
             borderRadius:'4px',
             background: i%2===0 ? 'rgba(0,245,255,0.03)' : 'rgba(255,0,128,0.03)',
@@ -745,23 +751,22 @@ function ScheduleContent() {
             position:'relative',
           }}>
             <div style={{
-              width:'42px',height:'42px',borderRadius:'4px',
+              width:'36px',height:'36px',borderRadius:'4px',flexShrink:0,
               background:'rgba(0,245,255,0.08)',
               border:'1px solid rgba(0,245,255,0.25)',
               display:'flex',alignItems:'center',justifyContent:'center',
-              color:'rgba(0,245,255,0.7)',fontSize:'0.75rem',
+              color:'rgba(0,245,255,0.7)',fontSize:'0.7rem',
               fontFamily:"'Orbitron',sans-serif",fontWeight:700,
-              flexShrink:0,
             }}>{ev.num}</div>
             <div style={{flex:1}}>
-              <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'5px'}}>
-                <span style={{color:'rgba(0,245,255,0.5)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>ACTIVATION — {ev.time}</span>
+              <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'3px'}}>
+                <span style={{color:'rgba(0,245,255,0.5)',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>ACTIVATION — {ev.time}</span>
               </div>
-              <div style={{color:'#ffffff',fontSize:'1.0rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,letterSpacing:'0.04em',marginBottom:'5px',textTransform:'uppercase'}}>{ev.title}</div>
-              <div style={{color:'rgba(255,255,255,0.5)',fontSize:'0.8rem',fontFamily:"'Rajdhani',sans-serif",lineHeight:1.5,marginBottom:'8px'}}>{ev.desc}</div>
+              <div style={{color:'#ffffff',fontSize:'0.95rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,letterSpacing:'0.04em',marginBottom:'3px',textTransform:'uppercase'}}>{ev.title}</div>
+              <div style={{color:'rgba(255,255,255,0.5)',fontSize:'0.75rem',fontFamily:"'Rajdhani',sans-serif",lineHeight:1.4,marginBottom:'6px'}}>{ev.desc}</div>
               <div style={{display:'flex',gap:'14px'}}>
-                <span style={{color:'rgba(0,245,255,0.45)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.08em'}}>◉ {ev.venue}</span>
-                <span style={{color:'rgba(255,0,128,0.45)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.08em'}}>◈ {ev.seats}</span>
+                <span style={{color:'rgba(0,245,255,0.45)',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.08em'}}>◉ {ev.venue}</span>
+                <span style={{color:'rgba(255,0,128,0.45)',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.08em'}}>◈ {ev.seats}</span>
               </div>
             </div>
           </div>
@@ -774,14 +779,9 @@ function ScheduleContent() {
 // ─── Activities Content ──────────────────────────────────────────────────────
 function ActivitiesContent() {
   const activities = [
-    { sector:'SECTOR-01', tag:'RECON', icon:'◉', name:'Hidden Protocol', desc:'Navigate a web of encoded clues across the arena. Decode, pursue, and outmaneuver rival squads in a high-stakes survival pursuit.', status:'ACTIVE' },
-    { sector:'SECTOR-02', tag:'PERFORMANCE', icon:'♪', name:'Crimson Stage', desc:'Where performance becomes a weapon. Electrifying acts under crimson lights in the most intense cultural showdown.', status:'ACTIVE' },
+    { sector:'RECON-01', tag:'RECON', icon:'◉', name:'Hidden Protocol', desc:'Navigate a web of encoded clues across the arena. Decode, pursue, and outmaneuver rival squads in a high-stakes survival pursuit.', status:'ACTIVE' },
+    { sector:'PERFORMANCE-02', tag:'PERFORMANCE', icon:'♪', name:'Crimson Stage', desc:'Where performance becomes a weapon. Electrifying acts under crimson lights in the most intense cultural showdown.', status:'ACTIVE' },
     { sector:'COMBAT-03', tag:'DIGITAL', icon:'⚙', name:'Digital Combat', desc:'Enter the digital battlefield. Only reflexes, strategy, and ruthless precision will determine the survivors.', status:'ACTIVE' },
-    { sector:'TACTICAL-04', tag:'INNOVATION', icon:'◈', name:'Innovation Forge', desc:'A vault of cutting-edge creations and experimental technology. Where visionary minds showcase weapons of innovation.', status:'ACTIVE' },
-    { sector:'SECTOR-05', tag:'MUSIC', icon:'▶', name:'Sonic Assault', desc:'Bass drops and beats collide in a relentless sonic battle. The crowd becomes the arena.', status:'UPCOMING' },
-    { sector:'SECTOR-06', tag:'DESIGN', icon:'✦', name:'Pixel Protocol', desc:'Visual artistry meets tactical precision. Create, compete, and conquer the design domain.', status:'UPCOMING' },
-    { sector:'SECTOR-07', tag:'ROBOTICS', icon:'⚡', name:'Mech Uprising', desc:'Build, program, and deploy. The last machine standing wins glory in the arena.', status:'UPCOMING' },
-    { sector:'SECTOR-08', tag:'QUIZ', icon:'?', name:'Data Extraction', desc:'Knowledge is power. Extract answers faster than rival teams in the high-stakes intelligence war.', status:'UPCOMING' },
   ]
   return (
     <div>
@@ -789,39 +789,38 @@ function ActivitiesContent() {
         <div style={{color:'rgba(0,245,255,0.5)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.3em',marginBottom:'8px'}}>◈ COMBAT DOMAINS ◈</div>
         <p style={{color:'rgba(255,255,255,0.45)',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif"}}>Each domain is a unique trial of skill, strategy, and survival. Choose your battlefield wisely.</p>
       </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'16px'}}>
         {activities.map((a,i)=>(
           <div key={i} style={{
-            padding:'16px', borderRadius:'4px',
+            padding:'22px 18px', borderRadius:'4px',
             border:'1px solid rgba(0,245,255,0.15)',
             background:'linear-gradient(160deg,rgba(0,10,20,0.8),rgba(0,5,15,0.6))',
             position:'relative', overflow:'hidden',
-            animation:`revealUp 0.4s ${i*0.05}s both`,
+            animation:`revealUp 0.4s ${i*0.1}s both`,
             transition:'all 0.3s ease',
             cursor:'default',
+            display:'flex', flexDirection:'column',
           }}
             onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.4)';e.currentTarget.style.background='linear-gradient(160deg,rgba(0,20,35,0.9),rgba(0,10,25,0.8))'}}
             onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.15)';e.currentTarget.style.background='linear-gradient(160deg,rgba(0,10,20,0.8),rgba(0,5,15,0.6))'}}
           >
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'8px'}}>
-              <span style={{color:'rgba(0,245,255,0.35)',fontSize:'0.5rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>{a.sector}</span>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'12px'}}>
+              <span style={{color:'rgba(0,245,255,0.35)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>{a.sector}</span>
               <span style={{
-                color: a.status==='ACTIVE'?'#00ff88':'rgba(255,165,0,0.8)',
-                fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em',
-                border:`1px solid ${a.status==='ACTIVE'?'rgba(0,255,136,0.3)':'rgba(255,165,0,0.3)'}`,
-                borderRadius:'3px',padding:'1px 5px',
-              }}>◉ {a.status}</span>
+                color:'#00ff88', fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em',
+                border:'1px solid rgba(0,255,136,0.3)',borderRadius:'3px',padding:'1px 5px',
+              }}>◉ ACTIVE</span>
             </div>
-            <div style={{fontSize:'1.4rem',marginBottom:'6px',filter:'drop-shadow(0 0 8px rgba(0,245,255,0.5))'}}>{a.icon}</div>
-            <div style={{color:'#ffffff',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,letterSpacing:'0.06em',marginBottom:'5px',textTransform:'uppercase'}}>{a.name}</div>
-            <div style={{color:'rgba(255,255,255,0.42)',fontSize:'0.72rem',fontFamily:"'Rajdhani',sans-serif",lineHeight:1.45,marginBottom:'10px'}}>{a.desc}</div>
+            <div style={{fontSize:'1.8rem',marginBottom:'10px',filter:'drop-shadow(0 0 10px rgba(0,245,255,0.6))'}}>{a.icon}</div>
+            <div style={{color:'#ffffff',fontSize:'1.1rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,letterSpacing:'0.06em',marginBottom:'8px',textTransform:'uppercase'}}>{a.name}</div>
+            <div style={{color:'rgba(255,255,255,0.5)',fontSize:'0.8rem',fontFamily:"'Rajdhani',sans-serif",lineHeight:1.5,marginBottom:'18px',flex:1}}>{a.desc}</div>
             <button style={{
               background:'transparent',border:'1px solid rgba(0,245,255,0.3)',
-              borderRadius:'3px',padding:'4px 10px',
+              borderRadius:'3px',padding:'6px 12px',
               color:'rgba(0,245,255,0.7)',fontSize:'0.52rem',
               fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.12em',
               cursor:'pointer',width:'100%',
-            }}>ENTER SECTOR →</button>
+            }}>ACCESS DOMAIN →</button>
           </div>
         ))}
       </div>
@@ -831,215 +830,283 @@ function ActivitiesContent() {
 
 // ─── Sponsors Content ────────────────────────────────────────────────────────
 function SponsorsContent() {
-  const tiers = [
-    { name:'TIER ALPHA', color:'#00f5ff', glow:'rgba(0,245,255,0.4)', sponsors:['Sprite','Coca-Cola'] },
-    { name:'TIER BETA', color:'#ff0080', glow:'rgba(255,0,128,0.4)', sponsors:['Fanta','Pepsi'] },
-    { name:'TIER GAMMA', color:'rgba(255,215,0,0.9)', glow:'rgba(255,215,0,0.35)', sponsors:['TechCorp','InnoLabs','FutureSys','DataStream'] },
-    { name:'TIER DELTA', color:'rgba(255,255,255,0.5)', glow:'rgba(255,255,255,0.2)', sponsors:['PixelWorks','NeonArts','CodeCraft','ByteForge','SignalRush','GridMind'] },
+  const sponsors = [
+    { tier:'TIER—ALPHA', name:'Sprite', bg:'#00a651', text:'#ffffff', fontStyle:'italic', fontFamily:'Georgia,serif', status:'ACTIVE' },
+    { tier:'TIER—ALPHA', name:'Coca-Cola', bg:'#e61c24', text:'#ffffff', fontStyle:'italic', fontFamily:'Georgia,serif', status:'ACTIVE' },
+    { tier:'TIER—BRAVO', name:'Fanta', bg:'#ff6b00', text:'#ffffff', fontStyle:'normal', fontFamily:"'Orbitron',sans-serif", status:'ACTIVE' },
+    { tier:'TIER—BRAVO', name:'Pepsi', bg:'#004b93', text:'#ffffff', fontStyle:'normal', fontFamily:"'Orbitron',sans-serif", status:'ACTIVE' },
   ]
-  const sponsorColors = {
-    'Sprite':  { bg:'#00a651', text:'#ffffff' },
-    'Coca-Cola':{ bg:'#e61c24', text:'#ffffff' },
-    'Fanta':   { bg:'#ff6b00', text:'#ffffff' },
-    'Pepsi':   { bg:'#004b93', text:'#ffffff' },
-  }
   return (
     <div>
-      <div style={{textAlign:'center',marginBottom:'22px'}}>
+      <div style={{textAlign:'center',marginBottom:'28px'}}>
         <div style={{color:'rgba(0,245,255,0.5)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.3em',marginBottom:'8px'}}>◈ STRATEGIC ALLIES ◈</div>
         <p style={{color:'rgba(255,255,255,0.45)',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif"}}>Organizations powering the games from behind the line.</p>
       </div>
-      {tiers.map((tier,ti)=>(
-        <div key={ti} style={{marginBottom:'22px',animation:`revealUp 0.4s ${ti*0.1}s both`}}>
-          <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'12px'}}>
-            <div style={{flex:1,height:'1px',background:`linear-gradient(90deg,transparent,${tier.color}44)`}}/>
-            <span style={{color:tier.color,fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.24em',textShadow:`0 0 12px ${tier.glow}`}}>{tier.name}</span>
-            <div style={{flex:1,height:'1px',background:`linear-gradient(90deg,${tier.color}44,transparent)`}}/>
-          </div>
-          <div style={{display:'flex',flexWrap:'wrap',gap:'10px'}}>
-            {tier.sponsors.map((sp,si)=>{
-              const sc = sponsorColors[sp]
-              return (
-                <div key={si} style={{
-                  flex: ti<2?'1':'none', minWidth: ti<2?'200px':'120px',
-                  padding: ti<2?'28px 20px':'14px 16px',
-                  borderRadius:'4px',
-                  background: sc ? sc.bg : 'rgba(0,245,255,0.05)',
-                  border: sc ? 'none' : `1px solid ${tier.color}33`,
-                  display:'flex',alignItems:'center',justifyContent:'center',
-                  fontFamily: sc?'Georgia,serif':'Orbitron,sans-serif',
-                  fontStyle: sc?'italic':'normal',
-                  fontWeight: 700,
-                  fontSize: ti<2?'1.2rem':'0.7rem',
-                  color: sc ? sc.text : tier.color,
-                  letterSpacing: sc?'0.02em':'0.1em',
-                  cursor:'default',
-                }}>
-                  {sp}
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// ─── Gallery Content ─────────────────────────────────────────────────────────
-function GalleryContent() {
-  const [active, setActive] = useState(1)
-  const items = [
-    { title:'Cyber Arena 2024', year:'2024', desc:'A convergence of technology and performance under the city\'s neon canopy.' },
-    { title:'Digital Uprising', year:'2024', desc:'Thousands of players, one arena — the most electrifying competition yet.' },
-    { title:'Protocol Night', year:'2023', desc:'When the lights went out and the protocols began — an unforgettable night.' },
-    { title:'Crimson Finals', year:'2023', desc:'Championship battles that rewrote the record books forever.' },
-    { title:'Neon Genesis', year:'2022', desc:'The first edition that started it all — where legends were born.' },
-    { title:'Ghost Signal', year:'2022', desc:'Stealth, strategy, and survival in the arena\'s inaugural season.' },
-  ]
-  return (
-    <div>
-      <div style={{textAlign:'center',marginBottom:'22px'}}>
-        <div style={{color:'rgba(0,245,255,0.5)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.3em',marginBottom:'8px'}}>◈ ARCHIVE FEED ◈</div>
-        <p style={{color:'rgba(255,255,255,0.45)',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif"}}>Chronicles from previous operations. Study the fallen. Learn from the survivors.</p>
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:'14px'}}>
-        {items.map((item,i)=>(
-          <div key={i} onClick={()=>setActive(i)} style={{
-            padding:'0', borderRadius:'4px', overflow:'hidden',
-            border:`1.5px solid ${active===i?'rgba(0,245,255,0.5)':'rgba(0,245,255,0.12)'}`,
-            background:'linear-gradient(160deg,rgba(0,10,20,0.9),rgba(0,5,15,0.7))',
-            cursor:'pointer',
-            animation:`revealUp 0.4s ${i*0.07}s both`,
-            transition:'all 0.3s ease',
-            boxShadow: active===i?'0 0 20px rgba(0,245,255,0.2)':'none',
+      <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'14px'}}>
+        {sponsors.map((sp,i)=>(
+          <div key={i} style={{
+            border:'1px solid rgba(255,255,255,0.12)',
+            borderRadius:'6px',
+            overflow:'hidden',
+            animation:`revealUp 0.4s ${i*0.1}s both`,
           }}>
             <div style={{
-              height:'120px',
-              background:`linear-gradient(160deg, hsl(${i*40+180},70%,10%), hsl(${i*40+200},60%,6%))`,
-              display:'flex',alignItems:'center',justifyContent:'center',
-              borderBottom:'1px solid rgba(0,245,255,0.1)',
-              position:'relative', overflow:'hidden',
+              display:'flex',justifyContent:'space-between',alignItems:'center',
+              padding:'6px 12px',
+              background:'rgba(0,0,0,0.4)',
+              borderBottom:'1px solid rgba(255,255,255,0.08)',
             }}>
-              <div style={{
-                position:'absolute',inset:0,
-                backgroundImage:'linear-gradient(rgba(0,245,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,255,0.03) 1px,transparent 1px)',
-                backgroundSize:'20px 20px',
-              }}/>
-              <div style={{
-                fontFamily:"'Orbitron',sans-serif",fontWeight:900,
-                fontSize:'2.5rem',color:'rgba(0,245,255,0.06)',
-                letterSpacing:'0.2em',position:'absolute',
-              }}>IMG</div>
-              <div style={{
-                border:'1px solid rgba(0,245,255,0.25)',
-                borderRadius:'50%',width:'40px',height:'40px',
-                display:'flex',alignItems:'center',justifyContent:'center',
-                color:'rgba(0,245,255,0.5)',fontSize:'1.2rem',zIndex:1,
-              }}>◈</div>
+              <span style={{color:'rgba(255,255,255,0.45)',fontSize:'0.5rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.14em'}}>{sp.tier}</span>
+              <span style={{color:'#00ff88',fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>◉ ACTIVE</span>
             </div>
-            <div style={{padding:'12px 14px'}}>
-              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'5px'}}>
-                <div style={{color:'#ffffff',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,textTransform:'uppercase',letterSpacing:'0.06em'}}>{item.title}</div>
-                <span style={{color:'rgba(0,245,255,0.5)',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",border:'1px solid rgba(0,245,255,0.25)',borderRadius:'3px',padding:'1px 6px'}}>{item.year}</span>
-              </div>
-              <div style={{color:'rgba(255,255,255,0.45)',fontSize:'0.75rem',fontFamily:"'Rajdhani',sans-serif",lineHeight:1.4}}>{item.desc}</div>
+            <div style={{
+              padding:'36px 24px',
+              background:sp.bg,
+              display:'flex',alignItems:'center',justifyContent:'center',
+              minHeight:'100px',
+            }}>
+              <span style={{
+                color:sp.text,
+                fontSize:'1.6rem',
+                fontWeight:700,
+                fontFamily:sp.fontFamily,
+                fontStyle:sp.fontStyle,
+                letterSpacing:'0.02em',
+              }}>{sp.name}</span>
+            </div>
+            <div style={{
+              padding:'6px 12px',
+              background:'rgba(0,0,0,0.4)',
+              borderTop:'1px solid rgba(255,255,255,0.08)',
+              display:'flex',justifyContent:'space-between',alignItems:'center',
+            }}>
+              <span style={{color:'rgba(255,255,255,0.4)',fontSize:'0.5rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>{sp.name.toUpperCase()}</span>
+              <span style={{color:'rgba(255,0,128,0.6)',fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif"}}>◈ ALLIED</span>
             </div>
           </div>
         ))}
       </div>
     </div>
+  )
+}
+
+// ─── Gallery Image Grid (reusable) ───────────────────────────────────────────
+function GalleryGrid({ images, subtitle }) {
+  const [lightbox, setLightbox] = useState(null)
+  const [rects, setRects] = useState({})
+  const imgRefs = useRef({})
+
+  const openLightbox = (i) => {
+    const el = imgRefs.current[i]
+    if (el) {
+      const r = el.getBoundingClientRect()
+      setRects(prev => ({ ...prev, [i]: r }))
+    }
+    setLightbox(i)
+  }
+
+  return (
+    <>
+      <div style={{marginBottom:'10px'}}>
+        <p style={{color:'rgba(255,255,255,0.5)',fontSize:'0.82rem',fontFamily:"'Rajdhani',sans-serif",lineHeight:1.5}}>{subtitle}</p>
+      </div>
+      <div style={{
+        display:'grid',
+        gridTemplateColumns:'1fr 1fr',
+        gridTemplateRows:'auto auto',
+        gap:'8px',
+        animation:'revealUp 0.4s 0s both',
+      }}>
+        {images.map((src, i) => (
+          <div
+            key={i}
+            ref={el => imgRefs.current[i] = el}
+            onClick={() => openLightbox(i)}
+            style={{
+              borderRadius:'4px', overflow:'hidden',
+              border:'1px solid rgba(0,245,255,0.2)',
+              cursor:'pointer',
+              position:'relative',
+              aspectRatio:'16/10',
+              transition:'transform 0.2s ease, border-color 0.2s ease',
+            }}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.6)';e.currentTarget.style.transform='scale(1.02)'}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.2)';e.currentTarget.style.transform='scale(1)'}}
+          >
+            <img src={src} alt={`img ${i}`} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
+            <div style={{
+              position:'absolute',bottom:0,left:0,right:0,height:'40%',
+              background:'linear-gradient(transparent,rgba(0,0,0,0.6))',
+              pointerEvents:'none',
+            }}/>
+            <div style={{
+              position:'absolute',top:'6px',left:'6px',
+              background:'rgba(0,0,0,0.55)',border:'1px solid rgba(0,245,255,0.3)',
+              borderRadius:'3px',padding:'1px 6px',
+              color:'rgba(0,245,255,0.7)',fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif",
+            }}>FILE {String(i+1).padStart(2,'0')}</div>
+          </div>
+        ))}
+      </div>
+
+      {lightbox !== null && (
+        <div
+          onClick={()=>setLightbox(null)}
+          style={{
+            position:'fixed',inset:0,zIndex:500,
+            background:'rgba(0,0,0,0.88)',
+            display:'flex',alignItems:'center',justifyContent:'center',
+            animation:'revealUp 0.25s ease both',
+            cursor:'zoom-out',
+          }}
+        >
+          <div style={{position:'relative',maxWidth:'88vw',maxHeight:'82vh'}}>
+            <img
+              src={images[lightbox]}
+              alt='expanded'
+              style={{
+                maxWidth:'100%',maxHeight:'82vh',
+                objectFit:'contain',
+                borderRadius:'6px',
+                border:'1.5px solid rgba(0,245,255,0.4)',
+                boxShadow:'0 0 60px rgba(0,245,255,0.15)',
+                display:'block',
+              }}
+            />
+            <button
+              onClick={e=>{e.stopPropagation();setLightbox(null)}}
+              style={{
+                position:'absolute',top:'-14px',right:'-14px',
+                width:'28px',height:'28px',borderRadius:'50%',
+                background:'rgba(0,10,20,0.9)',border:'1px solid rgba(0,245,255,0.4)',
+                color:'rgba(0,245,255,0.8)',fontSize:'0.8rem',cursor:'pointer',
+                display:'flex',alignItems:'center',justifyContent:'center',
+              }}
+            >✕</button>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+// ─── Gallery Content (Sector 1) ───────────────────────────────────────────────
+function GalleryContent() {
+  const images = [
+    '/gallery/s1_1.jpg',
+    '/gallery/s1_2.jpg',
+    '/gallery/s1_3.jpg',
+    '/gallery/s1_4.jpg',
+  ]
+  return (
+    <GalleryGrid
+      images={images}
+      subtitle="Electrifying performances and relentless energy from the main combat stage."
+    />
+  )
+}
+
+// ─── Gallery2 Content (Sector 2) ─────────────────────────────────────────────
+function Gallery2Content() {
+  const images = [
+    '/gallery/s2_1.jpg',
+    '/gallery/s2_2.jpg',
+    '/gallery/s2_3.jpg',
+    '/gallery/s2_4.jpg',
+  ]
+  return (
+    <GalleryGrid
+      images={images}
+      subtitle="Tactical creativity, strategic gaming, and high-stakes challenges beyond the digital battlefield."
+    />
+  )
+}
+
+// ─── Gallery3 Content (Sector 3) ─────────────────────────────────────────────
+function Gallery3Content() {
+  const images = [
+    '/gallery/s3_1.jpg',
+    '/gallery/s3_2.jpg',
+    '/gallery/s3_3.jpg',
+    '/gallery/s3_4.jpg',
+  ]
+  return (
+    <GalleryGrid
+      images={images}
+      subtitle="The crowd ignited as the bass dropped in the final arena showdown."
+    />
   )
 }
 
 // ─── Contact Content ─────────────────────────────────────────────────────────
 function ContactContent() {
   const people = [
-    { role:'Website, App\nand Payments', img:'👨‍💻' },
-    { role:'Registrations\nand Correspondence', img:'👩‍💼' },
-    { role:'Logistics and\nOperations', img:'👨‍💼' },
-    { role:'Sponsorships\nand Company\nCollaborations', img:'🧑‍💼' },
-    { role:'Reception and\nAccommodation', img:'👩‍🦰' },
-    { role:'Online\nCollaborations\nand Publicity', img:'👨‍🦱' },
-    { role:'Guest Lectures\nand Paper\nPresentation', img:'👩‍🔬' },
-    { role:'General Secretary,\nStudents\' Union', img:'🧑' },
-    { role:'President,\nStudents\' Union', img:'🕶️' },
+    { name:'HARSHITA', phone:'7209593922', photo:'/contact/harshita.jpg' },
+    { name:'BIBHUTI BISHAL', phone:'6201371315', photo:'/contact/bibhuti.jpg' },
   ]
   return (
     <div>
-      <div style={{textAlign:'center',marginBottom:'22px'}}>
+      <div style={{textAlign:'center',marginBottom:'28px'}}>
         <div style={{color:'rgba(0,245,255,0.5)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.3em',marginBottom:'8px'}}>◈ COMMUNICATIONS ◈</div>
-        <p style={{color:'rgba(255,255,255,0.45)',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif"}}>Reach the command units directly. Every sector has a handler.</p>
+        <p style={{color:'rgba(255,255,255,0.45)',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif"}}>Reach the command units directly.</p>
       </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(150px,1fr))',gap:'12px',marginBottom:'24px'}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'24px',maxWidth:'560px',margin:'0 auto'}}>
         {people.map((p,i)=>(
           <div key={i} style={{
-            border:'1.5px solid rgba(0,245,255,0.18)',
-            borderRadius:'4px', overflow:'hidden',
+            border:'1.5px solid rgba(0,245,255,0.25)',
+            borderRadius:'8px', overflow:'hidden',
             background:'linear-gradient(160deg,rgba(0,10,20,0.9),rgba(0,5,15,0.7))',
-            animation:`revealUp 0.4s ${i*0.05}s both`,
-            cursor:'default',
+            animation:`revealUp 0.4s ${i*0.15}s both`,
             transition:'all 0.3s ease',
           }}
-            onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.5)';e.currentTarget.style.boxShadow='0 0 16px rgba(0,245,255,0.15)'}}
-            onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.18)';e.currentTarget.style.boxShadow='none'}}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.6)';e.currentTarget.style.boxShadow='0 0 24px rgba(0,245,255,0.15)'}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.25)';e.currentTarget.style.boxShadow='none'}}
           >
             <div style={{
-              height:'100px', position:'relative', overflow:'hidden',
-              background:'linear-gradient(160deg,rgba(0,20,40,0.9),rgba(0,10,20,0.7))',
-              borderBottom:'1px solid rgba(0,245,255,0.1)',
-              display:'flex',alignItems:'center',justifyContent:'center',
+              position:'relative',
+              paddingTop:'100%',
+              overflow:'hidden',
+              background:'rgba(0,15,30,0.8)',
+              borderBottom:'1px solid rgba(0,245,255,0.15)',
             }}>
-              <div style={{
-                position:'absolute',inset:0,
-                backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(0,245,255,0.02) 4px,rgba(0,245,255,0.02) 5px)',
+              <img src={p.photo} alt={p.name} style={{
+                position:'absolute',top:0,left:0,
+                width:'100%',height:'100%',
+                objectFit:'cover',objectPosition:'center top',
+                display:'block',
               }}/>
               <div style={{
-                width:'56px',height:'56px',borderRadius:'4px',
-                background:'rgba(0,245,255,0.08)',
-                border:'1px solid rgba(0,245,255,0.25)',
-                display:'flex',alignItems:'center',justifyContent:'center',
-                fontSize:'1.8rem',zIndex:1,
-              }}>{p.img}</div>
+                position:'absolute',inset:0,
+                background:'linear-gradient(transparent 60%,rgba(0,0,0,0.5))',
+                pointerEvents:'none',
+              }}/>
               <div style={{
-                position:'absolute',bottom:'4px',right:'6px',
-                width:'8px',height:'8px',borderRadius:'50%',
-                background:'rgba(0,0,0,0.8)',
-                border:'1px solid rgba(0,245,255,0.3)',
-                display:'flex',alignItems:'center',justifyContent:'center',
+                position:'absolute',top:'8px',right:'8px',
+                width:'10px',height:'10px',borderRadius:'50%',
+                background:'#00ff88',
+                boxShadow:'0 0 8px #00ff88',
+              }}/>
+            </div>
+            <div style={{padding:'14px 16px',textAlign:'center'}}>
+              <div style={{
+                color:'#ffffff',fontSize:'0.95rem',
+                fontFamily:"'Rajdhani',sans-serif",fontWeight:700,
+                letterSpacing:'0.08em',marginBottom:'8px',
+                textTransform:'uppercase',
+              }}>{p.name}</div>
+              <div style={{
+                display:'flex',alignItems:'center',justifyContent:'center',gap:'6px',
+                border:'1px solid rgba(0,245,255,0.2)',
+                borderRadius:'4px',padding:'6px 12px',
+                background:'rgba(0,245,255,0.04)',
               }}>
-                <div style={{width:'4px',height:'4px',borderRadius:'50%',background:'rgba(0,245,255,0.6)'}}/>
+                <span style={{color:'rgba(0,245,255,0.6)',fontSize:'0.75rem'}}>📞</span>
+                <span style={{
+                  color:'rgba(0,245,255,0.9)',fontSize:'0.78rem',
+                  fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.08em',fontWeight:600,
+                }}>{p.phone}</span>
               </div>
             </div>
-            <div style={{padding:'10px 10px'}}>
-              <div style={{
-                color:'rgba(0,245,255,0.9)',fontSize:'0.66rem',
-                fontFamily:"'Rajdhani',sans-serif",fontWeight:700,
-                textAlign:'center',lineHeight:1.35,letterSpacing:'0.02em',
-                whiteSpace:'pre-line',
-              }}>{p.role}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div style={{
-        display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'12px',
-        borderTop:'1px solid rgba(0,245,255,0.1)',paddingTop:'18px',
-      }}>
-        {[
-          {icon:'✉', label:'info@cyberfest2026.com'},
-          {icon:'📞', label:'+91 9142047263'},
-          {icon:'📍', label:'HIT Campus, West Bengal'},
-        ].map((c,i)=>(
-          <div key={i} style={{
-            display:'flex',gap:'10px',alignItems:'center',
-            padding:'10px 14px',
-            border:'1px solid rgba(0,245,255,0.12)',
-            borderRadius:'4px',
-            background:'rgba(0,245,255,0.03)',
-          }}>
-            <div style={{fontSize:'1.1rem'}}>{c.icon}</div>
-            <span style={{color:'rgba(255,255,255,0.6)',fontSize:'0.7rem',fontFamily:"'Rajdhani',sans-serif"}}>{c.label}</span>
           </div>
         ))}
       </div>
