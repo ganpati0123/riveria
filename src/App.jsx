@@ -328,9 +328,10 @@ function Scene({ sharedRefs, onReady }) {
     if(sharedRefs.autoYaw.current && moving){
       const py=catmullRomYaw(tNow,wps.current)
       sharedRefs.yaw.current=lerpAngle(sharedRefs.yaw.current,py,Math.min(1,3*dt))
-    } else if(nearWp && !moving){
+    }
+    if(nearWp && !moving){
       const targetYaw=ROAD_YAWS[roundedWp]
-      sharedRefs.yaw.current=lerpAngle(sharedRefs.yaw.current,targetYaw,Math.min(1,2.5*dt))
+      sharedRefs.yaw.current=lerpAngle(sharedRefs.yaw.current,targetYaw,Math.min(1,5*dt))
     }
     const cp=Math.max(-Math.PI*.44,Math.min(Math.PI*.44,sharedRefs.pitch.current))
     camera.rotation.order='YXZ'
@@ -1490,7 +1491,6 @@ export default function App() {
     const onTouchStart = e => {
       const t = e.touches[0]
       dragState.active = true; dragState.x = t.clientX; dragState.y = t.clientY
-      if (sharedRefs.targetT.current < 0) sharedRefs.autoYaw.current = false
     }
     const onTouchMove = e => {
       if (!dragState.active) return
@@ -1500,6 +1500,11 @@ export default function App() {
       if (sharedRefs.targetT.current >= 0) return
       sharedRefs.vel.current -= dy * 0.0003
       sharedRefs.yaw.current -= dx * 0.0022
+      if (Math.abs(dy) > Math.abs(dx)) {
+        sharedRefs.autoYaw.current = true
+      } else {
+        sharedRefs.autoYaw.current = false
+      }
     }
     const onTouchEnd = () => {
       dragState.active = false
