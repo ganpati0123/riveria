@@ -531,13 +531,13 @@ function HomePanel({ visible, onEnter, time }) {
 
   if (isMobile) return (
     <div style={{
-      position:'fixed', inset:0, zIndex:100,
+      position:'fixed', bottom:0, left:0, right:0, zIndex:100,
       pointerEvents: visible ? 'auto' : 'none',
       transition:'opacity 0.6s ease',
       opacity: visible ? 1 : 0,
-      display:'flex', flexDirection:'column', justifyContent:'flex-end',
-      padding:'54px 10px 8px',
-      background: visible ? 'linear-gradient(180deg,rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.82) 60%)' : 'transparent',
+      display:'flex', flexDirection:'column',
+      padding:'12px 10px 10px',
+      background:'linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0.88) 25%)',
     }}>
       <div style={{
         color:'rgba(0,245,255,0.6)', fontSize:'0.38rem',
