@@ -32,7 +32,7 @@ const ROAD_YAWS = [
 ]
 
 // Nav sections → waypoint index
-const NAV_WP = { home:0, schedule:1, activities:2, sponsors:3, gallery:4, contact:10 }
+const NAV_WP = { home:0, schedule:1, activities:2, sponsors:3, gallery:4, contact:7 }
 
 // Section panels shown at these waypoint indices
 const SECTION_AT = {
@@ -40,20 +40,13 @@ const SECTION_AT = {
   2: 'activities',
   3: 'sponsors',
   4: 'gallery',
-  5: 'gallery1',
-  6: 'gallery2',
-  7: 'gallery3',
-  10: 'contact',
+  5: 'gallery2',
+  6: 'gallery3',
+  7: 'contact',
 }
 
 // How many scrolls to fill before advancing
 const SCROLL_THRESHOLD = 3
-
-// Touch controls
-const TOUCH_MOVE_SENSITIVITY  = 0.000014
-const TOUCH_LOOK_SENSITIVITY  = 0.0018
-const FLICK_VELOCITY_SCALE    = 0.45
-const DIRECTION_LOCK_PX       = 12
 
 // ─── Target date for countdown (change as needed) ─────────────────────────
 const EVENT_DATE = new Date('2026-05-18T00:00:00')
@@ -288,7 +281,7 @@ function Scene({ sharedRefs, onReady }) {
     wps.current = built
     sharedRefs.wpsRef.current = built
     sharedRefs.yaw.current = ROAD_YAWS[0]
-    sharedRefs.pitch.current = 0
+    sharedRefs.pitch.current = -0.04
     camera.position.copy(built[0].pos)
     camera.rotation.order='YXZ'
     camera.rotation.y=sharedRefs.yaw.current
@@ -418,90 +411,51 @@ function Navbar({ activeSection, onNav }) {
           </div>
         )}
 
-        {/* Desktop: Enter Games | Mobile: Hamburger */}
-        {!isMobile ? (
-          <button style={{
-            background:'transparent', border:'1px solid rgba(200,40,40,0.6)',
-            borderRadius:'3px', padding:'7px 18px',
-            color:'rgba(255,255,255,0.85)', fontSize:'0.72rem',
-            fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.1em', fontWeight:600,
-            cursor:'pointer', display:'flex', alignItems:'center', gap:'6px',
-            transition:'all 0.2s ease',
-          }}
-            onMouseEnter={e=>{e.currentTarget.style.background='rgba(200,40,40,0.15)';e.currentTarget.style.borderColor='rgba(200,40,40,0.9)'}}
-            onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(200,40,40,0.6)'}}
-            onClick={() => handleNav('schedule')}
-          >
-            ENTER GAMES
-            <svg width='10' height='10' viewBox='0 0 10 10' fill='none'>
-              <path d='M2 8L8 2M8 2H3M8 2V7' stroke='rgba(255,255,255,0.7)' strokeWidth='1.4' strokeLinecap='round'/>
-            </svg>
-          </button>
-        ) : (
-          <button onClick={() => setMenuOpen(o => !o)} style={{
-            background:'transparent', border:'1px solid rgba(0,245,255,0.35)',
-            borderRadius:'4px', padding:'7px 10px',
-            cursor:'pointer', display:'flex', flexDirection:'column',
-            gap:'5px', alignItems:'center', justifyContent:'center',
-            transition:'all 0.2s ease',
-          }}>
-            {menuOpen ? (
-              <svg width='18' height='18' viewBox='0 0 18 18' fill='none'>
-                <line x1='2' y1='2' x2='16' y2='16' stroke='#00f5ff' strokeWidth='2' strokeLinecap='round'/>
-                <line x1='16' y1='2' x2='2' y2='16' stroke='#00f5ff' strokeWidth='2' strokeLinecap='round'/>
-              </svg>
-            ) : (
-              <>
-                <span style={{display:'block',width:'20px',height:'2px',background:'#00f5ff',borderRadius:'2px',boxShadow:'0 0 6px #00f5ff'}}/>
-                <span style={{display:'block',width:'20px',height:'2px',background:'#00f5ff',borderRadius:'2px',boxShadow:'0 0 6px #00f5ff'}}/>
-                <span style={{display:'block',width:'20px',height:'2px',background:'#00f5ff',borderRadius:'2px',boxShadow:'0 0 6px #00f5ff'}}/>
-              </>
-            )}
-          </button>
-        )}
-      </nav>
+      <div style={{display:'flex', flexDirection:'column', gap:'5px', alignItems:'stretch'}}>
+        <button style={{
+          background:'transparent',
+          border:'1px solid rgba(200,40,40,0.6)',
+          borderRadius:'3px', padding:'5px 18px',
+          color:'rgba(255,255,255,0.85)', fontSize:'0.72rem',
+          fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.1em', fontWeight:600,
+          cursor:'pointer',
+          display:'flex', alignItems:'center', justifyContent:'center', gap:'6px',
+          transition:'all 0.2s ease',
+        }}
+          onMouseEnter={e=>{e.currentTarget.style.background='rgba(200,40,40,0.15)';e.currentTarget.style.borderColor='rgba(200,40,40,0.9)'}}
+          onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(200,40,40,0.6)'}}
+          onClick={() => onNav('schedule')}
+        >
+          ENTER GAMES
+          <svg width='9' height='9' viewBox='0 0 10 10' fill='none'>
+            <path d='M2 8L8 2M8 2H3M8 2V7' stroke='rgba(255,255,255,0.7)' strokeWidth='1.4' strokeLinecap='round'/>
+          </svg>
+        </button>
 
-      {/* Mobile dropdown menu */}
-      {isMobile && menuOpen && (
-        <div style={{
-          position:'fixed', top:'52px', left:0, right:0, zIndex:199,
-          background:'rgba(4,8,16,0.98)', backdropFilter:'blur(12px)',
-          borderBottom:'1px solid rgba(0,245,255,0.2)',
-          animation:'mobileMenuOpen 0.22s ease forwards',
-          overflow:'hidden',
-        }}>
-          {links.map((link, i) => {
-            const key = link.toLowerCase()
-            const isActive = activeSection === key
-            return (
-              <button key={link} onClick={() => handleNav(key)} style={{
-                display:'block', width:'100%', textAlign:'left',
-                padding:'14px 24px',
-                background: isActive ? 'rgba(0,245,255,0.06)' : 'transparent',
-                border:'none',
-                borderBottom: i < links.length-1 ? '1px solid rgba(0,245,255,0.07)' : 'none',
-                borderLeft: isActive ? '3px solid #00f5ff' : '3px solid transparent',
-                color: isActive ? '#00f5ff' : 'rgba(255,255,255,0.7)',
-                fontSize:'0.9rem', fontFamily:"'Rajdhani',sans-serif",
-                fontWeight: isActive ? 700 : 500,
-                letterSpacing:'0.12em', textTransform:'uppercase',
-                cursor:'pointer',
-              }}>{link}</button>
-            )
-          })}
-          <button onClick={() => handleNav('schedule')} style={{
-            display:'block', width:'100%', textAlign:'center',
-            padding:'14px 24px',
-            background:'linear-gradient(135deg,rgba(255,0,128,0.15),rgba(204,0,102,0.1))',
-            border:'none',
-            borderTop:'1px solid rgba(255,0,128,0.2)',
-            color:'#ff0080', fontSize:'0.75rem',
-            fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.18em', fontWeight:700,
+        <a href='https://www.rivierafest.online/' target='_blank' rel='noopener noreferrer'
+          style={{
+            background:'transparent',
+            border:'1px solid rgba(0,200,220,0.5)',
+            borderRadius:'3px', padding:'5px 18px',
+            color:'rgba(0,220,255,0.85)', fontSize:'0.65rem',
+            fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.1em', fontWeight:600,
             cursor:'pointer',
-          }}>⚡ ENTER THE GAMES</button>
-        </div>
-      )}
-    </>
+            display:'flex', alignItems:'center', justifyContent:'center', gap:'5px',
+            transition:'all 0.2s ease',
+            textDecoration:'none',
+            whiteSpace:'nowrap',
+          }}
+          onMouseEnter={e=>{e.currentTarget.style.background='rgba(0,200,220,0.12)';e.currentTarget.style.borderColor='rgba(0,220,255,0.9)'}}
+          onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(0,200,220,0.5)'}}
+        >
+          <svg width='8' height='8' viewBox='0 0 10 10' fill='none'>
+            <rect x='1' y='1' width='8' height='8' rx='1' stroke='rgba(0,220,255,0.7)' strokeWidth='1.3'/>
+            <path d='M3 5h4M5 3l2 2-2 2' stroke='rgba(0,220,255,0.7)' strokeWidth='1.2' strokeLinecap='round'/>
+          </svg>
+          SWITCH TO 2D
+        </a>
+      </div>
+    </nav>
   )
 }
 
@@ -840,25 +794,23 @@ function SectionPanel({ section, visible, scrollsLeft }) {
   if (!isOpen && !closing) return null
 
   const panels = {
-    schedule:  <ScheduleContent />,
-    activities:<ActivitiesContent />,
-    sponsors:  <SponsorsContent />,
-    gallery:   <GalleryContent />,
-    gallery1:  <GallerySectorContent sectorIndex={0} />,
-    gallery2:  <GallerySectorContent sectorIndex={1} />,
-    gallery3:  <GallerySectorContent sectorIndex={2} />,
-    contact:   <ContactContent />,
+    schedule: <ScheduleContent />,
+    activities: <ActivitiesContent />,
+    sponsors: <SponsorsContent />,
+    gallery: <GalleryContent />,
+    gallery2: <Gallery2Content />,
+    gallery3: <Gallery3Content />,
+    contact: <ContactContent />,
   }
 
   const titles = {
-    schedule:   { tag:'COMBAT LOG',       title:'SCHEDULE'   },
-    activities: { tag:'COMBAT DOMAINS',   title:'ACTIVITIES' },
-    sponsors:   { tag:'STRATEGIC ALLIES', title:'SPONSORS'   },
-    gallery:    { tag:'ARCHIVE FEED',     title:'GALLERY'    },
-    gallery1:   { tag:'ARCHIVE FEED',     title:'SECTOR 01'  },
-    gallery2:   { tag:'ARCHIVE FEED',     title:'SECTOR 02'  },
-    gallery3:   { tag:'ARCHIVE FEED',     title:'SECTOR 03'  },
-    contact:    { tag:'COMMUNICATIONS',   title:'CONTACT US' },
+    schedule: { tag:'COMBAT LOG', title:'SCHEDULE' },
+    activities: { tag:'COMBAT DOMAINS', title:'ACTIVITIES' },
+    sponsors: { tag:'STRATEGIC ALLIES', title:'SPONSORS' },
+    gallery: { tag:'SECTOR—01', title:'CRIMSON STAGE 2025' },
+    gallery2: { tag:'SECTOR—02', title:'NON-COMBAT OPERATIONS' },
+    gallery3: { tag:'SECTOR—03', title:'FINAL DOMAIN' },
+    contact: { tag:'COMMUNICATIONS', title:'CONTACT US' },
   }
   const info = titles[shownSection] || { tag:'', title:'' }
 
@@ -870,53 +822,6 @@ function SectionPanel({ section, visible, scrollsLeft }) {
       padding: isMobile ? '58px 8px 8px' : '64px 40px 56px',
       animation: closing ? 'overlayClose 0.52s ease forwards' : 'overlayOpen 0.38s ease forwards',
     }}>
-      <style>{`
-        @keyframes overlayOpen {
-          from { background:rgba(0,0,0,0); backdrop-filter:blur(0px); }
-          to   { background:rgba(0,0,0,0.68); backdrop-filter:blur(5px); }
-        }
-        @keyframes overlayClose {
-          from { background:rgba(0,0,0,0.68); backdrop-filter:blur(5px); }
-          to   { background:rgba(0,0,0,0); backdrop-filter:blur(0px); }
-        }
-        @keyframes panelOpen {
-          0%   { opacity:0; transform:scale(0.86) translateY(28px); filter:blur(12px); }
-          60%  { filter:blur(0); }
-          100% { opacity:1; transform:scale(1) translateY(0); filter:blur(0); }
-        }
-        @keyframes panelClose {
-          0%   { opacity:1; transform:scale(1) translateY(0); filter:blur(0); }
-          100% { opacity:0; transform:scale(0.91) translateY(-18px); filter:blur(14px); }
-        }
-        @keyframes scanSweep {
-          0%   { top:-4px; opacity:0.9; }
-          100% { top:100%; opacity:0; }
-        }
-        @keyframes cornerPulse {
-          0%,100% { filter:drop-shadow(0 0 5px #00f5ff) drop-shadow(0 0 12px rgba(0,245,255,0.4)); }
-          50%     { filter:drop-shadow(0 0 12px #00f5ff) drop-shadow(0 0 28px rgba(0,245,255,0.7)) drop-shadow(0 0 50px rgba(0,245,255,0.25)); }
-        }
-        @keyframes titleGlitch {
-          0%,92%,100% { clip-path:none; transform:none; text-shadow:0 0 32px rgba(0,245,255,0.9),0 0 64px rgba(0,245,255,0.35); }
-          93% { clip-path:inset(15% 0 55% 0); transform:translateX(-4px) skewX(-2deg); text-shadow:4px 0 #ff0080,-4px 0 #00f5ff; }
-          94% { clip-path:inset(55% 0 10% 0); transform:translateX(4px) skewX(2deg); text-shadow:-4px 0 #ff0080,4px 0 #00f5ff; }
-          95% { clip-path:none; transform:none; }
-        }
-        @keyframes gridPulse {
-          0%,100% { opacity:0.022; }
-          50%     { opacity:0.045; }
-        }
-        @keyframes topBarScan {
-          0%   { background-position:200% 0; }
-          100% { background-position:-200% 0; }
-        }
-        @keyframes dotBlink {
-          0%,100% { opacity:1; }
-          50%     { opacity:0.2; }
-        }
-      `}</style>
-
-      {/* Panel box */}
       <div style={{
         width:'100%', maxWidth:'1060px',
         maxHeight:'calc(100vh - 124px)',
@@ -1099,42 +1004,42 @@ function ScheduleContent() {
   const days = ['SECTOR 01','SECTOR 02','FINAL PHASE']
   const events = [
     [
-      { time:'09:00', title:'Opening Protocol', desc:'The games are formally declared active — the culling begins now.', num:'01', venue:'Main Arena', seats:'Open' },
-      { time:'11:00', title:'Hidden Protocol R-I', desc:'Navigate through layers of mystery and deception — the first elimination round begins.', num:'02', venue:'Zone B', seats:'Limited' },
-      { time:'14:00', title:'Crimson Runway', desc:'Style meets danger on the stage where fashion becomes a weapon of self-expression.', num:'03', venue:'Stage C', seats:'Open' },
+      { time:'09:00', title:'Digital Combat', desc:'Enter the arena where strategy, skill, and survival instincts collide in a brutal gaming showdown.', num:'01', venue:'Checkpoint 01', seats:'Sector PM' },
+      { time:'11:00', title:'Hidden Protocol R-I', desc:'Navigate through layers of mystery and deception — the first elimination round begins.', num:'02', venue:'Checkpoint 01', seats:'Sector PM' },
+      { time:'14:00', title:'Crimson Runway', desc:'Style meets danger on the stage where fashion becomes a weapon of self-expression.', num:'03', venue:'Checkpoint 01', seats:'Sector PM' },
     ],
     [
-      { time:'07:54', title:'Synchronized Assault', desc:'Coordinated movement, relentless energy — the stage trembles under collective force.', num:'01', venue:'Main Arena', seats:'Open' },
-      { time:'09:00', title:'Open Domain', desc:'Raw talent, unfiltered voices — step into the arena and claim your moment.', num:'02', venue:'Zone A', seats:'Open' },
-      { time:'11:30', title:'Digital Siege', desc:'Hack, strategize, and outlast — the digital battlefield awaits your command.', num:'03', venue:'Cyber Hub', seats:'Limited' },
+      { time:'07:54', title:'Opening Protocol', desc:'The games are formally declared active — the culling begins now.', num:'01', venue:'Checkpoint 01', seats:'Sector PM' },
+      { time:'07:30', title:'Synchronized Assault', desc:'Coordinated movement, relentless energy — the stage trembles under collective force.', num:'02', venue:'Checkpoint 01', seats:'Sector PM' },
+      { time:'09:00', title:'Open Domain', desc:'Raw talent, unfiltered voices — step into the arena and claim your moment.', num:'03', venue:'Checkpoint 01', seats:'Sector PM' },
     ],
     [
-      { time:'07:30', title:'Hidden Protocol — Final', desc:'The last survivors face the ultimate treasure pursuit. No second chances.', num:'01', venue:'Zone B', seats:'Finals Only' },
-      { time:'14:30', title:'Digital Combat — Finals', desc:'Championship combat. The strongest players battle for the title.', num:'02', venue:'Cyber Hub', seats:'Finals Only' },
-      { time:'20:00', title:'Crimson Stage', desc:'The grand cultural showdown — where art, music, and performance ignite the final night.', num:'03', venue:'Main Arena', seats:'Open' },
+      { time:'07:30', title:'Hidden Protocol — Final', desc:'The last survivors face the ultimate treasure pursuit. No second chances.', num:'01', venue:'Checkpoint 01', seats:'Sector PM' },
+      { time:'14:30', title:'Digital Combat — Finals', desc:'Championship combat. The strongest players battle for the title.', num:'02', venue:'Checkpoint 01', seats:'Sector PM' },
+      { time:'20:00', title:'Crimson Stage', desc:'The grand cultural showdown — where art, music, and performance ignite the final night.', num:'03', venue:'Checkpoint 01', seats:'Sector PM' },
     ],
   ]
   return (
     <div>
-      <div style={{display:'flex',gap:'8px',marginBottom:'22px'}}>
+      <div style={{display:'flex',gap:'8px',marginBottom:'16px'}}>
         {days.map((d,i)=>(
           <button key={i} onClick={()=>setDay(i)} style={{
             background: day===i ? 'rgba(255,0,128,0.15)' : 'transparent',
             border: day===i ? '1.5px solid rgba(255,0,128,0.6)' : '1.5px solid rgba(0,245,255,0.2)',
-            borderRadius:'4px', padding:'7px 18px',
+            borderRadius:'4px', padding:'6px 16px',
             color: day===i ? '#ff0080' : 'rgba(255,255,255,0.45)',
-            fontSize:'0.6rem', fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.16em',
+            fontSize:'0.58rem', fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.14em',
             cursor:'pointer',
             boxShadow: day===i ? '0 0 16px rgba(255,0,128,0.25)' : 'none',
             transition:'all 0.25s ease',
           }}>◈ {d}</button>
         ))}
       </div>
-      <div style={{display:'flex',gap:'18px',flexDirection:'column'}}>
+      <div style={{display:'flex',gap:'10px',flexDirection:'column'}}>
         {events[day].map((ev,i)=>(
           <div key={i} style={{
-            display:'flex', gap:'18px', alignItems:'flex-start',
-            padding:'16px 18px',
+            display:'flex', gap:'14px', alignItems:'flex-start',
+            padding:'12px 14px',
             border:'1px solid rgba(0,245,255,0.12)',
             borderRadius:'4px',
             background: i%2===0 ? 'rgba(0,245,255,0.03)' : 'rgba(255,0,128,0.03)',
@@ -1142,23 +1047,22 @@ function ScheduleContent() {
             position:'relative',
           }}>
             <div style={{
-              width:'42px',height:'42px',borderRadius:'4px',
+              width:'36px',height:'36px',borderRadius:'4px',flexShrink:0,
               background:'rgba(0,245,255,0.08)',
               border:'1px solid rgba(0,245,255,0.25)',
               display:'flex',alignItems:'center',justifyContent:'center',
-              color:'rgba(0,245,255,0.7)',fontSize:'0.75rem',
+              color:'rgba(0,245,255,0.7)',fontSize:'0.7rem',
               fontFamily:"'Orbitron',sans-serif",fontWeight:700,
-              flexShrink:0,
             }}>{ev.num}</div>
             <div style={{flex:1}}>
-              <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'5px'}}>
-                <span style={{color:'rgba(0,245,255,0.5)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>ACTIVATION — {ev.time}</span>
+              <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'3px'}}>
+                <span style={{color:'rgba(0,245,255,0.5)',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>ACTIVATION — {ev.time}</span>
               </div>
-              <div style={{color:'#ffffff',fontSize:'1.0rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,letterSpacing:'0.04em',marginBottom:'5px',textTransform:'uppercase'}}>{ev.title}</div>
-              <div style={{color:'rgba(255,255,255,0.5)',fontSize:'0.8rem',fontFamily:"'Rajdhani',sans-serif",lineHeight:1.5,marginBottom:'8px'}}>{ev.desc}</div>
+              <div style={{color:'#ffffff',fontSize:'0.95rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,letterSpacing:'0.04em',marginBottom:'3px',textTransform:'uppercase'}}>{ev.title}</div>
+              <div style={{color:'rgba(255,255,255,0.5)',fontSize:'0.75rem',fontFamily:"'Rajdhani',sans-serif",lineHeight:1.4,marginBottom:'6px'}}>{ev.desc}</div>
               <div style={{display:'flex',gap:'14px'}}>
-                <span style={{color:'rgba(0,245,255,0.45)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.08em'}}>◉ {ev.venue}</span>
-                <span style={{color:'rgba(255,0,128,0.45)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.08em'}}>◈ {ev.seats}</span>
+                <span style={{color:'rgba(0,245,255,0.45)',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.08em'}}>◉ {ev.venue}</span>
+                <span style={{color:'rgba(255,0,128,0.45)',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.08em'}}>◈ {ev.seats}</span>
               </div>
             </div>
           </div>
@@ -1174,7 +1078,6 @@ function ActivitiesContent() {
     { sector:'RECON-01', tag:'RECON', icon:'◉', name:'Hidden Protocol', desc:'Navigate a web of encoded clues across the arena. Decode, pursue, and outmaneuver rival squads in a high-stakes survival pursuit.', status:'ACTIVE' },
     { sector:'PERFORMANCE-02', tag:'PERFORMANCE', icon:'♪', name:'Crimson Stage', desc:'Where performance becomes a weapon. Electrifying acts under crimson lights in the most intense cultural showdown.', status:'ACTIVE' },
     { sector:'COMBAT-03', tag:'DIGITAL', icon:'⚙', name:'Digital Combat', desc:'Enter the digital battlefield. Only reflexes, strategy, and ruthless precision will determine the survivors.', status:'ACTIVE' },
-    { sector:'TACTICAL-04', tag:'INNOVATION', icon:'◈', name:'Innovation Forge', desc:'A vault of cutting-edge creations and experimental technology. Where visionary minds showcase weapons of innovation.', status:'ACTIVE' },
   ]
   return (
     <div>
@@ -1182,39 +1085,38 @@ function ActivitiesContent() {
         <div style={{color:'rgba(0,245,255,0.5)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.3em',marginBottom:'8px'}}>◈ COMBAT DOMAINS ◈</div>
         <p style={{color:'rgba(255,255,255,0.45)',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif"}}>Each domain is a unique trial of skill, strategy, and survival. Choose your battlefield wisely.</p>
       </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'16px'}}>
         {activities.map((a,i)=>(
           <div key={i} style={{
-            padding:'16px', borderRadius:'4px',
+            padding:'22px 18px', borderRadius:'4px',
             border:'1px solid rgba(0,245,255,0.15)',
             background:'linear-gradient(160deg,rgba(0,10,20,0.8),rgba(0,5,15,0.6))',
             position:'relative', overflow:'hidden',
-            animation:`revealUp 0.4s ${i*0.05}s both`,
+            animation:`revealUp 0.4s ${i*0.1}s both`,
             transition:'all 0.3s ease',
             cursor:'default',
+            display:'flex', flexDirection:'column',
           }}
             onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.4)';e.currentTarget.style.background='linear-gradient(160deg,rgba(0,20,35,0.9),rgba(0,10,25,0.8))'}}
             onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.15)';e.currentTarget.style.background='linear-gradient(160deg,rgba(0,10,20,0.8),rgba(0,5,15,0.6))'}}
           >
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'8px'}}>
-              <span style={{color:'rgba(0,245,255,0.35)',fontSize:'0.5rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>{a.sector}</span>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'12px'}}>
+              <span style={{color:'rgba(0,245,255,0.35)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>{a.sector}</span>
               <span style={{
-                color: a.status==='ACTIVE'?'#00ff88':'rgba(255,165,0,0.8)',
-                fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em',
-                border:`1px solid ${a.status==='ACTIVE'?'rgba(0,255,136,0.3)':'rgba(255,165,0,0.3)'}`,
-                borderRadius:'3px',padding:'1px 5px',
-              }}>◉ {a.status}</span>
+                color:'#00ff88', fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em',
+                border:'1px solid rgba(0,255,136,0.3)',borderRadius:'3px',padding:'1px 5px',
+              }}>◉ ACTIVE</span>
             </div>
-            <div style={{fontSize:'1.4rem',marginBottom:'6px',filter:'drop-shadow(0 0 8px rgba(0,245,255,0.5))'}}>{a.icon}</div>
-            <div style={{color:'#ffffff',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,letterSpacing:'0.06em',marginBottom:'5px',textTransform:'uppercase'}}>{a.name}</div>
-            <div style={{color:'rgba(255,255,255,0.42)',fontSize:'0.72rem',fontFamily:"'Rajdhani',sans-serif",lineHeight:1.45,marginBottom:'10px'}}>{a.desc}</div>
+            <div style={{fontSize:'1.8rem',marginBottom:'10px',filter:'drop-shadow(0 0 10px rgba(0,245,255,0.6))'}}>{a.icon}</div>
+            <div style={{color:'#ffffff',fontSize:'1.1rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,letterSpacing:'0.06em',marginBottom:'8px',textTransform:'uppercase'}}>{a.name}</div>
+            <div style={{color:'rgba(255,255,255,0.5)',fontSize:'0.8rem',fontFamily:"'Rajdhani',sans-serif",lineHeight:1.5,marginBottom:'18px',flex:1}}>{a.desc}</div>
             <button style={{
               background:'transparent',border:'1px solid rgba(0,245,255,0.3)',
-              borderRadius:'3px',padding:'4px 10px',
+              borderRadius:'3px',padding:'6px 12px',
               color:'rgba(0,245,255,0.7)',fontSize:'0.52rem',
               fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.12em',
               cursor:'pointer',width:'100%',
-            }}>ENTER SECTOR →</button>
+            }}>ACCESS DOMAIN →</button>
           </div>
         ))}
       </div>
@@ -1224,15 +1126,11 @@ function ActivitiesContent() {
 
 // ─── Sponsors Content ────────────────────────────────────────────────────────
 function SponsorsContent() {
-  const tiers = [
-    { name:'TIER—ALPHA', color:'#00f5ff', glow:'rgba(0,245,255,0.4)', sponsors:[
-      { name:'Sprite', bg:'#00a651', text:'#ffffff', font:'Georgia,serif', style:'italic' },
-      { name:'Coca-Cola', bg:'#e61c24', text:'#ffffff', font:'Georgia,serif', style:'italic' },
-    ]},
-    { name:'TIER—BRAVO', color:'#ff0080', glow:'rgba(255,0,128,0.4)', sponsors:[
-      { name:'FANTA', bg:'#ff6b00', text:'#ffffff', font:"'Orbitron',sans-serif", style:'normal' },
-      { name:'PEPSI', bg:'#004b93', text:'#ffffff', font:"'Orbitron',sans-serif", style:'normal' },
-    ]},
+  const sponsors = [
+    { tier:'TIER—ALPHA', name:'Sprite', bg:'#00a651', text:'#ffffff', fontStyle:'italic', fontFamily:'Georgia,serif', status:'ACTIVE' },
+    { tier:'TIER—ALPHA', name:'Coca-Cola', bg:'#e61c24', text:'#ffffff', fontStyle:'italic', fontFamily:'Georgia,serif', status:'ACTIVE' },
+    { tier:'TIER—BRAVO', name:'Fanta', bg:'#ff6b00', text:'#ffffff', fontStyle:'normal', fontFamily:"'Orbitron',sans-serif", status:'ACTIVE' },
+    { tier:'TIER—BRAVO', name:'Pepsi', bg:'#004b93', text:'#ffffff', fontStyle:'normal', fontFamily:"'Orbitron',sans-serif", status:'ACTIVE' },
   ]
   return (
     <div>
@@ -1240,183 +1138,207 @@ function SponsorsContent() {
         <div style={{color:'rgba(0,245,255,0.5)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.3em',marginBottom:'8px'}}>◈ STRATEGIC ALLIES ◈</div>
         <p style={{color:'rgba(255,255,255,0.45)',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif"}}>Organizations powering the games from behind the line.</p>
       </div>
-      {tiers.map((tier,ti)=>(
-        <div key={ti} style={{marginBottom:'28px',animation:`revealUp 0.4s ${ti*0.1}s both`}}>
-          <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'16px'}}>
-            <div style={{flex:1,height:'1px',background:`linear-gradient(90deg,transparent,${tier.color}44)`}}/>
-            <span style={{color:tier.color,fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.24em',textShadow:`0 0 12px ${tier.glow}`}}>{tier.name}</span>
-            <div style={{flex:1,height:'1px',background:`linear-gradient(90deg,${tier.color}44,transparent)`}}/>
-          </div>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'}}>
-            {tier.sponsors.map((sp,si)=>(
-              <div key={si} style={{
-                padding:'40px 24px',
-                borderRadius:'4px',
-                background: sp.bg,
-                border:`2px solid ${tier.color}33`,
-                display:'flex',alignItems:'center',justifyContent:'center',
-                fontFamily: sp.font,
-                fontStyle: sp.style,
-                fontWeight:700,
+      <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'14px'}}>
+        {sponsors.map((sp,i)=>(
+          <div key={i} style={{
+            border:'1px solid rgba(255,255,255,0.12)',
+            borderRadius:'6px',
+            overflow:'hidden',
+            animation:`revealUp 0.4s ${i*0.1}s both`,
+          }}>
+            <div style={{
+              display:'flex',justifyContent:'space-between',alignItems:'center',
+              padding:'6px 12px',
+              background:'rgba(0,0,0,0.4)',
+              borderBottom:'1px solid rgba(255,255,255,0.08)',
+            }}>
+              <span style={{color:'rgba(255,255,255,0.45)',fontSize:'0.5rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.14em'}}>{sp.tier}</span>
+              <span style={{color:'#00ff88',fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>◉ ACTIVE</span>
+            </div>
+            <div style={{
+              padding:'36px 24px',
+              background:sp.bg,
+              display:'flex',alignItems:'center',justifyContent:'center',
+              minHeight:'100px',
+            }}>
+              <span style={{
+                color:sp.text,
                 fontSize:'1.6rem',
-                color: sp.text,
+                fontWeight:700,
+                fontFamily:sp.fontFamily,
+                fontStyle:sp.fontStyle,
                 letterSpacing:'0.02em',
-                boxShadow:`0 0 24px ${tier.glow}`,
-                position:'relative',
-                overflow:'hidden',
-              }}>
-                <div style={{position:'absolute',top:'6px',left:'8px',fontSize:'0.45rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.15em',color:`${sp.text}88`}}>{tier.name}</div>
-                <div style={{position:'absolute',top:'6px',right:'8px',fontSize:'0.45rem',fontFamily:"'Orbitron',sans-serif",color:`${sp.text}88`}}>◉ ACTIVE</div>
-                <div style={{position:'absolute',bottom:'6px',left:'8px',fontSize:'0.45rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em',color:`${sp.text}66`}}>{sp.name.toUpperCase()}</div>
-                {sp.name}
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// ─── Single Sector Gallery Content ───────────────────────────────────────────
-const GALLERY_SECTORS = [
-  {
-    tag:'SECTOR—01', title:'Crimson Stage 2025',
-    desc:'Electrifying performances and relentless energy from the main combat stage.',
-    images:['/img_s1_1.png','/img_s1_2.png','/img_s1_3.png','/img_s1_4.png'],
-  },
-  {
-    tag:'SECTOR—02', title:'Non-Combat Operations',
-    desc:'Tactical creativity, strategic gaming, and high-stakes challenges beyond the digital battlefield.',
-    images:['/img_s2_1.png','/img_s2_2.png','/img_s2_3.png','/img_s2_4.png'],
-  },
-  {
-    tag:'SECTOR—03', title:'Final Domain',
-    desc:'The crowd ignited as the bass dropped in the final arena showdown.',
-    images:['/img_s3_1.png','/img_s3_2.png','/img_s3_3.png','/img_s3_4.png'],
-  },
-]
-
-function GallerySectorContent({ sectorIndex }) {
-  const [expanded, setExpanded] = useState(null)
-  const s = GALLERY_SECTORS[sectorIndex]
-  return (
-    <div>
-      <div style={{marginBottom:'16px'}}>
-        <div style={{color:'rgba(0,245,255,0.5)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.2em',marginBottom:'4px'}}>{s.tag}</div>
-        <div style={{color:'#ffffff',fontSize:'1.3rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:'4px'}}>{s.title}</div>
-        <div style={{color:'rgba(255,255,255,0.5)',fontSize:'0.8rem',fontFamily:"'Rajdhani',sans-serif"}}>{s.desc}</div>
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gridTemplateRows:'200px 200px',gap:'8px'}}>
-        <div
-          style={{gridRow:'1 / span 2',position:'relative',overflow:'hidden',borderRadius:'4px',border:'1px solid rgba(0,245,255,0.2)',cursor:'pointer'}}
-          onClick={()=>setExpanded(expanded===0?null:0)}
-        >
-          <img src={s.images[0]} alt="" style={{width:'100%',height:'100%',objectFit:'cover',transition:'transform 0.3s ease',transform:expanded===0?'scale(1.05)':'scale(1)'}}/>
-          {expanded===0 && <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,0.4)',display:'flex',alignItems:'flex-end',padding:'12px'}}>
-            <span style={{color:'rgba(0,245,255,0.8)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>◉ FILE 01</span>
-          </div>}
-        </div>
-        {[1,2,3].map(idx=>(
-          <div key={idx}
-            style={{position:'relative',overflow:'hidden',borderRadius:'4px',border:`1px solid ${expanded===idx?'rgba(0,245,255,0.5)':'rgba(0,245,255,0.2)'}`,cursor:'pointer',transition:'border-color 0.2s'}}
-            onClick={()=>setExpanded(expanded===idx?null:idx)}
-          >
-            <img src={s.images[idx]} alt="" style={{width:'100%',height:'100%',objectFit:'cover',transition:'transform 0.3s ease',transform:expanded===idx?'scale(1.05)':'scale(1)'}}/>
-            {expanded===idx && <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,0.4)',display:'flex',alignItems:'flex-end',padding:'8px'}}>
-              <span style={{color:'rgba(0,245,255,0.8)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>◉ FILE 0{idx+1}</span>
-            </div>}
+              }}>{sp.name}</span>
+            </div>
+            <div style={{
+              padding:'6px 12px',
+              background:'rgba(0,0,0,0.4)',
+              borderTop:'1px solid rgba(255,255,255,0.08)',
+              display:'flex',justifyContent:'space-between',alignItems:'center',
+            }}>
+              <span style={{color:'rgba(255,255,255,0.4)',fontSize:'0.5rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>{sp.name.toUpperCase()}</span>
+              <span style={{color:'rgba(255,0,128,0.6)',fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif"}}>◈ ALLIED</span>
+            </div>
           </div>
         ))}
       </div>
-      <div style={{marginTop:'10px',display:'flex',justifyContent:'flex-end'}}>
-        <span style={{color:'rgba(255,0,128,0.7)',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.15em',cursor:'default'}}>ACCESS {s.images.length} FILES ›</span>
-      </div>
     </div>
   )
 }
 
-// ─── Gallery Content ─────────────────────────────────────────────────────────
+// ─── Gallery Image Grid (reusable) ───────────────────────────────────────────
+function GalleryGrid({ images, subtitle }) {
+  const [lightbox, setLightbox] = useState(null)
+  const [rects, setRects] = useState({})
+  const imgRefs = useRef({})
+
+  const openLightbox = (i) => {
+    const el = imgRefs.current[i]
+    if (el) {
+      const r = el.getBoundingClientRect()
+      setRects(prev => ({ ...prev, [i]: r }))
+    }
+    setLightbox(i)
+  }
+
+  return (
+    <>
+      <div style={{marginBottom:'10px'}}>
+        <p style={{color:'rgba(255,255,255,0.5)',fontSize:'0.82rem',fontFamily:"'Rajdhani',sans-serif",lineHeight:1.5}}>{subtitle}</p>
+      </div>
+      <div style={{
+        display:'grid',
+        gridTemplateColumns:'1fr 1fr',
+        gridTemplateRows:'auto auto',
+        gap:'8px',
+        animation:'revealUp 0.4s 0s both',
+      }}>
+        {images.map((src, i) => (
+          <div
+            key={i}
+            ref={el => imgRefs.current[i] = el}
+            onClick={() => openLightbox(i)}
+            style={{
+              borderRadius:'4px', overflow:'hidden',
+              border:'1px solid rgba(0,245,255,0.2)',
+              cursor:'pointer',
+              position:'relative',
+              aspectRatio:'16/10',
+              transition:'transform 0.2s ease, border-color 0.2s ease',
+            }}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.6)';e.currentTarget.style.transform='scale(1.02)'}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.2)';e.currentTarget.style.transform='scale(1)'}}
+          >
+            <img src={src} alt={`img ${i}`} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
+            <div style={{
+              position:'absolute',bottom:0,left:0,right:0,height:'40%',
+              background:'linear-gradient(transparent,rgba(0,0,0,0.6))',
+              pointerEvents:'none',
+            }}/>
+            <div style={{
+              position:'absolute',top:'6px',left:'6px',
+              background:'rgba(0,0,0,0.55)',border:'1px solid rgba(0,245,255,0.3)',
+              borderRadius:'3px',padding:'1px 6px',
+              color:'rgba(0,245,255,0.7)',fontSize:'0.48rem',fontFamily:"'Orbitron',sans-serif",
+            }}>FILE {String(i+1).padStart(2,'0')}</div>
+          </div>
+        ))}
+      </div>
+
+      {lightbox !== null && (
+        <div
+          onClick={()=>setLightbox(null)}
+          style={{
+            position:'fixed',inset:0,zIndex:500,
+            background:'rgba(0,0,0,0.88)',
+            display:'flex',alignItems:'center',justifyContent:'center',
+            animation:'revealUp 0.25s ease both',
+            cursor:'zoom-out',
+          }}
+        >
+          <div style={{position:'relative',maxWidth:'88vw',maxHeight:'82vh'}}>
+            <img
+              src={images[lightbox]}
+              alt='expanded'
+              style={{
+                maxWidth:'100%',maxHeight:'82vh',
+                objectFit:'contain',
+                borderRadius:'6px',
+                border:'1.5px solid rgba(0,245,255,0.4)',
+                boxShadow:'0 0 60px rgba(0,245,255,0.15)',
+                display:'block',
+              }}
+            />
+            <button
+              onClick={e=>{e.stopPropagation();setLightbox(null)}}
+              style={{
+                position:'absolute',top:'-14px',right:'-14px',
+                width:'28px',height:'28px',borderRadius:'50%',
+                background:'rgba(0,10,20,0.9)',border:'1px solid rgba(0,245,255,0.4)',
+                color:'rgba(0,245,255,0.8)',fontSize:'0.8rem',cursor:'pointer',
+                display:'flex',alignItems:'center',justifyContent:'center',
+              }}
+            >✕</button>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+// ─── Gallery Content (Sector 1) ───────────────────────────────────────────────
 function GalleryContent() {
-  const [sector, setSector] = useState(0)
-  const [expanded, setExpanded] = useState(null)
-
-  const sectors = [
-    {
-      tag:'SECTOR—01', title:'Crimson Stage 2025',
-      desc:'Electrifying performances and relentless energy from the main combat stage.',
-      images:['/img_s1_1.png','/img_s1_2.png','/img_s1_3.png','/img_s1_4.png'],
-    },
-    {
-      tag:'SECTOR—02', title:'Non-Combat Operations',
-      desc:'Tactical creativity, strategic gaming, and high-stakes challenges beyond the digital battlefield.',
-      images:['/img_s2_1.png','/img_s2_2.png','/img_s2_3.png','/img_s2_4.png'],
-    },
-    {
-      tag:'SECTOR—03', title:'Final Domain',
-      desc:'The crowd ignited as the bass dropped in the final arena showdown.',
-      images:['/img_s3_1.png','/img_s3_2.png','/img_s3_3.png','/img_s3_4.png'],
-    },
+  const images = [
+    '/gallery/s1_1.jpg',
+    '/gallery/s1_2.jpg',
+    '/gallery/s1_3.jpg',
+    '/gallery/s1_4.jpg',
   ]
-  const s = sectors[sector]
-
   return (
-    <div>
-      <div style={{display:'flex',gap:'8px',marginBottom:'20px'}}>
-        {sectors.map((sec,i)=>(
-          <button key={i} onClick={()=>{setSector(i);setExpanded(null)}} style={{
-            background: sector===i?'rgba(255,0,128,0.15)':'transparent',
-            border: sector===i?'1.5px solid rgba(255,0,128,0.6)':'1.5px solid rgba(0,245,255,0.2)',
-            borderRadius:'4px', padding:'7px 18px',
-            color: sector===i?'#ff0080':'rgba(255,255,255,0.45)',
-            fontSize:'0.6rem', fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.16em',
-            cursor:'pointer', transition:'all 0.25s ease',
-            boxShadow: sector===i?'0 0 16px rgba(255,0,128,0.25)':'none',
-          }}>◈ {sec.tag}</button>
-        ))}
-      </div>
+    <GalleryGrid
+      images={images}
+      subtitle="Electrifying performances and relentless energy from the main combat stage."
+    />
+  )
+}
 
-      <div style={{marginBottom:'16px'}}>
-        <div style={{color:'rgba(0,245,255,0.5)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.2em',marginBottom:'4px'}}>{s.tag}</div>
-        <div style={{color:'#ffffff',fontSize:'1.3rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:'4px'}}>{s.title}</div>
-        <div style={{color:'rgba(255,255,255,0.5)',fontSize:'0.8rem',fontFamily:"'Rajdhani',sans-serif"}}>{s.desc}</div>
-      </div>
+// ─── Gallery2 Content (Sector 2) ─────────────────────────────────────────────
+function Gallery2Content() {
+  const images = [
+    '/gallery/s2_1.jpg',
+    '/gallery/s2_2.jpg',
+    '/gallery/s2_3.jpg',
+    '/gallery/s2_4.jpg',
+  ]
+  return (
+    <GalleryGrid
+      images={images}
+      subtitle="Tactical creativity, strategic gaming, and high-stakes challenges beyond the digital battlefield."
+    />
+  )
+}
 
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gridTemplateRows:'200px 200px',gap:'8px'}}>
-        <div
-          style={{gridRow:'1 / span 2',position:'relative',overflow:'hidden',borderRadius:'4px',border:'1px solid rgba(0,245,255,0.2)',cursor:'pointer'}}
-          onClick={()=>setExpanded(expanded===0?null:0)}
-        >
-          <img src={s.images[0]} alt="" style={{width:'100%',height:'100%',objectFit:'cover',transition:'transform 0.3s ease',transform:expanded===0?'scale(1.05)':'scale(1)'}}/>
-          {expanded===0 && <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,0.4)',display:'flex',alignItems:'flex-end',padding:'12px'}}>
-            <span style={{color:'rgba(0,245,255,0.8)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>◉ FILE 01</span>
-          </div>}
-        </div>
-        {[1,2,3].map(idx=>(
-          <div key={idx}
-            style={{position:'relative',overflow:'hidden',borderRadius:'4px',border:`1px solid ${expanded===idx?'rgba(0,245,255,0.5)':'rgba(0,245,255,0.2)'}`,cursor:'pointer',transition:'border-color 0.2s'}}
-            onClick={()=>setExpanded(expanded===idx?null:idx)}
-          >
-            <img src={s.images[idx]} alt="" style={{width:'100%',height:'100%',objectFit:'cover',transition:'transform 0.3s ease',transform:expanded===idx?'scale(1.05)':'scale(1)'}}/>
-            {expanded===idx && <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,0.4)',display:'flex',alignItems:'flex-end',padding:'8px'}}>
-              <span style={{color:'rgba(0,245,255,0.8)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.1em'}}>◉ FILE 0{idx+1}</span>
-            </div>}
-          </div>
-        ))}
-      </div>
-
-      <div style={{marginTop:'10px',display:'flex',justifyContent:'flex-end'}}>
-        <span style={{color:'rgba(255,0,128,0.7)',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.15em',cursor:'default'}}>ACCESS {s.images.length} FILES ›</span>
-      </div>
-    </div>
+// ─── Gallery3 Content (Sector 3) ─────────────────────────────────────────────
+function Gallery3Content() {
+  const images = [
+    '/gallery/s3_1.jpg',
+    '/gallery/s3_2.jpg',
+    '/gallery/s3_3.jpg',
+    '/gallery/s3_4.jpg',
+  ]
+  return (
+    <GalleryGrid
+      images={images}
+      subtitle="The crowd ignited as the bass dropped in the final arena showdown."
+    />
   )
 }
 
 // ─── Contact Content ─────────────────────────────────────────────────────────
 function ContactContent() {
   const people = [
-    { name:'HARSHITA', phone:'7209593920', img:'/harshita.png' },
-    { name:'BIBHUTI BISHAL', phone:'6201371315', img:'/bibhuti.png' },
+    { name:'HARSHITA', phone:'7209593922', photo:'/contact/harshita.jpg' },
+    { name:'BIBHUTI BISHAL', phone:'6201371315', photo:'/contact/bibhuti.jpg' },
   ]
   return (
     <div>
@@ -1424,76 +1346,63 @@ function ContactContent() {
         <div style={{color:'rgba(0,245,255,0.5)',fontSize:'0.58rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.3em',marginBottom:'8px'}}>◈ COMMUNICATIONS ◈</div>
         <p style={{color:'rgba(255,255,255,0.45)',fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif"}}>Reach the command units directly.</p>
       </div>
-
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'24px',maxWidth:'600px',margin:'0 auto 32px'}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'24px',maxWidth:'560px',margin:'0 auto'}}>
         {people.map((p,i)=>(
           <div key={i} style={{
             border:'1.5px solid rgba(0,245,255,0.25)',
-            borderRadius:'6px', overflow:'hidden',
-            background:'linear-gradient(160deg,rgba(0,10,20,0.95),rgba(0,5,15,0.8))',
-            animation:`revealUp 0.4s ${i*0.1}s both`,
+            borderRadius:'8px', overflow:'hidden',
+            background:'linear-gradient(160deg,rgba(0,10,20,0.9),rgba(0,5,15,0.7))',
+            animation:`revealUp 0.4s ${i*0.15}s both`,
             transition:'all 0.3s ease',
           }}
             onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.6)';e.currentTarget.style.boxShadow='0 0 24px rgba(0,245,255,0.15)'}}
             onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.25)';e.currentTarget.style.boxShadow='none'}}
           >
             <div style={{
-              width:'100%', aspectRatio:'1/1', overflow:'hidden',
-              borderBottom:'1px solid rgba(0,245,255,0.15)',
               position:'relative',
+              paddingTop:'100%',
+              overflow:'hidden',
+              background:'rgba(0,15,30,0.8)',
+              borderBottom:'1px solid rgba(0,245,255,0.15)',
             }}>
-              <img src={p.img} alt={p.name} style={{
-                width:'100%',height:'100%',objectFit:'cover',objectPosition:'center top',
+              <img src={p.photo} alt={p.name} style={{
+                position:'absolute',top:0,left:0,
+                width:'100%',height:'100%',
+                objectFit:'cover',objectPosition:'center top',
                 display:'block',
               }}/>
               <div style={{
                 position:'absolute',inset:0,
-                background:'linear-gradient(to bottom,transparent 60%,rgba(0,0,0,0.5))',
+                background:'linear-gradient(transparent 60%,rgba(0,0,0,0.5))',
+                pointerEvents:'none',
+              }}/>
+              <div style={{
+                position:'absolute',top:'8px',right:'8px',
+                width:'10px',height:'10px',borderRadius:'50%',
+                background:'#00ff88',
+                boxShadow:'0 0 8px #00ff88',
               }}/>
             </div>
-            <div style={{padding:'14px 14px 16px',textAlign:'center'}}>
+            <div style={{padding:'14px 16px',textAlign:'center'}}>
               <div style={{
-                color:'#ffffff',fontSize:'0.9rem',
-                fontFamily:"'Orbitron',sans-serif",fontWeight:700,
+                color:'#ffffff',fontSize:'0.95rem',
+                fontFamily:"'Rajdhani',sans-serif",fontWeight:700,
                 letterSpacing:'0.08em',marginBottom:'8px',
+                textTransform:'uppercase',
               }}>{p.name}</div>
-              <a href={`tel:+91${p.phone}`} style={{
-                display:'inline-flex',alignItems:'center',gap:'6px',
-                color:'rgba(0,245,255,0.9)',
-                fontSize:'0.85rem',fontFamily:"'Rajdhani',sans-serif",fontWeight:600,
-                letterSpacing:'0.05em',textDecoration:'none',
-                border:'1px solid rgba(0,245,255,0.3)',
-                borderRadius:'3px',padding:'5px 12px',
-                transition:'all 0.2s ease',
-              }}
-                onMouseEnter={e=>{e.currentTarget.style.background='rgba(0,245,255,0.1)'}}
-                onMouseLeave={e=>{e.currentTarget.style.background='transparent'}}
-              >
-                <span style={{fontSize:'0.7rem'}}>📞</span> {p.phone}
-              </a>
+              <div style={{
+                display:'flex',alignItems:'center',justifyContent:'center',gap:'6px',
+                border:'1px solid rgba(0,245,255,0.2)',
+                borderRadius:'4px',padding:'6px 12px',
+                background:'rgba(0,245,255,0.04)',
+              }}>
+                <span style={{color:'rgba(0,245,255,0.6)',fontSize:'0.75rem'}}>📞</span>
+                <span style={{
+                  color:'rgba(0,245,255,0.9)',fontSize:'0.78rem',
+                  fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.08em',fontWeight:600,
+                }}>{p.phone}</span>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-
-      <div style={{
-        display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'12px',
-        borderTop:'1px solid rgba(0,245,255,0.1)',paddingTop:'20px',
-        maxWidth:'600px',margin:'0 auto',
-      }}>
-        {[
-          {icon:'✉', label:'rivierafest2026@hit.ac.in'},
-          {icon:'📍', label:'HIT Haldia, Purba Medinipur, WB'},
-        ].map((c,i)=>(
-          <div key={i} style={{
-            display:'flex',gap:'10px',alignItems:'center',
-            padding:'12px 16px',
-            border:'1px solid rgba(0,245,255,0.12)',
-            borderRadius:'4px',
-            background:'rgba(0,245,255,0.03)',
-          }}>
-            <div style={{fontSize:'1.1rem'}}>{c.icon}</div>
-            <span style={{color:'rgba(255,255,255,0.6)',fontSize:'0.75rem',fontFamily:"'Rajdhani',sans-serif"}}>{c.label}</span>
           </div>
         ))}
       </div>
@@ -1504,15 +1413,14 @@ function ContactContent() {
 // ─── App ─────────────────────────────────────────────────────────────────────
 export default function App() {
   const sharedRefs = useRef({
-    pathT:    { current: 0 },
-    targetT:  { current: -1 },
-    vel:      { current: 0 },
-    yaw:      { current: 0 },
-    pitch:    { current: 0 },
-    eyeH:     { current: 100 },
-    autoYaw:  { current: false },
-    wpsRef:   { current: [] },
-    dragging: { current: false },
+    pathT:   { current: 0 },
+    targetT: { current: -1 },
+    vel:     { current: 0 },
+    yaw:     { current: 0 },
+    pitch:   { current: -0.04 },
+    eyeH:    { current: 100 },
+    autoYaw: { current: false },
+    wpsRef:  { current: [] },
   }).current
 
   const [numWps,      setNumWps]      = useState(0)
@@ -1557,81 +1465,39 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    let dragging = false
-    let lastX = 0, lastY = 0
-    const onMouseDown = e => {
-      dragging = true; lastX = e.clientX; lastY = e.clientY
-      sharedRefs.dragging.current = true
-    }
-    const onMouseMove = e => {
-      if (!dragging) return
-      const dx = e.clientX - lastX, dy = e.clientY - lastY
-      lastX = e.clientX; lastY = e.clientY
-      sharedRefs.yaw.current -= dx * 0.0022
-      if (window.innerWidth > 600) {
-        sharedRefs.pitch.current = Math.max(-0.35, Math.min(0.35, sharedRefs.pitch.current + dy * 0.0022))
+    let lastX = null, lastY = null
+    const onMove = e => {
+      if (lastX !== null) {
+        const dx = e.clientX - lastX
+        const dy = e.clientY - lastY
+        sharedRefs.yaw.current   -= dx * 0.0016
+        sharedRefs.pitch.current -= dy * 0.0016
+        sharedRefs.pitch.current  = Math.max(-1.35, Math.min(1.35, sharedRefs.pitch.current))
+        sharedRefs.autoYaw.current = false
       }
-      sharedRefs.autoYaw.current = false
+      lastX = e.clientX; lastY = e.clientY
     }
-    const onMouseUp = () => { dragging = false; sharedRefs.dragging.current = false }
-    window.addEventListener('mousedown', onMouseDown)
-    window.addEventListener('mousemove', onMouseMove)
-    window.addEventListener('mouseup',   onMouseUp)
-    return () => {
-      window.removeEventListener('mousedown', onMouseDown)
-      window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('mouseup',   onMouseUp)
-    }
+    window.addEventListener('mousemove', onMove)
+    return () => window.removeEventListener('mousemove', onMove)
   }, [])
 
   useEffect(() => {
     const dragState = { active:false, x:0, y:0 }
-    const state = dragState
     const onTouchStart = e => {
-      if (e.touches.length > 1) { state.active = false; return }
       const t = e.touches[0]
-      Object.assign(state, { active:true, startX:t.clientX, startY:t.clientY, lastX:t.clientX, lastY:t.clientY, startTime:Date.now(), totalDX:0, totalDY:0, direction:null, vx:0, vy:0 })
-      sharedRefs.dragging.current = true
+      dragState.active = true; dragState.x = t.clientX; dragState.y = t.clientY
       sharedRefs.autoYaw.current = false
-      sharedRefs.targetT.current = -1
     }
-
     const onTouchMove = e => {
-      if (!state.active || e.touches.length > 1) return
+      if (!dragState.active) return
       const t = e.touches[0]
-      const dx = t.clientX - state.lastX, dy = t.clientY - state.lastY
-      state.lastX = t.clientX; state.lastY = t.clientY
-      state.vx = state.vx*0.6 + dx*0.4
-      state.vy = state.vy*0.6 + dy*0.4
-      state.totalDX += dx; state.totalDY += dy
-
-      if (!state.direction) {
-        const adx = Math.abs(state.totalDX), ady = Math.abs(state.totalDY)
-        if (adx > DIRECTION_LOCK_PX || ady > DIRECTION_LOCK_PX) {
-          if (ady > adx*1.2) state.direction = 'vertical'
-          else if (adx > ady*1.2) state.direction = 'horizontal'
-          else state.direction = 'free'
-        }
-        return
-      }
-
-      if (state.direction === 'vertical' || state.direction === 'free') {
-        sharedRefs.vel.current += -dy * TOUCH_MOVE_SENSITIVITY
-        sharedRefs.targetT.current = -1
-      }
-      if (state.direction === 'horizontal' || state.direction === 'free') { sharedRefs.yaw.current -= dx*TOUCH_LOOK_SENSITIVITY; sharedRefs.autoYaw.current = false }
+      const dx = t.clientX - dragState.x, dy = t.clientY - dragState.y
+      dragState.x = t.clientX; dragState.y = t.clientY
+      sharedRefs.yaw.current   -= dx * 0.0038
+      sharedRefs.pitch.current -= dy * 0.0038
+      sharedRefs.pitch.current  = Math.max(-1.35, Math.min(1.35, sharedRefs.pitch.current))
     }
-
-    const onTouchEnd = e => {
-      if (!state.active) return
-      state.active = false
-      sharedRefs.dragging.current = false
-      const elapsed = Date.now() - state.startTime
-      if (elapsed < 220 && (state.direction === 'vertical' || state.direction === 'free')) {
-        sharedRefs.vel.current += -state.vy * TOUCH_MOVE_SENSITIVITY * FLICK_VELOCITY_SCALE * 18
-        sharedRefs.targetT.current = -1
-      }
-    }
+    const onTouchEnd = () => { dragState.active = false }
     window.addEventListener('touchstart', onTouchStart, { passive: true })
     window.addEventListener('touchmove',  onTouchMove,  { passive: true })
     window.addEventListener('touchend',   onTouchEnd)
@@ -1645,16 +1511,28 @@ export default function App() {
   useEffect(() => {
     const onWheel = e => {
       e.preventDefault()
-      const norm = e.deltaMode===1?40:e.deltaMode===2?800:1
-      const dy = e.deltaY*norm, dx = e.deltaX*norm
-      sharedRefs.vel.current += dy*0.000016
+      const norm = e.deltaMode===1 ? 40 : e.deltaMode===2 ? 800 : 1
+      const dy = e.deltaY * norm, dx = e.deltaX * norm
+      const wpIdx = getDisplayWpIdx(sharedRefs.pathT.current)
+      if (wpIdx >= 0) {
+        const lock = scrollLock.current
+        if (lock.lockedWpIdx !== wpIdx) { lock.lockedWpIdx = wpIdx; lock.count = 0 }
+        if (lock.count < SCROLL_THRESHOLD) {
+          lock.count += 1
+          setScrollsLeft(SCROLL_THRESHOLD - lock.count)
+          return
+        }
+      } else {
+        scrollLock.current = { lockedWpIdx: -1, count: 0 }
+      }
+      sharedRefs.vel.current    += dy * 0.000016
       sharedRefs.targetT.current = -1
       sharedRefs.yaw.current    -= dx * 0.0022
       sharedRefs.autoYaw.current = true
     }
-    window.addEventListener('wheel', onWheel, { passive:false })
+    window.addEventListener('wheel', onWheel, { passive: false })
     return () => window.removeEventListener('wheel', onWheel)
-  }, [])
+  }, [getDisplayWpIdx])
 
   useEffect(() => {
     if (numWps < 2) return
@@ -1664,9 +1542,12 @@ export default function App() {
       if (e.key==='ArrowRight'||e.key==='ArrowDown') { e.preventDefault(); idx=Math.min(maxT,Math.floor(sharedRefs.pathT.current+1)) }
       else if (e.key==='ArrowLeft'||e.key==='ArrowUp') { e.preventDefault(); idx=Math.max(0,Math.ceil(sharedRefs.pathT.current-1)) }
       if (idx >= 0) {
-        sharedRefs.targetT.current = idx; sharedRefs.autoYaw.current = false
+        sharedRefs.targetT.current = idx
+        sharedRefs.autoYaw.current = false
         const wp = sharedRefs.wpsRef.current[idx]
         if (wp) { sharedRefs.yaw.current=wp.yaw; sharedRefs.pitch.current=-0.04 }
+        scrollLock.current = { lockedWpIdx:-1, count:0 }
+        setScrollsLeft(SCROLL_THRESHOLD)
       }
     }
     window.addEventListener('keydown', onKey)
