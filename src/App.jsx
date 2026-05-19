@@ -33,7 +33,7 @@ const ROAD_YAWS = [
 ]
 
 // Nav sections → waypoint index
-const NAV_WP = { home:0, schedule:1, activities:2, sponsors:3, gallery:4, contact:11 }
+const NAV_WP = { home:0, schedule:1, activities:2, sponsors:3, gallery:4, contact:5 }
 
 // Section panels shown at these waypoint indices
 const SECTION_AT = {
@@ -41,7 +41,7 @@ const SECTION_AT = {
   2: 'activities',
   3: 'sponsors',
   4: 'gallery',
-  11: 'contact',
+  5: 'contact',
 }
 
 // How many scrolls to fill before advancing
