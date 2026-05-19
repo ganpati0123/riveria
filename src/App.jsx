@@ -17,7 +17,6 @@ const WP_NAMES = [
   'Object_1099',
   'Object_1033',
   'Object_1108',
-  'Bus_stop001_87',
   'Object_628',
   'Object_13',
   'Object_619',
@@ -28,7 +27,7 @@ const WP_NAMES = [
 ]
 const ROAD_YAWS = [
   -Math.PI/2, -Math.PI/2, 0, -Math.PI/2, -Math.PI/2,
-  -Math.PI/2, Math.PI, Math.PI, Math.PI/2, Math.PI/2,
+  Math.PI, Math.PI, Math.PI/2, Math.PI/2,
   0, 0, 0,
 ]
 
@@ -51,6 +50,16 @@ const SCROLL_THRESHOLD = 3
 
 // ─── Target date for countdown (change as needed) ─────────────────────────
 const EVENT_DATE = new Date('2026-05-18T00:00:00')
+
+function useWindowWidth() {
+  const [w, setW] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024)
+  useEffect(() => {
+    const h = () => setW(window.innerWidth)
+    window.addEventListener('resize', h)
+    return () => window.removeEventListener('resize', h)
+  }, [])
+  return w
+}
 
 function useCountdown() {
   const [time, setTime] = useState({ d:0, h:0, m:0, s:0 })
@@ -93,6 +102,138 @@ function catmullRomYaw(t,wps){
   const d01=lerpAngle(0,y1-y0,1),d12=lerpAngle(0,y2-y1,1),d23=lerpAngle(0,y3-y2,1)
   const m1=.5*(d01+d12),m2=.5*(d12+d23),t2=f*f,t3=t2*f
   return y1+m1*f+(-3*d12+2*m1+m2)*t2+(2*d12-m1-m2)*t3
+}
+
+// ─── Switch to 2D Button (small, below Enter Games) ─────────────────────────
+function Switch2DBar() {
+  return (
+    <div
+      onClick={() => { window.top.location.href = 'https://www.rivierafest.online/' }}
+      style={{
+        position:'fixed', top:'52px', right:'24px',
+        zIndex:99999,
+        display:'flex', alignItems:'center', gap:'6px',
+        padding:'7px 18px',
+        background:'transparent',
+        border:'1px solid rgba(0,245,255,0.6)',
+        borderRadius:'3px',
+        cursor:'pointer',
+        transition:'all 0.2s ease',
+        backdropFilter:'blur(8px)',
+      }}
+      onMouseEnter={e=>{e.currentTarget.style.background='rgba(0,245,255,0.12)';e.currentTarget.style.borderColor='rgba(0,245,255,0.9)'}}
+      onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(0,245,255,0.55)'}}
+    >
+      <svg width='10' height='10' viewBox='0 0 10 10' fill='none'>
+        <rect x='0.5' y='0.5' width='3.5' height='3.5' rx='0.4' stroke='#00f5ff' strokeWidth='1.1'/>
+        <rect x='6' y='0.5' width='3.5' height='3.5' rx='0.4' stroke='#00f5ff' strokeWidth='1.1'/>
+        <rect x='0.5' y='6' width='3.5' height='3.5' rx='0.4' stroke='#00f5ff' strokeWidth='1.1'/>
+        <rect x='6' y='6' width='3.5' height='3.5' rx='0.4' stroke='#00f5ff' strokeWidth='1.1'/>
+      </svg>
+      <span style={{
+        fontFamily:"'Rajdhani',sans-serif",
+        fontSize:'0.72rem', fontWeight:700,
+        letterSpacing:'0.1em', color:'#00f5ff',
+        textTransform:'uppercase',
+        whiteSpace:'nowrap',
+      }}>SWITCH TO 2D</span>
+    </div>
+  )
+}
+
+// ─── Loading Screen ─────────────────────────────────────────────────────────
+function LoadingScreen({ fading }) {
+  const [dots, setDots] = useState('')
+  const [progress, setProgress] = useState(0)
+  useEffect(() => {
+    const dotInterval = setInterval(() => {
+      setDots(d => d.length >= 3 ? '' : d + '.')
+    }, 400)
+    const progInterval = setInterval(() => {
+      setProgress(p => p >= 95 ? 95 : p + Math.random() * 8)
+    }, 300)
+    return () => { clearInterval(dotInterval); clearInterval(progInterval) }
+  }, [])
+  return (
+    <div style={{
+      position:'fixed', inset:0, zIndex:999,
+      background:'#030a12',
+      display:'flex', flexDirection:'column',
+      alignItems:'center', justifyContent:'center',
+      fontFamily:"'Orbitron',sans-serif",
+      opacity: fading ? 0 : 1,
+      transition: fading ? 'opacity 0.9s ease' : 'none',
+      pointerEvents: fading ? 'none' : 'auto',
+    }}>
+      {/* Scan line effect */}
+      <div style={{
+        position:'absolute', inset:0, pointerEvents:'none',
+        background:'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,245,255,0.015) 2px,rgba(0,245,255,0.015) 4px)',
+      }}/>
+      {/* Corner decorations */}
+      <div style={{position:'absolute',top:'24px',left:'24px',width:'40px',height:'40px',
+        borderTop:'2px solid rgba(0,245,255,0.6)',borderLeft:'2px solid rgba(0,245,255,0.6)',
+        filter:'drop-shadow(0 0 8px #00f5ff)'}}/>
+      <div style={{position:'absolute',top:'24px',right:'24px',width:'40px',height:'40px',
+        borderTop:'2px solid rgba(0,245,255,0.6)',borderRight:'2px solid rgba(0,245,255,0.6)',
+        filter:'drop-shadow(0 0 8px #00f5ff)'}}/>
+      <div style={{position:'absolute',bottom:'24px',left:'24px',width:'40px',height:'40px',
+        borderBottom:'2px solid rgba(0,245,255,0.6)',borderLeft:'2px solid rgba(0,245,255,0.6)',
+        filter:'drop-shadow(0 0 8px #00f5ff)'}}/>
+      <div style={{position:'absolute',bottom:'24px',right:'24px',width:'40px',height:'40px',
+        borderBottom:'2px solid rgba(0,245,255,0.6)',borderRight:'2px solid rgba(0,245,255,0.6)',
+        filter:'drop-shadow(0 0 8px #00f5ff)'}}/>
+
+      {/* Logo / title */}
+      <div style={{
+        color:'rgba(0,245,255,0.5)', fontSize:'0.6rem',
+        letterSpacing:'0.4em', marginBottom:'16px',
+        animation:'blinkDot 1.5s ease-in-out infinite',
+      }}>◉ SYSTEM BOOT</div>
+
+      <div style={{
+        fontSize:'clamp(2.2rem,6vw,4rem)', fontWeight:900,
+        color:'#ffffff', letterSpacing:'0.08em',
+        textShadow:'0 0 40px rgba(255,255,255,0.15)',
+        lineHeight:1,
+      }}>RIVIERA</div>
+      <div style={{
+        fontSize:'clamp(2.2rem,6vw,4rem)', fontWeight:900,
+        letterSpacing:'0.08em', lineHeight:1,
+        background:'linear-gradient(90deg,#ff0080,#ff6600)',
+        WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
+        filter:'drop-shadow(0 0 18px #ff008077)',
+        marginBottom:'8px',
+      }}>FEST 2026</div>
+
+      <div style={{
+        color:'rgba(0,245,255,0.7)', fontSize:'0.58rem',
+        letterSpacing:'0.3em', marginBottom:'48px',
+      }}>ENTERING THE DIGITAL ARENA</div>
+
+      {/* Progress bar */}
+      <div style={{width:'clamp(220px,40vw,380px)', marginBottom:'12px'}}>
+        <div style={{
+          height:'2px', background:'rgba(0,245,255,0.1)',
+          borderRadius:'2px', overflow:'hidden',
+          position:'relative',
+        }}>
+          <div style={{
+            position:'absolute', top:0, left:0, height:'100%',
+            width:`${progress}%`,
+            background:'linear-gradient(90deg,#00f5ff,#ff0080)',
+            boxShadow:'0 0 12px rgba(0,245,255,0.8)',
+            transition:'width 0.3s ease',
+          }}/>
+        </div>
+      </div>
+
+      <div style={{
+        color:'rgba(0,245,255,0.5)', fontSize:'0.5rem',
+        letterSpacing:'0.2em',
+      }}>LOADING ENVIRONMENT{dots}</div>
+    </div>
+  )
 }
 
 // ─── Scene ──────────────────────────────────────────────────────────────────
@@ -213,64 +354,62 @@ function NeonCorners({ color='#00f5ff', size=28, thick=3 }) {
 // ─── Riviera Navbar ─────────────────────────────────────────────────────────
 function Navbar({ activeSection, onNav }) {
   const links = ['Home','Schedule','Activities','Sponsors','Gallery','Contact']
+  const [menuOpen, setMenuOpen] = useState(false)
+  const w = useWindowWidth()
+  const isMobile = w <= 500
+
+  const handleNav = (key) => { onNav(key); setMenuOpen(false) }
+
   return (
-    <nav style={{
-      position:'fixed', top:0, left:0, right:0, zIndex:200,
-      display:'flex', alignItems:'center', justifyContent:'space-between',
-      padding:'0 24px',
-      height:'52px',
-      background:'rgba(8,4,4,0.92)',
-      borderBottom:'1px solid rgba(180,20,20,0.18)',
-      backdropFilter:'blur(10px)',
-    }}>
-      <div style={{
-        display:'flex', alignItems:'center', gap:'8px',
-        cursor:'pointer',
-      }} onClick={() => onNav('home')}>
+    <>
+      <nav style={{
+        position:'fixed', top:0, left:0, right:0, zIndex:200,
+        display:'flex', alignItems:'center', justifyContent:'space-between',
+        padding:'0 16px',
+        height:'52px',
+        background:'rgba(8,4,4,0.95)',
+        borderBottom:'1px solid rgba(180,20,20,0.18)',
+        backdropFilter:'blur(10px)',
+      }}>
+        {/* Logo */}
         <div style={{
-          width:'28px', height:'28px',
-          display:'flex', alignItems:'center', justifyContent:'center',
-        }}>
-          <svg width='28' height='28' viewBox='0 0 28 28' fill='none'>
+          display:'flex', alignItems:'center', gap:'8px', cursor:'pointer',
+        }} onClick={() => handleNav('home')}>
+          <svg width='24' height='24' viewBox='0 0 28 28' fill='none'>
             <polygon points='14,2 26,24 2,24' fill='none' stroke='#cc1a1a' strokeWidth='2.2'/>
             <polygon points='14,7 22,21 6,21' fill='#cc1a1a' opacity='0.3'/>
           </svg>
+          <span style={{
+            color:'#ffffff', fontSize: isMobile ? '0.9rem' : '1.05rem', fontWeight:800,
+            fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.22em',
+            textTransform:'uppercase',
+            textShadow:'0 0 12px rgba(200,30,30,0.4)',
+          }}>RIVIERA</span>
         </div>
-        <span style={{
-          color:'#ffffff', fontSize:'1.05rem', fontWeight:800,
-          fontFamily:"'Rajdhani',sans-serif", letterSpacing:'0.22em',
-          textTransform:'uppercase',
-          textShadow:'0 0 12px rgba(200,30,30,0.4)',
-        }}>RIVIERA</span>
-      </div>
 
-      <div style={{display:'flex', alignItems:'center', gap:'2px'}}>
-        {links.map(link => {
-          const key = link.toLowerCase()
-          const isActive = activeSection === key
-          return (
-            <button key={link} onClick={() => onNav(key)} style={{
-              background:'none',
-              border: isActive ? '1px solid rgba(220,50,50,0.55)' : '1px solid transparent',
-              borderRadius:'3px',
-              cursor:'pointer',
-              padding:'5px 16px',
-              color: isActive ? '#ffffff' : 'rgba(255,255,255,0.55)',
-              fontSize:'0.8rem',
-              fontFamily:"'Rajdhani',sans-serif",
-              letterSpacing:'0.06em',
-              fontWeight: isActive ? 600 : 400,
-              transition:'all 0.2s ease',
-              whiteSpace:'nowrap',
-            }}
-              onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = 'rgba(255,255,255,0.85)' }}
-              onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = 'rgba(255,255,255,0.55)' }}
-            >
-              {link}
-            </button>
-          )
-        })}
-      </div>
+        {/* Desktop links */}
+        {!isMobile && (
+          <div style={{display:'flex', alignItems:'center', gap:'2px'}}>
+            {links.map(link => {
+              const key = link.toLowerCase()
+              const isActive = activeSection === key
+              return (
+                <button key={link} onClick={() => handleNav(key)} style={{
+                  background:'none',
+                  border: isActive ? '1px solid rgba(220,50,50,0.55)' : '1px solid transparent',
+                  borderRadius:'3px', cursor:'pointer', padding:'5px 16px',
+                  color: isActive ? '#ffffff' : 'rgba(255,255,255,0.55)',
+                  fontSize:'0.8rem', fontFamily:"'Rajdhani',sans-serif",
+                  letterSpacing:'0.06em', fontWeight: isActive ? 600 : 400,
+                  transition:'all 0.2s ease', whiteSpace:'nowrap',
+                }}
+                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.color='rgba(255,255,255,0.85)' }}
+                  onMouseLeave={e => { if (!isActive) e.currentTarget.style.color='rgba(255,255,255,0.55)' }}
+                >{link}</button>
+              )
+            })}
+          </div>
+        )}
 
       <div style={{display:'flex', flexDirection:'column', gap:'5px', alignItems:'stretch'}}>
         <button style={{
@@ -321,18 +460,19 @@ function Navbar({ activeSection, onNav }) {
 }
 
 // ─── Countdown Box ──────────────────────────────────────────────────────────
-function CountdownBox({ time }) {
+function CountdownBox({ time, isMobile }) {
   const pad = n => String(n).padStart(2,'0')
   return (
     <div style={{
       border:'1.5px solid rgba(0,245,255,0.35)',
       borderRadius:'10px',
       background:'linear-gradient(160deg,rgba(0,10,20,0.9),rgba(0,20,30,0.85))',
-      padding:'18px 22px',
+      padding: isMobile ? '10px 12px' : '18px 22px',
       backdropFilter:'blur(8px)',
       position:'relative',
       boxShadow:'0 0 30px rgba(0,245,255,0.1), inset 0 0 30px rgba(0,0,0,0.5)',
-      minWidth:'300px',
+      minWidth: isMobile ? 'auto' : '300px',
+      width: isMobile ? '100%' : 'auto',
     }}>
       <NeonCorners color='#00f5ff' size={16} thick={2}/>
       <div style={{
@@ -343,19 +483,19 @@ function CountdownBox({ time }) {
         <span style={{color:'#00ff88',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.12em',
           textShadow:'0 0 8px #00ff88', animation:'blinkDot 1.2s ease-in-out infinite'}}>◈ ACTIVE</span>
       </div>
-      <div style={{height:'1px',background:'rgba(0,245,255,0.15)',margin:'8px 0 14px'}}/>
-      <div style={{textAlign:'center',marginBottom:'8px'}}>
+      <div style={{height:'1px',background:'rgba(0,245,255,0.15)',margin: isMobile ? '5px 0 8px' : '8px 0 14px'}}/>
+      <div style={{textAlign:'center',marginBottom: isMobile ? '4px' : '8px'}}>
         <span style={{
-          color:'#ffee00', fontSize:'2.6rem', fontWeight:900,
+          color:'#ffee00', fontSize: isMobile ? '1.6rem' : '2.6rem', fontWeight:900,
           fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.1em',
           textShadow:'0 0 24px rgba(255,238,0,0.7)',
         }}>
           {pad(time.d)}:{pad(time.h)}:{pad(time.m)}
         </span>
       </div>
-      <div style={{display:'flex',justifyContent:'center',gap:'38px',marginBottom:'14px'}}>
+      <div style={{display:'flex',justifyContent:'center',gap: isMobile ? '20px' : '38px',marginBottom: isMobile ? '8px' : '14px'}}>
         {['DAYS','HOURS','MINUTES'].map((l,i)=>(
-          <span key={i} style={{color:'rgba(255,255,255,0.45)',fontSize:'0.52rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.16em'}}>{l}</span>
+          <span key={i} style={{color:'rgba(255,255,255,0.45)',fontSize:'0.45rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.12em'}}>{l}</span>
         ))}
       </div>
       <div style={{display:'flex',justifyContent:'space-between',marginTop:'4px'}}>
@@ -385,6 +525,80 @@ function CountdownBox({ time }) {
 
 // ─── HOME Panel (shown at waypoint 0) ───────────────────────────────────────
 function HomePanel({ visible, onEnter, time }) {
+  const w = useWindowWidth()
+  const isMobile = w <= 500
+
+  if (isMobile) return (
+    <div style={{
+      position:'fixed', inset:0, zIndex:100,
+      pointerEvents: visible ? 'auto' : 'none',
+      transition:'opacity 0.6s ease',
+      opacity: visible ? 1 : 0,
+      display:'flex', flexDirection:'column', justifyContent:'flex-end',
+      padding:'62px 18px 24px',
+      background: visible ? 'linear-gradient(180deg,rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.82) 60%)' : 'transparent',
+    }}>
+      <div style={{
+        color:'rgba(0,245,255,0.6)', fontSize:'0.48rem',
+        fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.28em',
+        marginBottom:'8px', textAlign:'center',
+      }}>◉ PROTOCOL INITIATED</div>
+
+      <div style={{
+        fontFamily:"'Orbitron',sans-serif", fontWeight:900,
+        fontSize:'2.2rem', lineHeight:1.0, color:'#ffffff',
+        letterSpacing:'0.04em', textAlign:'center',
+        textShadow:'0 0 30px rgba(255,255,255,0.2)',
+        animation:'titleFlicker 6s ease-in-out infinite',
+      }}>RIVIERA FEST</div>
+
+      <div style={{
+        fontFamily:"'Orbitron',sans-serif", fontWeight:900,
+        fontSize:'1.9rem', lineHeight:1.0, textAlign:'center',
+        background:'linear-gradient(90deg,#ff0080,#ff6600)',
+        WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
+        filter:'drop-shadow(0 0 16px #ff008088)',
+        marginBottom:'10px',
+      }}>2026</div>
+
+      <div style={{
+        color:'rgba(0,245,255,0.8)', fontSize:'0.55rem',
+        fontFamily:"'Orbitron',sans-serif", fontWeight:700,
+        letterSpacing:'0.22em', marginBottom:'14px', textAlign:'center',
+      }}>ENTER THE DIGITAL ARENA</div>
+
+      <CountdownBox time={time} isMobile={true}/>
+
+      <div style={{display:'flex',gap:'10px',marginTop:'14px'}}>
+        <button onClick={onEnter} style={{
+          flex:1,
+          background:'linear-gradient(135deg,#ff0080,#cc0066)',
+          border:'none', borderRadius:'6px', padding:'11px 0',
+          color:'#fff', fontSize:'0.62rem',
+          fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.14em', fontWeight:700,
+          cursor:'pointer', boxShadow:'0 0 20px rgba(255,0,128,0.4)',
+        }}>⚡ ENTER GAMES</button>
+        <button style={{
+          flex:1,
+          background:'transparent', border:'1.5px solid rgba(0,245,255,0.4)',
+          borderRadius:'6px', padding:'11px 0',
+          color:'rgba(0,245,255,0.85)', fontSize:'0.62rem',
+          fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.12em',
+          cursor:'pointer',
+        }}>◈ PROTOCOL</button>
+      </div>
+
+      <div style={{display:'flex',justifyContent:'center',gap:'24px',marginTop:'14px'}}>
+        {[['3','DAYS'],['50+','EVENTS'],['10K+','PLAYERS']].map(([val,lbl],i)=>(
+          <div key={i} style={{textAlign:'center'}}>
+            <div style={{color:'#fff',fontSize:'1.1rem',fontWeight:800,fontFamily:"'Orbitron',sans-serif"}}>{val}</div>
+            <div style={{color:'rgba(255,255,255,0.35)',fontSize:'0.45rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.14em'}}>{lbl}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
   return (
     <div style={{
       position:'fixed', inset:0, zIndex:100,
@@ -409,23 +623,17 @@ function HomePanel({ visible, onEnter, time }) {
         <div style={{
           fontFamily:"'Orbitron',sans-serif", fontWeight:900,
           fontSize:'clamp(2.8rem,5vw,4.8rem)',
-          lineHeight:1.0,
-          color:'#ffffff',
-          letterSpacing:'0.04em',
-          textShadow:'0 0 40px rgba(255,255,255,0.2)',
-          marginBottom:'2px',
+          lineHeight:1.0, color:'#ffffff', letterSpacing:'0.04em',
+          textShadow:'0 0 40px rgba(255,255,255,0.2)', marginBottom:'2px',
           animation:'titleFlicker 6s ease-in-out infinite',
         }}>RIVIERA<br/>FEST</div>
 
         <div style={{
           fontFamily:"'Orbitron',sans-serif", fontWeight:900,
           fontSize:'clamp(2.4rem,4.5vw,4.2rem)',
-          lineHeight:1.0,
-          background:'linear-gradient(90deg,#ff0080,#ff6600)',
+          lineHeight:1.0, background:'linear-gradient(90deg,#ff0080,#ff6600)',
           WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
-          letterSpacing:'0.04em',
-          textShadow:'none',
-          marginBottom:'18px',
+          letterSpacing:'0.04em', marginBottom:'18px',
           filter:'drop-shadow(0 0 20px #ff008088)',
         }}>2026</div>
 
@@ -437,10 +645,8 @@ function HomePanel({ visible, onEnter, time }) {
         }}>ENTER THE DIGITAL ARENA</div>
 
         <p style={{
-          color:'rgba(255,255,255,0.6)',
-          fontSize:'0.9rem', lineHeight:1.75,
-          maxWidth:'420px', marginBottom:'32px',
-          fontFamily:"'Rajdhani',sans-serif",
+          color:'rgba(255,255,255,0.6)', fontSize:'0.9rem', lineHeight:1.75,
+          maxWidth:'420px', marginBottom:'32px', fontFamily:"'Rajdhani',sans-serif",
         }}>
           The arena awaits. A convergence of technology, innovation,
           and relentless competition — where only the extraordinary survive.
@@ -450,14 +656,11 @@ function HomePanel({ visible, onEnter, time }) {
         <div style={{display:'flex',gap:'14px',flexWrap:'wrap',marginBottom:'40px'}}>
           <button onClick={onEnter} style={{
             background:'linear-gradient(135deg,#ff0080,#cc0066)',
-            border:'none', borderRadius:'6px',
-            padding:'13px 28px',
+            border:'none', borderRadius:'6px', padding:'13px 28px',
             color:'#fff', fontSize:'0.72rem',
             fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.18em', fontWeight:700,
-            cursor:'pointer',
-            boxShadow:'0 0 28px rgba(255,0,128,0.45)',
-            display:'flex', alignItems:'center', gap:'8px',
-            transition:'all 0.25s ease',
+            cursor:'pointer', boxShadow:'0 0 28px rgba(255,0,128,0.45)',
+            display:'flex', alignItems:'center', gap:'8px', transition:'all 0.25s ease',
           }}
             onMouseEnter={e=>{e.currentTarget.style.boxShadow='0 0 48px rgba(255,0,128,0.7)'}}
             onMouseLeave={e=>{e.currentTarget.style.boxShadow='0 0 28px rgba(255,0,128,0.45)'}}
@@ -465,8 +668,7 @@ function HomePanel({ visible, onEnter, time }) {
             ENTER THE GAMES <span style={{fontSize:'1rem'}}>→</span>
           </button>
           <button style={{
-            background:'transparent',
-            border:'1.5px solid rgba(0,245,255,0.45)',
+            background:'transparent', border:'1.5px solid rgba(0,245,255,0.45)',
             borderRadius:'6px', padding:'13px 28px',
             color:'rgba(0,245,255,0.85)', fontSize:'0.72rem',
             fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.18em',
@@ -474,19 +676,13 @@ function HomePanel({ visible, onEnter, time }) {
           }}
             onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.9)';e.currentTarget.style.color='#00f5ff'}}
             onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,245,255,0.45)';e.currentTarget.style.color='rgba(0,245,255,0.85)'}}
-          >
-            ◈ VIEW PROTOCOL
-          </button>
+          >◈ VIEW PROTOCOL</button>
         </div>
 
         <div style={{display:'flex',gap:'32px'}}>
           {[['3','DAYS'],['50+','EVENTS'],['10K+','PLAYERS']].map(([val,lbl],i)=>(
             <div key={i}>
-              <div style={{
-                color:'#ffffff',fontSize:'1.6rem',fontWeight:800,
-                fontFamily:"'Orbitron',sans-serif",
-                textShadow:'0 0 20px rgba(255,255,255,0.3)',
-              }}>{val}</div>
+              <div style={{color:'#ffffff',fontSize:'1.6rem',fontWeight:800,fontFamily:"'Orbitron',sans-serif",textShadow:'0 0 20px rgba(255,255,255,0.3)'}}>{val}</div>
               <div style={{color:'rgba(255,255,255,0.35)',fontSize:'0.55rem',fontFamily:"'Orbitron',sans-serif",letterSpacing:'0.18em'}}>{lbl}</div>
             </div>
           ))}
@@ -494,7 +690,7 @@ function HomePanel({ visible, onEnter, time }) {
       </div>
 
       <div style={{display:'flex',flexDirection:'column',gap:'16px',alignItems:'flex-end',marginLeft:'auto'}}>
-        <CountdownBox time={time}/>
+        <CountdownBox time={time} isMobile={false}/>
       </div>
     </div>
   )
@@ -577,8 +773,25 @@ function FillerBar({ progress, label }) {
 // ─── Full-screen Section Panel ───────────────────────────────────────────────
 function SectionPanel({ section, visible, scrollsLeft }) {
   const absorbed = SCROLL_THRESHOLD - scrollsLeft
+  const pw = useWindowWidth()
+  const isMobile = pw <= 500
+  const [isOpen,      setIsOpen]      = useState(false)
+  const [closing,     setClosing]     = useState(false)
+  const [shownSection,setShownSection]= useState(section)
 
-  if (!section) return null
+  useEffect(() => {
+    if (visible && section) {
+      setShownSection(section)
+      setClosing(false)
+      setIsOpen(true)
+    } else if (isOpen) {
+      setClosing(true)
+      const t = setTimeout(() => { setIsOpen(false); setClosing(false) }, 520)
+      return () => clearTimeout(t)
+    }
+  }, [visible, section])
+
+  if (!isOpen && !closing) return null
 
   const panels = {
     schedule: <ScheduleContent />,
@@ -599,103 +812,186 @@ function SectionPanel({ section, visible, scrollsLeft }) {
     gallery3: { tag:'SECTOR—03', title:'FINAL DOMAIN' },
     contact: { tag:'COMMUNICATIONS', title:'CONTACT US' },
   }
-  const info = titles[section] || { tag:'', title:'' }
+  const info = titles[shownSection] || { tag:'', title:'' }
 
   return (
     <div style={{
       position:'fixed', inset:0, zIndex:100,
       display:'flex', alignItems:'center', justifyContent:'center',
-      pointerEvents: visible ? 'auto' : 'none',
-      transition:'opacity 0.5s ease',
-      opacity: visible ? 1 : 0,
-      padding:'70px 40px 60px',
-      background:'rgba(0,0,0,0.55)',
-      backdropFilter:'blur(3px)',
+      pointerEvents: closing ? 'none' : 'auto',
+      padding: isMobile ? '58px 8px 8px' : '64px 40px 56px',
+      animation: closing ? 'overlayClose 0.52s ease forwards' : 'overlayOpen 0.38s ease forwards',
     }}>
       <div style={{
-        width:'100%', maxWidth:'1000px',
-        maxHeight:'calc(100vh - 130px)',
-        background:'linear-gradient(160deg,rgba(0,8,16,0.97) 0%,rgba(0,15,25,0.97) 100%)',
-        borderRadius:'4px',
-        border:'1.5px solid rgba(0,245,255,0.35)',
-        boxShadow:'0 0 0 1px rgba(0,245,255,0.08), 0 0 60px rgba(0,245,255,0.12), inset 0 0 80px rgba(0,0,0,0.6)',
+        width:'100%', maxWidth:'1060px',
+        maxHeight:'calc(100vh - 124px)',
+        background:'linear-gradient(150deg,rgba(0,4,14,0.99) 0%,rgba(0,12,26,0.98) 55%,rgba(0,6,16,0.99) 100%)',
+        borderRadius:'3px',
+        border:'1.5px solid rgba(0,245,255,0.55)',
+        boxShadow:`
+          0 0 0 1px rgba(0,245,255,0.07),
+          0 0 60px rgba(0,245,255,0.14),
+          0 0 130px rgba(0,245,255,0.06),
+          0 30px 80px rgba(0,0,0,0.8),
+          inset 0 0 120px rgba(0,0,0,0.65)
+        `,
         position:'relative',
         overflow:'hidden',
         display:'flex', flexDirection:'column',
+        animation: closing
+          ? 'panelClose 0.52s cubic-bezier(0.4,0,1,1) forwards'
+          : 'panelOpen  0.46s cubic-bezier(0,0,0.2,1) forwards',
       }}>
-        <NeonCorners color='#00f5ff' size={32} thick={2.5}/>
 
+        {/* Circuit / grid background */}
         <div style={{
-          height:'2px',
-          background:'linear-gradient(90deg,transparent,#00f5ff,#ff0080,#00f5ff,transparent)',
-          animation:'scanLine 3s linear infinite',
-          backgroundSize:'200% 100%',
+          position:'absolute', inset:0, pointerEvents:'none', zIndex:0,
+          backgroundImage:`
+            repeating-linear-gradient(0deg,  transparent, transparent 47px, rgba(0,245,255,0.04) 47px, rgba(0,245,255,0.04) 48px),
+            repeating-linear-gradient(90deg, transparent, transparent 47px, rgba(0,245,255,0.04) 47px, rgba(0,245,255,0.04) 48px)
+          `,
+          animation:'gridPulse 4s ease-in-out infinite',
         }}/>
 
+        {/* Radial glow center */}
         <div style={{
-          padding:'20px 36px 16px',
+          position:'absolute', inset:0, pointerEvents:'none', zIndex:0,
+          background:'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(0,245,255,0.04) 0%, transparent 70%)',
+        }}/>
+
+        {/* Opening scan sweep */}
+        {!closing && (
+          <div style={{
+            position:'absolute', left:0, right:0, height:'4px', zIndex:20,
+            background:'linear-gradient(90deg,transparent 5%,rgba(0,245,255,0.7) 35%,rgba(255,0,128,0.5) 50%,rgba(0,245,255,0.7) 65%,transparent 95%)',
+            boxShadow:'0 0 18px rgba(0,245,255,0.8)',
+            animation:'scanSweep 0.65s ease-out forwards',
+            pointerEvents:'none',
+          }}/>
+        )}
+
+        {/* Big corner brackets */}
+        {[
+          {top:0,    left:0,  borderTop:'2.5px solid #00f5ff', borderLeft:'2.5px solid #00f5ff'},
+          {top:0,    right:0, borderTop:'2.5px solid #00f5ff', borderRight:'2.5px solid #00f5ff'},
+          {bottom:0, left:0,  borderBottom:'2.5px solid #00f5ff', borderLeft:'2.5px solid #00f5ff'},
+          {bottom:0, right:0, borderBottom:'2.5px solid #00f5ff', borderRight:'2.5px solid #00f5ff'},
+        ].map((s,i)=>(
+          <div key={i} style={{
+            position:'absolute', width:'56px', height:'56px', zIndex:10, ...s,
+            animation:'cornerPulse 2.8s ease-in-out infinite',
+            animationDelay:`${i*0.18}s`,
+          }}/>
+        ))}
+
+        {/* Inner corner dots */}
+        {[
+          {top:'57px',  left:'57px'},
+          {top:'57px',  right:'57px'},
+          {bottom:'57px',left:'57px'},
+          {bottom:'57px',right:'57px'},
+        ].map((s,i)=>(
+          <div key={i} style={{
+            position:'absolute', width:'4px', height:'4px', borderRadius:'50%',
+            background:'#00f5ff', zIndex:10, ...s,
+            boxShadow:'0 0 8px #00f5ff, 0 0 16px rgba(0,245,255,0.6)',
+            animation:'dotBlink 2.5s ease-in-out infinite',
+            animationDelay:`${i*0.22}s`,
+          }}/>
+        ))}
+
+        {/* Top scan bar */}
+        <div style={{
+          height:'3px', flexShrink:0, zIndex:5, position:'relative',
+          background:'linear-gradient(90deg,transparent 0%,#00f5ff 25%,#ff0080 50%,#00f5ff 75%,transparent 100%)',
+          backgroundSize:'300% 100%',
+          animation:'topBarScan 2.5s linear infinite',
+          boxShadow:'0 0 16px rgba(0,245,255,0.7)',
+        }}/>
+
+        {/* Header */}
+        <div style={{
+          padding: isMobile ? '10px 16px 10px' : '16px 52px 14px', position:'relative', zIndex:5,
           borderBottom:'1px solid rgba(0,245,255,0.1)',
-          display:'flex', alignItems:'center', justifyContent:'space-between',
           flexShrink:0,
+          display:'flex', alignItems:'flex-start', justifyContent:'space-between',
+          background:'linear-gradient(90deg,rgba(0,245,255,0.03) 0%,transparent 60%)',
         }}>
           <div>
             <div style={{
-              color:'rgba(0,245,255,0.5)', fontSize:'0.52rem',
-              fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.3em',
-              marginBottom:'4px',
-            }}>◈ {info.tag}</div>
+              color:'rgba(0,245,255,0.55)', fontSize:'0.46rem',
+              fontFamily:"'Orbitron',sans-serif", letterSpacing: isMobile ? '0.2em' : '0.38em',
+              marginBottom: isMobile ? '4px' : '8px', display:'flex', alignItems:'center', gap:'8px',
+            }}>
+              {!isMobile && <span style={{display:'inline-block',width:'28px',height:'1px',background:'rgba(0,245,255,0.45)'}}/>}
+              ◈ {info.tag} ◈
+              {!isMobile && <span style={{display:'inline-block',width:'28px',height:'1px',background:'rgba(0,245,255,0.45)'}}/>}
+            </div>
             <h2 style={{
-              color:'#00f5ff', fontSize:'2rem', fontWeight:900,
-              fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.1em',
-              margin:0,
-              textShadow:'0 0 30px rgba(0,245,255,0.6)',
-              animation:'glowPulse 3s ease-in-out infinite',
+              color:'#00f5ff', margin:0,
+              fontSize: isMobile ? '1.3rem' : 'clamp(1.7rem,3.2vw,2.5rem)',
+              fontWeight:900,
+              fontFamily:"'Orbitron',sans-serif",
+              letterSpacing:'0.1em',
+              animation:'titleGlitch 8s ease-in-out infinite',
             }}>{info.title}</h2>
           </div>
-          <div style={{display:'flex',gap:'6px',alignItems:'center'}}>
+
+          {/* Scroll counter */}
+          <div style={{display:'flex',gap:'5px',alignItems:'center',flexShrink:0,paddingTop: isMobile ? '4px' : '10px'}}>
             {[0,1,2].map(i=>(
               <div key={i} style={{
-                width: i<absorbed?'24px':'10px', height:'10px',
+                width: i<absorbed?'30px':'10px', height:'10px',
                 borderRadius:'99px',
-                background: i<absorbed?'linear-gradient(90deg,#00f5ff,#ff0080)':'rgba(0,245,255,0.1)',
-                border:'1px solid rgba(0,245,255,0.3)',
-                transition:'all 0.4s ease',
-                boxShadow: i<absorbed?'0 0 10px rgba(0,245,255,0.6)':'none',
+                background: i<absorbed?'linear-gradient(90deg,#00f5ff,#ff0080)':'rgba(0,245,255,0.08)',
+                border:'1px solid rgba(0,245,255,0.28)',
+                transition:'all 0.45s cubic-bezier(0,0,0.2,1)',
+                boxShadow: i<absorbed?'0 0 14px rgba(0,245,255,0.75)':'none',
               }}/>
             ))}
             <span style={{
-              color:'rgba(0,245,255,0.5)', fontSize:'0.52rem',
-              fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.16em', marginLeft:'8px',
+              color:'rgba(0,245,255,0.4)', fontSize:'0.48rem',
+              fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.13em', marginLeft:'10px',
+              whiteSpace:'nowrap',
             }}>
-              {scrollsLeft>0 ? `${scrollsLeft} SCROLL${scrollsLeft>1?'S':''} TO ADVANCE` : 'SCROLL TO CONTINUE'}
+              {scrollsLeft>0 ? `${scrollsLeft} TO ADVANCE` : 'SCROLL ›'}
             </span>
           </div>
         </div>
 
-        <div style={{flex:1, minHeight:0, overflowY:'auto', padding:'24px 36px 24px', position:'relative'}}>
-          {panels[section]}
+        {/* Scrollable content */}
+        <div style={{flex:1, minHeight:0, overflowY:'auto', padding: isMobile ? '12px 14px 20px' : '22px 52px 36px', position:'relative', zIndex:5}}>
+          {panels[shownSection]}
         </div>
 
+        {/* Footer progress */}
         <div style={{
-          padding:'10px 36px 14px',
-          borderTop:'1px solid rgba(0,245,255,0.1)',
-          flexShrink:0,
-          background:'rgba(0,0,0,0.4)',
+          padding: isMobile ? '6px 14px 8px' : '8px 52px 12px', flexShrink:0, zIndex:5, position:'relative',
+          borderTop:'1px solid rgba(0,245,255,0.08)',
+          background:'rgba(0,0,0,0.55)',
+          display:'flex', alignItems:'center', gap:'16px',
         }}>
-          <div style={{height:'2px',borderRadius:'99px',background:'rgba(0,245,255,0.08)',overflow:'hidden'}}>
+          <div style={{flex:1,height:'2px',borderRadius:'99px',background:'rgba(0,245,255,0.06)',overflow:'hidden'}}>
             <div style={{
-              height:'100%',borderRadius:'99px',
+              height:'100%', borderRadius:'99px',
               width:`${Math.min(100,(absorbed/3)*100)}%`,
               background:'linear-gradient(90deg,#00f5ff,#ff0080)',
-              transition:'width 0.4s ease',
-              boxShadow:'0 0 12px rgba(0,245,255,0.7)',
+              transition:'width 0.45s ease',
+              boxShadow:'0 0 14px rgba(0,245,255,0.85)',
             }}/>
           </div>
+          <span style={{
+            color:'rgba(0,245,255,0.3)', fontSize:'0.44rem',
+            fontFamily:"'Orbitron',sans-serif", letterSpacing:'0.18em',
+            whiteSpace:'nowrap', flexShrink:0,
+          }}>◉ RIVIERA 2026</span>
         </div>
 
+        {/* Bottom scan bar */}
         <div style={{
-          height:'2px',
-          background:'linear-gradient(90deg,transparent,#00f5ff,#ff0080,#00f5ff,transparent)',
+          height:'3px', flexShrink:0, zIndex:5,
+          background:'linear-gradient(90deg,transparent 0%,rgba(0,245,255,0.5) 30%,rgba(255,0,128,0.4) 50%,rgba(0,245,255,0.5) 70%,transparent 100%)',
+          boxShadow:'0 0 10px rgba(0,245,255,0.4)',
         }}/>
       </div>
     </div>
@@ -1129,6 +1425,8 @@ export default function App() {
 
   const [numWps,      setNumWps]      = useState(0)
   const [ready,       setReady]       = useState(false)
+  const [loaderVisible, setLoaderVisible] = useState(true)
+  const [loaderFading,  setLoaderFading]  = useState(false)
   const [currentWp,   setCurrentWp]   = useState(0)
   const [atHome,      setAtHome]      = useState(true)
   const [activeSection,setActiveSection] = useState(null)
@@ -1137,6 +1435,13 @@ export default function App() {
 
   const scrollLock = useRef({ lockedWpIdx: -1, count: 0 })
   const time = useCountdown()
+
+  useEffect(() => {
+    if (!ready) return
+    setLoaderFading(true)
+    const t = setTimeout(() => setLoaderVisible(false), 950)
+    return () => clearTimeout(t)
+  }, [ready])
 
   const getDisplayWpIdx = useCallback((t) => {
     const rounded = Math.round(t)
@@ -1327,12 +1632,17 @@ export default function App() {
           98% { opacity: 1 }
           99% { opacity: 0.9 }
         }
+        @keyframes mobileMenuOpen {
+          from { opacity:0; transform:translateY(-8px); }
+          to   { opacity:1; transform:translateY(0); }
+        }
         ::-webkit-scrollbar { width: 4px }
         ::-webkit-scrollbar-thumb { background: rgba(0,245,255,0.25); border-radius: 4px }
         ::-webkit-scrollbar-track { background: transparent }
       `}</style>
 
-      <div style={{ width:'100vw', height:'100vh', overflow:'hidden', background:'#030a0f' }}>
+      <Switch2DBar />
+      <div style={{ width:'100vw', height:'100vh', overflow:'hidden', background:'#030a0f', paddingTop:'38px' }}>
         <CanvasErrorBoundary>
           <Canvas
             camera={{ fov:65, near:1, far:9000000 }}
@@ -1350,6 +1660,7 @@ export default function App() {
           </Canvas>
         </CanvasErrorBoundary>
 
+        {loaderVisible && <LoadingScreen fading={loaderFading} />}
         <Navbar activeSection={activeNav} onNav={navigateTo} />
         <FillerBar progress={fillerProgress} label={activeSection} />
         <HomePanel

@@ -1,0 +1,14 @@
+============================================================
+  INSTRUCTIONS — Apne Next.js project mein ye karo:
+============================================================
+
+STEP 1:  components/Switch3DBar.jsx  — naya file banao aur neeche ka code paste karo
+
+STEP 2:  pages/_app.js  — apne existing _app.js ke TOP pe ye 1 line add karo:
+         import Switch3DBar from '../components/Switch3DBar'
+
+STEP 3:  _app.js ke return ke andar <Component> se PEHLE ye 1 line add karo:
+         <Switch3DBar />
+
+That's it! Switch to 3D bar har page pe aa jaayega.
+============================================================
