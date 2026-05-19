@@ -315,9 +315,16 @@ function Scene({ sharedRefs, onReady }) {
       if(Math.abs(sharedRefs.vel.current)<0.000006)sharedRefs.vel.current=0
     }
     camera.position.copy(catmullRomPoint(sharedRefs.pathT.current,wps.current))
-    if(sharedRefs.autoYaw.current){
-      const py=catmullRomYaw(sharedRefs.pathT.current,wps.current)
+    const tNow=sharedRefs.pathT.current
+    const roundedWp=Math.round(tNow)
+    const nearWp=Math.abs(tNow-roundedWp)<0.3 && roundedWp>=0 && roundedWp<ROAD_YAWS.length
+    const moving=Math.abs(sharedRefs.vel.current)>0.0003 || sharedRefs.targetT.current>=0
+    if(sharedRefs.autoYaw.current && moving){
+      const py=catmullRomYaw(tNow,wps.current)
       sharedRefs.yaw.current=lerpAngle(sharedRefs.yaw.current,py,Math.min(1,3*dt))
+    } else if(nearWp && !moving){
+      const targetYaw=ROAD_YAWS[roundedWp]
+      sharedRefs.yaw.current=lerpAngle(sharedRefs.yaw.current,targetYaw,Math.min(1,2.5*dt))
     }
     const cp=Math.max(-Math.PI*.44,Math.min(Math.PI*.44,sharedRefs.pitch.current))
     camera.rotation.order='YXZ'
