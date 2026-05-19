@@ -1652,15 +1652,13 @@ export default function App() {
           onEnter={() => navigateTo('schedule')}
           time={time}
         />
+        <ScrollIndicator visible={!activeSection} />
         {ready && (
-          <>
-            <SectionPanel
-              section={activeSection}
-              visible={!!activeSection}
-              scrollsLeft={scrollsLeft}
-            />
-            <ScrollIndicator visible={!activeSection} />
-          </>
+          <SectionPanel
+            section={activeSection}
+            visible={!!activeSection}
+            scrollsLeft={scrollsLeft}
+          />
         )}
       </div>
     </>
