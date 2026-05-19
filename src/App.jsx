@@ -1459,20 +1459,27 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    let lastX = null, lastY = null
+    let pressed = false, lastX = 0, lastY = 0
+    const onDown = e => { pressed = true; lastX = e.clientX; lastY = e.clientY }
+    const onUp   = () => { pressed = false }
     const onMove = e => {
-      if (lastX !== null) {
-        const dx = e.clientX - lastX
-        const dy = e.clientY - lastY
-        sharedRefs.yaw.current   -= dx * 0.0016
-        sharedRefs.pitch.current -= dy * 0.0016
-        sharedRefs.pitch.current  = Math.max(-1.35, Math.min(1.35, sharedRefs.pitch.current))
-        sharedRefs.autoYaw.current = false
-      }
+      if (!pressed) return
+      const dx = e.clientX - lastX
+      const dy = e.clientY - lastY
       lastX = e.clientX; lastY = e.clientY
+      sharedRefs.yaw.current   -= dx * 0.0016
+      sharedRefs.pitch.current -= dy * 0.0016
+      sharedRefs.pitch.current  = Math.max(-1.0, Math.min(1.0, sharedRefs.pitch.current))
+      sharedRefs.autoYaw.current = false
     }
+    window.addEventListener('mousedown', onDown)
+    window.addEventListener('mouseup',   onUp)
     window.addEventListener('mousemove', onMove)
-    return () => window.removeEventListener('mousemove', onMove)
+    return () => {
+      window.removeEventListener('mousedown', onDown)
+      window.removeEventListener('mouseup',   onUp)
+      window.removeEventListener('mousemove', onMove)
+    }
   }, [])
 
   useEffect(() => {
@@ -1490,7 +1497,15 @@ export default function App() {
       sharedRefs.vel.current -= dy * 0.00008
       sharedRefs.yaw.current -= dx * 0.0022
     }
-    const onTouchEnd = () => { dragState.active = false }
+    const onTouchEnd = () => {
+      dragState.active = false
+      const t = sharedRefs.pathT.current
+      const rounded = Math.round(t)
+      if (Math.abs(t - rounded) < 0.45 && rounded >= 0) {
+        sharedRefs.targetT.current = rounded
+        sharedRefs.vel.current = 0
+      }
+    }
     window.addEventListener('touchstart', onTouchStart, { passive: true })
     window.addEventListener('touchmove',  onTouchMove,  { passive: true })
     window.addEventListener('touchend',   onTouchEnd)
